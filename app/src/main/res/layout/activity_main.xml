@@ -13,7 +13,8 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/bg_color" />
+            android:background="@color/bg_color"
+            android:minHeight="?attr/actionBarSize" />
 
     </android.support.design.widget.AppBarLayout>
     <LinearLayout android:layout_height="match_parent"
@@ -39,7 +40,9 @@
             android:layout_marginRight="20px"
             android:layout_marginLeft="20px"
             android:layout_marginTop="15px"
-            android:hint="@string/enter_email"/>
+            android:textColor="@color/edit_text_color"
+            android:hint="@string/enter_email"
+            android:id="@+id/email_edit"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -47,8 +50,11 @@
             android:layout_marginRight="20px"
             android:layout_marginLeft="20px"
             android:background="@drawable/edit_text_selector"
+            android:textColor="@color/edit_text_color"
             android:layout_marginTop="15px"
             android:hint="@string/enter_password"
+            android:inputType="textPassword"
+            android:id="@+id/password_edit"
             />
         <TableRow android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -58,13 +64,15 @@
                 android:text="@string/log_in"
                 android:background="@drawable/login_button_selector"
                 android:textColor="@color/text_white"
-                android:layout_margin="15px"/>
+                android:layout_margin="15px"
+                android:id="@+id/log_in_button"/>
             <Button android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:text="@string/sign_up"
                 android:background="@drawable/login_button_selector"
                 android:textColor="@color/text_white"
-                android:layout_margin="15px"/>
+                android:layout_margin="15px"
+                android:id="@+id/sign_in_button"/>
 
         </TableRow>
 

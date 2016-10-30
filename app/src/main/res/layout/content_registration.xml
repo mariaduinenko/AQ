@@ -1,0 +1,68 @@
+<LinearLayout android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="25px"
+    android:layout_width="match_parent"
+    android:background="@color/bg_color"
+    android:orientation="vertical"
+    android:paddingTop="100px"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="top|center"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edit_text_selector"
+        android:padding="20px"
+        android:paddingLeft="50px"
+        android:layout_marginRight="20px"
+        android:layout_marginLeft="20px"
+        android:layout_marginTop="15px"
+        android:hint="@string/enter_name"
+        android:textColor="@color/edit_text_color"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/edit_text_color"
+        android:background="@drawable/edit_text_selector"
+        android:padding="20px"
+        android:paddingLeft="50px"
+        android:layout_marginRight="20px"
+        android:layout_marginLeft="20px"
+        android:layout_marginTop="15px"
+        android:hint="@string/enter_email"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edit_text_selector"
+        android:padding="20px"
+        android:paddingLeft="50px"
+        android:layout_marginRight="20px"
+        android:textColor="@color/edit_text_color"
+        android:layout_marginLeft="20px"
+        android:layout_marginTop="15px"
+        android:hint="@string/enter_password"
+        android:inputType="textPassword"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edit_text_selector"
+        android:padding="20px"
+        android:paddingLeft="50px"
+        android:layout_marginRight="20px"
+        android:layout_marginLeft="20px"
+        android:textColor="@color/edit_text_color"
+        android:layout_marginTop="15px"
+        android:hint="@string/confirm_password"
+        android:inputType="textPassword"/>
+    <Button android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/register"
+        android:background="@drawable/login_button_selector"
+        android:textColor="@color/text_white"
+        android:layout_margin="15px"
+        android:id="@+id/register_button"/>
+</LinearLayout>

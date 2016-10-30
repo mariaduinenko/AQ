@@ -8,4 +8,5 @@
     <color name="login_button_pressed">#993ECD</color>
     <color name="text_white">#FFFFFF</color>
     <color name="bg_grey">#EAEAEA</color>
+    <color name="edit_text_color">#5A5A5C</color>
 </resources>

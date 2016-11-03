@@ -1,0 +1,35 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/bg_color"
+    tools:context="com.cococompany.android.aq.fragments.ProfileFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50px"
+        android:paddingLeft="50px">
+    <com.joooonho.SelectableRoundedImageView
+        android:layout_width="150px"
+        android:layout_height="150px"
+        app:sriv_left_bottom_corner_radius="75px"
+        app:sriv_left_top_corner_radius="75px"
+        app:sriv_right_bottom_corner_radius="75px"
+        app:sriv_right_top_corner_radius="75px"
+        app:sriv_border_width="2px"
+        app:sriv_border_color="@color/image_border_color"
+        android:src="@drawable/test_face"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="60px"
+        android:textSize="22sp"
+        android:text="Albert Nickson"
+        android:textStyle="bold"/>
+    </TableRow>
+
+</LinearLayout>

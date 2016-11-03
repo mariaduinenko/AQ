@@ -1,0 +1,22 @@
+<tabs>
+    <tab
+        id="@+id/feed_tab"
+        icon="@drawable/ic_message_reply_text"
+        title="Feed"
+    />
+    <tab
+        id="@+id/write_question_tab"
+        icon="@drawable/ic_pencil"
+        title="Write"
+        />
+    <tab
+        id="@+id/notifications_tab"
+        icon="@drawable/ic_bell_ring"
+        title="Notifications"
+        />
+    <tab
+        id="@+id/profile_tab"
+        icon="@drawable/ic_account"
+        title="Profile"
+        />
+</tabs>

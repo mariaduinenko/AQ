@@ -9,4 +9,7 @@
     <color name="text_white">#FFFFFF</color>
     <color name="bg_grey">#EAEAEA</color>
     <color name="edit_text_color">#5A5A5C</color>
+    <color name="active_tab_color">#02E379</color>
+    <color name="inactive_tab_color">#9999CB</color>
+    <color name="image_border_color">#320997</color>
 </resources>

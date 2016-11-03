@@ -25,7 +25,7 @@ public class UIutils {
 
     public static void setSearchBar(int id, Menu menu, Activity activity){
         SearchManager searchManager =(SearchManager) activity.getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =(SearchView) menu.findItem(R.id.search).getActionView();
+        SearchView searchView =(SearchView) menu.findItem(id).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(activity.getComponentName()));
 
     }

@@ -1,4 +1,4 @@
-package com.cococompany.android.aq;
+package com.cococompany.android.aq.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

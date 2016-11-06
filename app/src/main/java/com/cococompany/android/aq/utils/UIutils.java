@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.View;
 
 import com.cococompany.android.aq.R;
 
@@ -28,5 +29,18 @@ public class UIutils {
         SearchView searchView =(SearchView) menu.findItem(id).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(activity.getComponentName()));
 
+    }
+
+    public static void setToolbarWithBackButton(int id, final AppCompatActivity activity){
+        final Toolbar toolbar = (Toolbar) activity.findViewById(id);
+        activity.setSupportActionBar(toolbar);
+        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        activity.getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                activity.onBackPressed();
+            }
+        });
     }
 }

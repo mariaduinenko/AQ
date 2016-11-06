@@ -25,3 +25,4 @@
 
 
 </android.support.design.widget.CoordinatorLayout>
+    <!--Пока что не делай это активити. Вместо него будет BottomNavigationView, ok??  -->

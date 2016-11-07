@@ -17,12 +17,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.cococompany.android.aq.models.User;
+import com.cococompany.android.aq.utils.AQService;
 import com.cococompany.android.aq.utils.UIutils;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,11 +39,19 @@ public class MainActivity extends AppCompatActivity {
     private EditText password_edit;
     private HashMap<String, String> temp;
     private Pattern p;
+    private Retrofit retrofit;
+    private User currentUser;
+
+    private AQService aqService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         UIutils.setToolbar(R.id.toolbar,this);
+        retrofit = new Retrofit.Builder()
+                .baseUrl(getResources().getString(R.string.project_url))
+                .build();
+        aqService = retrofit.create(AQService.class);
         temp=  new HashMap<String, String>();
         temp.put("user1@gmail.com","pass1");
         temp.put("user2@gmail.com","pass2");
@@ -58,6 +73,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (isValidEmail(email_edit.getText().toString())){
+                    Call<User> user = aqService.getRegisteredUser(email_edit.getText().toString());
+                    user.enqueue(new Callback<User>() {
+                        @Override
+                        public void onResponse(Call<User> call, Response<User> response) {
+                            currentUser = response.body();
+                        }
+
+                        @Override
+                        public void onFailure(Call<User> call, Throwable t) {
+
+                        }
+                    });
                     if(temp.containsKey(email_edit.getText().toString())){
                         if (temp.get(email_edit.getText().toString()).equals(password_edit.getText().toString())){
                           Toast.makeText(MainActivity.this,"Login Completed",Toast.LENGTH_SHORT).show();

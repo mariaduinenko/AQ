@@ -73,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (isValidEmail(email_edit.getText().toString())){
+
+
+                    /*
                     Call<User> user = aqService.getRegisteredUser(email_edit.getText().toString());
                     user.enqueue(new Callback<User>() {
                         @Override
@@ -84,7 +87,10 @@ public class MainActivity extends AppCompatActivity {
                         public void onFailure(Call<User> call, Throwable t) {
 
                         }
-                    });
+                    });*/
+
+
+
                     if(temp.containsKey(email_edit.getText().toString())){
                         if (temp.get(email_edit.getText().toString()).equals(password_edit.getText().toString())){
                           Toast.makeText(MainActivity.this,"Login Completed",Toast.LENGTH_SHORT).show();

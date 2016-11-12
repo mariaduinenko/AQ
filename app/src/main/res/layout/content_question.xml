@@ -1,13 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginTop="25dp"
+    android:layout_marginTop="15dp"
     android:layout_width="match_parent"
     android:background="@color/bg_color"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="25dp"
+        android:gravity="center_vertical">
+        <com.joooonho.SelectableRoundedImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:sriv_left_bottom_corner_radius="25dp"
+            app:sriv_left_top_corner_radius="25dp"
+            app:sriv_right_bottom_corner_radius="25dp"
+            app:sriv_right_top_corner_radius="25dp"
+            app:sriv_border_width="1dp"
+            app:sriv_border_color="@color/image_border_color"
+            android:src="@drawable/test_face"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="15dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/name_of_asker_view"
+                android:textSize="18sp"
+                android:text="@string/test_name"
+                android:textColor="@color/text_color_black"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/question_date"
+                android:textColor="@color/text_color_violet"
+                android:text="@string/test_date"/>
 
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="10dp"
+        android:textSize="18sp"
+        android:textColor="@color/text_color_black"
+        android:textStyle="bold"
+        android:text="@string/test_title_of_question"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:textSize="16sp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:text="@string/test_body_of_question"
+        android:textColor="@color/text_color_black"/>
 
 
 </LinearLayout>

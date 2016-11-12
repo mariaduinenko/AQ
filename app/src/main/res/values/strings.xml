@@ -25,5 +25,10 @@
     <string name="from">От</string>
     <string name="title_activity_question">QuestionActivity</string>
     <string name="project_url">http://google.com</string>
+    <!-- Test strings -->
     <string name="test_nickname">\@nickname322</string>
+    <string name="test_name">Бедный студент</string>
+    <string name="test_date">20.10.16 19:30</string>
+    <string name="test_title_of_question">Когда включат горячую воду в общежитии?</string>
+    <string name="test_body_of_question">Это не возможно! 2 месяца нет воды. Соседи воняют. Бла Бла Бла. Текст. Текст. Текст. Текст. Текст.Текст.Текст.</string>
 </resources>

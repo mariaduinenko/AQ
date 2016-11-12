@@ -37,11 +37,12 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.QuestionHolder
     }
 
     @Override
-    public void onBindViewHolder(QuestionHolder holder, int position) {
+    public void onBindViewHolder(QuestionHolder holder, final int position) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(activity, QuestionActivity.class);
+                    //intent.putExtra("question_id",questions.get(position).getId());
                     activity.startActivity(intent);
                 }
             });

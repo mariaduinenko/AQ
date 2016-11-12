@@ -12,6 +12,9 @@ import android.view.ViewGroup;
 
 import com.cococompany.android.aq.R;
 import com.cococompany.android.aq.adapters.FeedAdapter;
+import com.cococompany.android.aq.models.Question;
+
+import java.util.ArrayList;
 
 public class FeedFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -19,12 +22,13 @@ public class FeedFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private RecyclerView feedRecyclerView;
     private FeedAdapter feedAdapter;
-
+    private ArrayList<Question> questions;
     //private OnFragmentInteractionListener mListener;
 
     public FeedFragment() {
@@ -64,6 +68,7 @@ public class FeedFragment extends Fragment {
         // Inflate the layout for this fragment
         View v=   inflater.inflate(R.layout.fragment_feed, container, false);
         feedRecyclerView = (RecyclerView) v.findViewById(R.id.feed);
+        questions = new ArrayList<Question>();
         feedAdapter = new FeedAdapter(null,getActivity());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         feedRecyclerView.setAdapter(feedAdapter);

@@ -18,7 +18,7 @@
 
     </android.support.design.widget.AppBarLayout>
     <LinearLayout android:layout_height="match_parent"
-        android:layout_marginTop="25px"
+        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
         android:background="@color/bg_color"
         android:orientation="vertical"
@@ -27,31 +27,30 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <ImageView
-            android:layout_width="370px"
-            android:layout_height="200px"
+            android:layout_width="300dp"
+            android:layout_height="200dp"
             android:src="@drawable/aq_title"
             />
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/edit_text_selector"
-            android:padding="20px"
-            android:paddingLeft="50px"
-            android:layout_marginRight="20px"
-            android:layout_marginLeft="20px"
-            android:layout_marginTop="15px"
+            android:padding="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="15dp"
             android:textColor="@color/edit_text_color"
             android:hint="@string/enter_email"
             android:id="@+id/email_edit"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="20px"
-            android:layout_marginRight="20px"
-            android:layout_marginLeft="20px"
+            android:padding="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
             android:background="@drawable/edit_text_selector"
             android:textColor="@color/edit_text_color"
-            android:layout_marginTop="15px"
+            android:layout_marginTop="15dp"
             android:hint="@string/enter_password"
             android:inputType="textPassword"
             android:id="@+id/password_edit"
@@ -64,14 +63,14 @@
                 android:text="@string/log_in"
                 android:background="@drawable/login_button_selector"
                 android:textColor="@color/text_white"
-                android:layout_margin="15px"
+                android:layout_margin="15dp"
                 android:id="@+id/log_in_button"/>
             <Button android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:text="@string/sign_up"
                 android:background="@drawable/login_button_selector"
                 android:textColor="@color/text_white"
-                android:layout_margin="15px"
+                android:layout_margin="15dp"
                 android:id="@+id/sign_in_button"/>
 
         </TableRow>

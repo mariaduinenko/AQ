@@ -3,7 +3,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    android:layout_marginTop="25px">
+    android:layout_marginTop="15dp">
 
     <!-- This could be your fragment container, or something -->
     <android.support.v4.view.ViewPager

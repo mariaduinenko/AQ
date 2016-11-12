@@ -5,24 +5,25 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 <TableRow
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingLeft="40px"
-        android:paddingTop="40px"
+        android:paddingLeft="20dp"
+        android:paddingTop="5dp"
         >
         <TableRow
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="30px"
+            android:layout_marginBottom="30dp"
             >
-            <ImageView android:layout_width="45px"
-                android:layout_height="45px"
+            <ImageView android:layout_width="22dp"
+                android:layout_height="22dp"
                 android:id="@+id/like_image"
-                android:layout_marginRight="10px"
+                android:layout_marginRight="10dp"
                 android:src="@drawable/like"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -37,10 +38,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             >
-            <ImageView  android:layout_width="45px"
-                android:layout_height="45px"
+            <ImageView  android:layout_width="22dp"
+                android:layout_height="22dp"
                 android:id="@+id/comment_image"
-                android:layout_marginRight="10px"
+                android:layout_marginRight="10dp"
                 android:src="@drawable/comment"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -58,8 +59,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="50px"
-        android:paddingLeft="24px"
+        android:paddingLeft="12dp"
         android:orientation="vertical"
         >
 
@@ -107,8 +107,8 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginLeft="40px"
-        android:layout_marginRight="70px"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:background="@color/divider_color"
-        android:layout_marginTop="40px"/>
+        android:layout_marginTop="5dp"/>
 </LinearLayout>

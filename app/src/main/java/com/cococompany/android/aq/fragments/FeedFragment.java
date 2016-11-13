@@ -12,6 +12,10 @@ import android.view.ViewGroup;
 
 import com.cococompany.android.aq.R;
 import com.cococompany.android.aq.adapters.FeedAdapter;
+import com.cococompany.android.aq.models.Question1;
+import com.cococompany.android.aq.services.QuestionService;
+
+import java.util.ArrayList;
 
 public class FeedFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -64,7 +68,13 @@ public class FeedFragment extends Fragment {
         // Inflate the layout for this fragment
         View v=   inflater.inflate(R.layout.fragment_feed, container, false);
         feedRecyclerView = (RecyclerView) v.findViewById(R.id.feed);
-        feedAdapter = new FeedAdapter(null,getActivity());
+
+        //Retrieving data from REST
+        QuestionService service = new QuestionService(v);
+        ArrayList<Question1> questions = service.getRecent8();
+
+        feedAdapter = new FeedAdapter(questions, getActivity());
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         feedRecyclerView.setAdapter(feedAdapter);
         feedRecyclerView.setLayoutManager(linearLayoutManager);

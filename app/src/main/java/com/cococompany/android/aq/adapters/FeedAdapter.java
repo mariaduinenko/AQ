@@ -8,10 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
 
 import com.cococompany.android.aq.QuestionActivity;
 import com.cococompany.android.aq.R;
 import com.cococompany.android.aq.models.Question;
+import com.cococompany.android.aq.models.Question1;
 
 import java.util.ArrayList;
 
@@ -20,10 +22,10 @@ import java.util.ArrayList;
  */
 public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.QuestionHolder> {
 
-    private ArrayList<Question> questions;
+    private ArrayList<Question1> questions;
     private Activity activity;
 
-    public FeedAdapter(ArrayList<Question> questions, Activity activity) {
+    public FeedAdapter(ArrayList<Question1> questions, Activity activity) {
         this.questions = questions;
         this.activity = activity;
     }
@@ -37,19 +39,26 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.QuestionHolder
     }
 
     @Override
-    public void onBindViewHolder(QuestionHolder holder, int position) {
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(activity, QuestionActivity.class);
-                    activity.startActivity(intent);
-                }
-            });
+    public void onBindViewHolder(QuestionHolder holder, int i) {
+        Question1 question = questions.get(i);
+
+        ((TextView) holder.itemView.findViewById(R.id.question_title)).setText(question.getTitle());
+        ((TextView) holder.itemView.findViewById(R.id.question_owner)).setText((question.getUser().getNickname()==null?question.getUser().getFirstName():question.getUser().getNickname()));
+        ((TextView) holder.itemView.findViewById(R.id.question_date)).setText(question.getCreationTime());
+
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(activity, QuestionActivity.class);
+                activity.startActivity(intent);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return 8;
+        return questions.size();
     }
 
     public static class QuestionHolder extends RecyclerView.ViewHolder{

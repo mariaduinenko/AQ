@@ -1,28 +1,26 @@
 package com.cococompany.android.aq;
 
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.cococompany.android.aq.models.Greetings;
+import com.cococompany.android.aq.models.Question1;
 import com.cococompany.android.aq.models.User;
 import com.cococompany.android.aq.utils.AQService;
 import com.cococompany.android.aq.utils.UIutils;
 
+import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,6 +28,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,12 +45,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         setContentView(R.layout.activity_main);
         UIutils.setToolbar(R.id.toolbar,this);
-        retrofit = new Retrofit.Builder()
-                .baseUrl(getResources().getString(R.string.project_url))
-                .build();
-        aqService = retrofit.create(AQService.class);
         temp=  new HashMap<String, String>();
         temp.put("user1@gmail.com","pass1");
         temp.put("user2@gmail.com","pass2");

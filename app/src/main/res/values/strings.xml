@@ -24,6 +24,6 @@
     <string name="speciality">Speciality</string>
     <string name="from">От</string>
     <string name="title_activity_question">QuestionActivity</string>
-    <string name="project_url">http://google.com</string>
+    <string name="project_url">http://10.0.2.2:8080/</string>
     <string name="test_nickname">\@nickname322</string>
 </resources>

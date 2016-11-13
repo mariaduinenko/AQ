@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/feed_tab"
+        android:icon="@drawable/ic_message_reply_text"
+        android:title="Feed"
+        />
+    <item
+        android:id="@+id/write_question_tab"
+        android:icon="@drawable/ic_pencil"
+        android:title="Write"
+        />
+    <item
+        android:id="@+id/notifications_tab"
+        android:icon="@drawable/ic_bell_ring"
+        android:title="Notifications"
+        />
+    <item
+        android:id="@+id/profile_tab"
+        android:icon="@drawable/ic_account"
+        android:title="Profile"
+        />
+</menu>

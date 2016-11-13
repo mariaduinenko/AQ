@@ -2,6 +2,8 @@ package com.cococompany.android.aq;
 
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -18,7 +20,7 @@ public class ContentActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
     private QuestionPagerAdapter questionPagerAdapter;
-    private BottomBar bottomBar;
+    private BottomNavigationView bottomBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,14 +35,14 @@ public class ContentActivity extends AppCompatActivity {
                 return true;
             }
         });
-        bottomBar = (BottomBar) findViewById(R.id.bottomBar);
-        bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
+        bottomBar = (BottomNavigationView) findViewById(R.id.bottom_bar);
+        bottomBar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onTabSelected(@IdRes int tabId) {
-                switch (tabId){
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()){
                     case R.id.feed_tab:
                         viewPager.setCurrentItem(0,false);
-                       break;
+                        break;
                     case R.id.write_question_tab:
                         viewPager.setCurrentItem(1,false);
                         break;
@@ -52,7 +54,9 @@ public class ContentActivity extends AppCompatActivity {
                         break;
 
                 }
+                return false;
             }
+
         });
     }
 

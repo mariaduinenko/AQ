@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
     private EditText email_edit;
     private EditText password_edit;
     private HashMap<String, String> temp;
-    private Pattern p;
     private Retrofit retrofit;
     private User currentUser;
 
@@ -60,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
         sign_in_button =  (Button) findViewById(R.id.sign_in_button);
         email_edit= (EditText) findViewById(R.id.email_edit);
         password_edit = (EditText) findViewById(R.id.password_edit);
-        p = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
         sign_in_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -72,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         log_in_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isValidEmail(email_edit.getText().toString())){
+                if (UIutils.isValidEmail(email_edit.getText().toString())){
 
 
                     /*
@@ -111,10 +109,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public boolean isValidEmail(String email){
-        Matcher m = p.matcher(email);
-        return m.matches();
-    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.StringDef;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +12,9 @@ import android.view.Menu;
 import android.view.View;
 
 import com.cococompany.android.aq.R;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Valentin on 30.10.2016.
@@ -42,5 +46,17 @@ public class UIutils {
                 activity.onBackPressed();
             }
         });
+    }
+
+    public  static boolean isValidEmail(String email){
+        Pattern p = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+        Matcher m = p.matcher(email);
+        return m.matches();
+    }
+
+    public static boolean isValidName(String name){
+        Pattern p = Pattern.compile("^\\w+\\s\\w+\\s\\w+");
+        Matcher m = p.matcher(name);
+        return m.matches();
     }
 }

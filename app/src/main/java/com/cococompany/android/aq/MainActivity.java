@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +21,7 @@ import android.widget.Toast;
 
 import com.cococompany.android.aq.models.User;
 import com.cococompany.android.aq.utils.AQService;
+import com.cococompany.android.aq.utils.RegistrationService;
 import com.cococompany.android.aq.utils.UIutils;
 
 import java.util.HashMap;
@@ -40,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private HashMap<String, String> temp;
     private Retrofit retrofit;
     private User currentUser;
-
+    private RegistrationService registrationService;
     private AQService aqService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +53,11 @@ public class MainActivity extends AppCompatActivity {
         retrofit = new Retrofit.Builder()
                 .baseUrl(getResources().getString(R.string.project_url))
                 .build();
+
+
+
         aqService = retrofit.create(AQService.class);
+        registrationService = new RegistrationService(this);
         temp=  new HashMap<String, String>();
         temp.put("user1@gmail.com","pass1");
         temp.put("user2@gmail.com","pass2");
@@ -58,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         log_in_button = (Button) findViewById(R.id.log_in_button);
         sign_in_button =  (Button) findViewById(R.id.sign_in_button);
         email_edit= (EditText) findViewById(R.id.email_edit);
+        email_edit.setText("amyagkiy@icloud.com");
         password_edit = (EditText) findViewById(R.id.password_edit);
         sign_in_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,31 +79,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (UIutils.isValidEmail(email_edit.getText().toString())){
+                    User user = null;
+                    user = registrationService.login(email_edit.getText().toString(),password_edit.getText().toString());
 
-
-                    /*
-                    Call<User> user = aqService.getRegisteredUser(email_edit.getText().toString());
-                    user.enqueue(new Callback<User>() {
-                        @Override
-                        public void onResponse(Call<User> call, Response<User> response) {
-                            currentUser = response.body();
-                        }
-
-                        @Override
-                        public void onFailure(Call<User> call, Throwable t) {
-
-                        }
-                    });*/
-
-
-
-                    if(temp.containsKey(email_edit.getText().toString())){
-                        if (temp.get(email_edit.getText().toString()).equals(password_edit.getText().toString())){
+                    if(user!=null){
+                        /*if (temp.get(email_edit.getText().toString()).equals(password_edit.getText().toString())){
                           Toast.makeText(MainActivity.this,"Login Completed",Toast.LENGTH_SHORT).show();
                         }
                         else{
                           Toast.makeText(MainActivity.this,"Wrong Password",Toast.LENGTH_SHORT).show();
-                        }
+                        }*/
                     }
                     else{
                         Toast.makeText(MainActivity.this,"User doesn't exist",Toast.LENGTH_SHORT).show();

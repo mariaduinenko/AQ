@@ -129,7 +129,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     newUser.setBirthdate(currentDateandTime);
                     newUser.setAvatar("https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQPJM4YvjzSCCDoQdLrpE1OP4CjT6kr8P-HMy8FfTjfhMgLpjPE03WXtw");
                     System.out.println(newUser.toString());
-                    //registrationService.register(newUser);
+                    registrationService.register(newUser);
                     //Intent intent=  new Intent(RegistrationActivity.this, ContentActivity.class);
                     //startActivity(intent);
                 }

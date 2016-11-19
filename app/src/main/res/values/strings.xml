@@ -29,6 +29,7 @@
     <string name="from">От</string>
     <string name="title_activity_question">QuestionActivity</string>
     <string name="project_url">https://pure-mesa-13823.herokuapp.com</string>
+    <string name="remember_me">Remember me?</string>
     <!-- Test strings -->
     <string name="test_nickname">\@nickname322</string>
     <string name="test_name">Бедный студент</string>

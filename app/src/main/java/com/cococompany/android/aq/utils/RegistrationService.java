@@ -1,11 +1,13 @@
 package com.cococompany.android.aq.utils;
 
 import android.content.Context;
+import android.os.AsyncTask;
 
 import com.cococompany.android.aq.R;
 import com.cococompany.android.aq.models.User;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -53,5 +55,42 @@ public class RegistrationService {
         });
         thread.start();
 
+    }
+
+    public User login(String email, String password){
+        User user = new User();
+        User result = null;
+        user.setEmail(email);
+        user.setPassword(password);
+        LoginTask loginTask = new LoginTask();
+        loginTask.execute(user);
+        try {
+            result =  loginTask.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    class LoginTask extends AsyncTask<User,Void,User>{
+
+
+        @Override
+        protected User doInBackground(User... users) {
+            User result = null;
+            final Call<User> call = aqService.loginUser(users[0]);
+            try {
+                Response<User> response = call.execute();
+                result =  response.body();
+                if(response.isSuccessful())
+                System.out.println(result.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
     }
 }

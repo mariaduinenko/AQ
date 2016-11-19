@@ -12,12 +12,11 @@ import retrofit2.http.POST;
  * Created by Valentin on 07.11.2016.
  */
 public interface AQService {
-    @GET("/rest/login")
-    Call<User> getRegisteredUser(@Field("email") String email);
-
     @POST("/rest/register")
     Call<User> registerUser(@Body User user);
 
+    @POST("/rest/profile")
+    Call<User> loginUser(@Body User user);
 
 
 }

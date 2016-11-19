@@ -87,4 +87,44 @@ public class QuestionService {
         return result;
     }
 
+    public Integer getQuestionsCount(Long id) {
+        Call<Integer> call = aqService.getQuestionsCount(id);
+
+        Integer result = 0;
+
+        Response<Integer> response = null;
+
+        try {
+            response = call.execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            result = response.body();
+        } catch (NullPointerException e) {
+            result = 0;
+        }
+
+        return result;
+    }
+
+    public Question1 getQuestionById(Long id) {
+        Call<Question1> call = aqService.getQuestionById(id);
+
+        Question1 result = null;
+
+        Response<Question1> response = null;
+
+        try {
+            response = call.execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        result = response.body();
+
+        return result;
+    }
+
 }

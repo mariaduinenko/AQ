@@ -2,7 +2,10 @@
 package com.cococompany.android.aq.models;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -11,33 +14,50 @@ public class User1 {
     @SerializedName("creationTime")
     @Expose
     private String creationTime;
+
     @SerializedName("active")
     @Expose
     private Boolean active;
+
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private Long id;
+
     @SerializedName("email")
     @Expose
     private String email;
+
     @SerializedName("password")
     @Expose
     private String password;
+
     @SerializedName("nickname")
     @Expose
     private String nickname;
+
     @SerializedName("firstName")
     @Expose
     private String firstName;
+
     @SerializedName("lastName")
     @Expose
     private String lastName;
+
     @SerializedName("middleName")
     @Expose
     private String middleName;
+
+    @SerializedName("avatar")
+    @Expose
+    private String avatar;
+
     @SerializedName("roles")
     @Expose
-    private List<Role> roles = new ArrayList<Role>();
+    private Set<Role> roles = new HashSet<Role>();
+
+    @SerializedName("categories")
+    @Expose
+    private Set<Category> categories = new HashSet<Category>();
 
     /**
      * 
@@ -80,7 +100,7 @@ public class User1 {
      * @return
      *     The id
      */
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
@@ -89,7 +109,7 @@ public class User1 {
      * @param id
      *     The id
      */
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -134,7 +154,7 @@ public class User1 {
      * @return
      *     The roles
      */
-    public List<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
@@ -143,8 +163,24 @@ public class User1 {
      * @param roles
      *     The roles
      */
-    public void setRoles(List<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public Set<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Set<Category> categories) {
+        this.categories = categories;
     }
 
     public String getNickname() {

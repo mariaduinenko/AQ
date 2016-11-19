@@ -11,21 +11,30 @@ public class Question1 {
     @SerializedName("creationTime")
     @Expose
     private String creationTime;
+
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private Long id;
+
     @SerializedName("title")
     @Expose
     private String title;
+
     @SerializedName("comment")
     @Expose
     private String comment;
+
     @SerializedName("user")
     @Expose
     private User1 user;
+
     @SerializedName("answers")
     @Expose
-    private List<Object> answers = new ArrayList<Object>();
+    private List<Answer> answers = new ArrayList<Answer>();
+
+    @SerializedName("likes")
+    @Expose
+    private List<Like> likes = new ArrayList<>();
 
     /**
      * 
@@ -50,7 +59,7 @@ public class Question1 {
      * @return
      *     The id
      */
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
@@ -59,7 +68,7 @@ public class Question1 {
      * @param id
      *     The id
      */
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -122,7 +131,7 @@ public class Question1 {
      * @return
      *     The answers
      */
-    public List<Object> getAnswers() {
+    public List<Answer> getAnswers() {
         return answers;
     }
 
@@ -131,8 +140,16 @@ public class Question1 {
      * @param answers
      *     The answers
      */
-    public void setAnswers(List<Object> answers) {
+    public void setAnswers(List<Answer> answers) {
         this.answers = answers;
+    }
+
+    public List<Like> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(List<Like> likes) {
+        this.likes = likes;
     }
 
     @Override

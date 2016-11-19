@@ -14,6 +14,7 @@ import com.cococompany.android.aq.QuestionActivity;
 import com.cococompany.android.aq.R;
 import com.cococompany.android.aq.models.Question;
 import com.cococompany.android.aq.models.Question1;
+import com.cococompany.android.aq.services.QuestionService;
 
 import java.util.ArrayList;
 
@@ -40,18 +41,22 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.QuestionHolder
 
     @Override
     public void onBindViewHolder(QuestionHolder holder, int i) {
-        Question1 question = questions.get(i);
+        final Question1 question = questions.get(i);
 
         ((TextView) holder.itemView.findViewById(R.id.question_title)).setText(question.getTitle());
-        ((TextView) holder.itemView.findViewById(R.id.question_owner)).setText((question.getUser().getNickname()==null?question.getUser().getFirstName():question.getUser().getNickname()));
+        ((TextView) holder.itemView.findViewById(R.id.question_owner)).setText((question.getUser().getNickname()==null?question.getUser().getEmail():question.getUser().getNickname()));
         ((TextView) holder.itemView.findViewById(R.id.question_date)).setText(question.getCreationTime());
+        ((TextView) holder.itemView.findViewById(R.id.count_likes)).setText(String.valueOf(question.getLikes().size()));
+        ((TextView) holder.itemView.findViewById(R.id.comment_count)).setText(String.valueOf(question.getAnswers().size()));
 
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(activity, QuestionActivity.class);
-                activity.startActivity(intent);
+//                Intent intent = new Intent(activity, QuestionActivity.class);
+//                activity.startActivity(intent);
+
+                QuestionActivity.showQuestion(activity, QuestionActivity.class, question.getId(), view);
             }
         });
     }

@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                     User user = null;
                     user = registrationService.login(email_edit.getText().toString(),password_edit.getText().toString());
 
-                    if(user!=null){
+                    if(user != null){
 
                         System.out.println("User log in preformed successfully!");
                         LoginPreferences preferences = new LoginPreferences(MainActivity.this);

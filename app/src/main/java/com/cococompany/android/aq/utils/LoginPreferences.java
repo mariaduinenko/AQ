@@ -61,66 +61,74 @@ public class LoginPreferences {
     }
 
     public void setUserEmail(String email) {
-        sharedPreferences.edit().putString(USER_EMAIL, email);
+        sharedPreferences.edit().putString(USER_EMAIL, email).commit();;
     }
 
     public String getUserEmail() {
-        return sharedPreferences.getAll().get(USER_EMAIL).toString();
+        Object email = sharedPreferences.getAll().get(USER_EMAIL);
+        return (email != null)? email.toString() : "";
     }
 
     public void setUserFirstname(String firstname) {
-        sharedPreferences.edit().putString(USER_FIRSTNAME, firstname);
+        sharedPreferences.edit().putString(USER_FIRSTNAME, firstname).commit();;
     }
 
     public String getUserFirstname() {
-        return sharedPreferences.getAll().get(USER_FIRSTNAME).toString();
+        Object firstname = sharedPreferences.getAll().get(USER_FIRSTNAME);
+        return (firstname != null)? firstname.toString() : "";
     }
 
     public void setUserLastname(String lastname) {
-        sharedPreferences.edit().putString(USER_LASTNAME, lastname);
+        sharedPreferences.edit().putString(USER_LASTNAME, lastname).commit();;
     }
 
     public String getUserLastname() {
-        return sharedPreferences.getAll().get(USER_LASTNAME).toString();
+        Object lastname = sharedPreferences.getAll().get(USER_LASTNAME);
+        return (lastname != null)? lastname.toString() : "";
     }
 
     public void setUserMiddlename(String middlename) {
-        sharedPreferences.edit().putString(USER_MIDDLENAME, middlename);
+        sharedPreferences.edit().putString(USER_MIDDLENAME, middlename).commit();;
     }
 
     public String getUserMiddlename() {
-        return sharedPreferences.getAll().get(USER_MIDDLENAME).toString();
+        Object middlename = sharedPreferences.getAll().get(USER_MIDDLENAME);
+        return (middlename != null)? middlename.toString() : "";
     }
 
     public void setUserNickname(String nickname) {
-        sharedPreferences.edit().putString(USER_NICKNAME, nickname);
+        sharedPreferences.edit().putString(USER_NICKNAME, nickname).commit();;
     }
 
     public String getUserNickname() {
-        return sharedPreferences.getAll().get(USER_NICKNAME).toString();
+        Object nickname = sharedPreferences.getAll().get(USER_NICKNAME);
+        return (nickname != null)? nickname.toString() : "";
     }
 
     public void setUserAvatar(String avatar) {
-        sharedPreferences.edit().putString(USER_AVATAR, avatar);
+        sharedPreferences.edit().putString(USER_AVATAR, avatar).commit();;
     }
 
     public String getUserAvatar() {
-        return sharedPreferences.getAll().get(USER_AVATAR).toString();
+        Object avatar = sharedPreferences.getAll().get(USER_AVATAR);
+        return (avatar != null)? avatar.toString() : "";
     }
 
     public void setUserBirtdate(String birtdate) {
-        sharedPreferences.edit().putString(USER_BIRTHDATE, birtdate);
+        sharedPreferences.edit().putString(USER_BIRTHDATE, birtdate).commit();;
     }
 
     public String getUserBirthdate() {
-        return sharedPreferences.getAll().get(USER_BIRTHDATE).toString();
+        Object birthdate = sharedPreferences.getAll().get(USER_BIRTHDATE);
+        return (birthdate != null)? birthdate.toString() : "";
     }
 
     public void setUserCategories(Set<String> categories) {
-        sharedPreferences.edit().putStringSet(USER_CATEGORIES, categories);
+        sharedPreferences.edit().putStringSet(USER_CATEGORIES, categories).commit();;
     }
 
     public Set<String> getUserCategories() {
-        return new HashSet<>(Arrays.asList(sharedPreferences.getAll().get(USER_CATEGORIES).toString()));
+        Object categories = sharedPreferences.getAll().get(USER_CATEGORIES);
+        return (categories != null)? new HashSet<>(Arrays.asList(categories.toString())) : new HashSet<String>();
     }
 }

@@ -132,7 +132,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     System.out.println(newUser.toString());
                     registrationService.register(newUser);
                     LoginPreferences loginPreferences = new LoginPreferences(RegistrationActivity.this);
-                    loginPreferences.setUserId(newUser.getId().toString());
+                    loginPreferences.setUserId(newUser.getId());
                     Intent intent=  new Intent(RegistrationActivity.this, ContentActivity.class);
                     startActivity(intent);
                 }

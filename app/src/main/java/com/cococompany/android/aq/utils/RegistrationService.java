@@ -4,11 +4,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.cococompany.android.aq.R;
-import com.cococompany.android.aq.models.Question;
 import com.cococompany.android.aq.models.User;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import retrofit2.Call;
@@ -20,9 +18,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by Valentin on 19.11.2016.
  */
 
-public class RegistrationService extends AbsrtactService{
-    /*private Retrofit retrofit;
+public class RegistrationService {
+    private Retrofit retrofit;
     private AQService aqService;
+
     public RegistrationService(Context context){
 
         retrofit = new Retrofit.Builder()
@@ -31,35 +30,47 @@ public class RegistrationService extends AbsrtactService{
                 .build();
 
         aqService = retrofit.create(AQService.class);
-    }*/
-    public RegistrationService(Context context){
-        super(context);
     }
 
-    public void register(final User newUser){
+    public User register(final User newUser){
 
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Call<User> call  = getAqService().registerUser(newUser);
-                Response<User> response = null;
-                try {
-                    response = call.execute();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                System.out.println(response.isSuccessful());
-                if(!response.isSuccessful()){
-                try {
-                    System.out.println(response.code()+response.errorBody().string());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                }
-            }
-        });
-        thread.start();
+        User result = null;
 
+//        Thread thread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                Call<User> call  = aqService.registerUser(newUser);
+//                Response<User> response = null;
+//                try {
+//                    response = call.execute();
+//
+//                    resultUser = response.body();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                System.out.println(response.isSuccessful());
+//                if(!response.isSuccessful()){
+//                try {
+//                    System.out.println(response.code()+response.errorBody().string());
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                }
+//            }
+//        });
+//        thread.start();
+
+        RegisterTask registerTask = new RegisterTask();
+        registerTask.execute(newUser);
+        try {
+            result =  registerTask.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return  result;
     }
 
     public User login(String email, String password){
@@ -80,19 +91,37 @@ public class RegistrationService extends AbsrtactService{
         return result;
     }
 
-
     class LoginTask extends AsyncTask<User,Void,User>{
 
 
         @Override
         protected User doInBackground(User... users) {
             User result = null;
-            final Call<User> call = getAqService().loginUser(users[0]);
+            final Call<User> call = aqService.loginUser(users[0]);
             try {
                 Response<User> response = call.execute();
                 result =  response.body();
                 if(response.isSuccessful())
-                System.out.println(result.toString());
+                    System.out.println("Result of user retrieving is successfull: "+result.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+    }
+
+    class RegisterTask extends AsyncTask<User,Void,User>{
+
+
+        @Override
+        protected User doInBackground(User... users) {
+            User result = null;
+            final Call<User> call = aqService.registerUser(users[0]);
+            try {
+                Response<User> response = call.execute();
+                result =  response.body();
+                if(response.isSuccessful())
+                    System.out.println("Result of user registration is successfull: "+result.toString());
             } catch (IOException e) {
                 e.printStackTrace();
             }

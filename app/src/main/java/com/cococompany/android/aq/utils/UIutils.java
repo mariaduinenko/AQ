@@ -8,6 +8,7 @@ import android.support.annotation.StringDef;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Patterns;
 import android.view.Menu;
 import android.view.View;
 
@@ -49,8 +50,8 @@ public class UIutils {
     }
 
     public  static boolean isValidEmail(String email){
-        Pattern p = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
-        Matcher m = p.matcher(email);
+        Pattern pattern = Patterns.EMAIL_ADDRESS;
+        Matcher m = pattern.matcher(email);
         return m.matches();
     }
 

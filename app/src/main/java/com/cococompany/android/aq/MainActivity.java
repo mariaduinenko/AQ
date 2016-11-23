@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.cococompany.android.aq.models.Category;
 import com.cococompany.android.aq.models.User;
 import com.cococompany.android.aq.utils.AQService;
 import com.cococompany.android.aq.utils.LoginPreferences;
@@ -27,7 +28,9 @@ import com.cococompany.android.aq.utils.RegistrationService;
 import com.cococompany.android.aq.utils.UIutils;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -88,11 +91,27 @@ public class MainActivity extends AppCompatActivity {
 
                     if(user!=null){
                         Intent intent = new Intent(MainActivity.this, ContentActivity.class);
-                        LoginPreferences loginPreferences = new LoginPreferences(MainActivity.this);
-                        loginPreferences.setUserId(user.getId().toString());
-                        /*if (remember_user_checkBox.isChecked())
-                        loginPreferences.setUserPassword(password_edit.getText().toString());*/
+                        LoginPreferences preferences = new LoginPreferences(MainActivity.this);
+                        preferences.setUserId(user.getId());
+                        preferences.setUserPassword(password_edit.getText().toString());
+                        preferences.setUserAvatar(user.getAvatar());
+                        preferences.setUserBirtdate(user.getBirthdate());
+                        preferences.setUserEmail(user.getEmail());
+                        preferences.setUserFirstname(user.getFirstName());
+                        preferences.setUserLastname(user.getLastName());
+                        preferences.setUserMiddlename(user.getMiddleName());
+                        preferences.setUserNickname(user.getNickname());
+
+                        Set<String> categories = new HashSet<String>();
+                        for (Category category: user.getCategories()) {
+                            categories.add(category.getName());
+                        }
+                        preferences.setUserCategories(categories);
+
+                        System.out.println("Preferences successfully saved: id="+preferences.getUserId()+"; pass="+preferences.getUserPassword() + "; email="+preferences.getUserEmail() + "; bdate="+preferences.getUserBirthdate() + "; fname="+preferences.getUserFirstname() + "; lname="+preferences.getUserLastname() + "; mname="+preferences.getUserMiddlename() + "; nick="+preferences.getUserNickname() + "; avatar="+preferences.getUserAvatar() + "; categories="+preferences.getUserCategories());
                         startActivity(intent);
+
+
                     }
                     else{
                         Toast.makeText(MainActivity.this,"User doesn't exist",Toast.LENGTH_SHORT).show();

@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.cococompany.android.aq.R;
 import com.cococompany.android.aq.adapters.FeedAdapter;
 import com.cococompany.android.aq.models.Question;
+import com.cococompany.android.aq.utils.QuestionService;
 
 import java.util.ArrayList;
 
@@ -29,6 +30,7 @@ public class FeedFragment extends Fragment {
     private RecyclerView feedRecyclerView;
     private FeedAdapter feedAdapter;
     private ArrayList<Question> questions;
+    private QuestionService questionService;
     //private OnFragmentInteractionListener mListener;
 
     public FeedFragment() {
@@ -67,12 +69,19 @@ public class FeedFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v=   inflater.inflate(R.layout.fragment_feed, container, false);
+        questionService =  new QuestionService(getContext());
         feedRecyclerView = (RecyclerView) v.findViewById(R.id.feed);
-        questions = new ArrayList<Question>();
-        feedAdapter = new FeedAdapter(null,getActivity());
+        questions = questionService.getQuestions();
+        feedAdapter = new FeedAdapter(questions,getActivity());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         feedRecyclerView.setAdapter(feedAdapter);
         feedRecyclerView.setLayoutManager(linearLayoutManager);
+        /*feedRecyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View view, int i, int i1, int i2, int i3) {
+
+            }
+        });*/
         return v;
 
     }

@@ -4,9 +4,11 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.cococompany.android.aq.R;
+import com.cococompany.android.aq.models.Question;
 import com.cococompany.android.aq.models.User;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import retrofit2.Call;
@@ -18,8 +20,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by Valentin on 19.11.2016.
  */
 
-public class RegistrationService {
-    private Retrofit retrofit;
+public class RegistrationService extends AbsrtactService{
+    /*private Retrofit retrofit;
     private AQService aqService;
     public RegistrationService(Context context){
 
@@ -29,6 +31,9 @@ public class RegistrationService {
                 .build();
 
         aqService = retrofit.create(AQService.class);
+    }*/
+    public RegistrationService(Context context){
+        super(context);
     }
 
     public void register(final User newUser){
@@ -36,7 +41,7 @@ public class RegistrationService {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                Call<User> call  = aqService.registerUser(newUser);
+                Call<User> call  = getAqService().registerUser(newUser);
                 Response<User> response = null;
                 try {
                     response = call.execute();
@@ -75,13 +80,14 @@ public class RegistrationService {
         return result;
     }
 
+
     class LoginTask extends AsyncTask<User,Void,User>{
 
 
         @Override
         protected User doInBackground(User... users) {
             User result = null;
-            final Call<User> call = aqService.loginUser(users[0]);
+            final Call<User> call = getAqService().loginUser(users[0]);
             try {
                 Response<User> response = call.execute();
                 result =  response.body();

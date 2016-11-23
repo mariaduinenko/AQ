@@ -14,13 +14,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.cococompany.android.aq.models.Category;
 import com.cococompany.android.aq.models.User;
 import com.cococompany.android.aq.utils.AQService;
+import com.cococompany.android.aq.utils.LoginPreferences;
 import com.cococompany.android.aq.utils.RegistrationService;
 import com.cococompany.android.aq.utils.UIutils;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.HashSet;
+import java.util.Set;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -129,7 +133,20 @@ public class RegistrationActivity extends AppCompatActivity {
                     newUser.setBirthdate(currentDateandTime);
                     newUser.setAvatar("https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQPJM4YvjzSCCDoQdLrpE1OP4CjT6kr8P-HMy8FfTjfhMgLpjPE03WXtw");
                     System.out.println(newUser.toString());
-                    registrationService.register(newUser);
+                    User registeredUser = registrationService.register(newUser);
+
+                    //save preferences
+                    LoginPreferences preferences = new LoginPreferences(RegistrationActivity.this);
+                    preferences.setUserId(registeredUser.getId());
+                    preferences.setUserPassword(password_et.getText().toString());
+                    preferences.setUserEmail(newUser.getEmail());
+                    preferences.setUserFirstname(newUser.getFirstName());
+                    preferences.setUserLastname(newUser.getLastName());
+                    preferences.setUserMiddlename(newUser.getMiddleName());
+                    preferences.setUserNickname(newUser.getNickname());
+
+                    System.out.println("Preferences successfully saved: id="+preferences.getUserId()+"; pass="+preferences.getUserPassword() + "; email="+preferences.getUserEmail() + "; fname="+preferences.getUserFirstname() + "; lname="+preferences.getUserLastname() + "; mname="+preferences.getUserMiddlename() + "; nick="+preferences.getUserNickname());
+
                     //Intent intent=  new Intent(RegistrationActivity.this, ContentActivity.class);
                     //startActivity(intent);
                 }

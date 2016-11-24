@@ -143,7 +143,7 @@ public class ProfileFragment extends Fragment {
             System.out.println("Index of universities = "+universityIndex);
             spUniversity.setSelection(universityIndex);
 
-            configureFacultiesData((universityIndex > 0) ? universitiesData.get(universityIndex).getId() : -1);
+            configureFacultiesData(view, (universityIndex > 0) ? universitiesData.get(universityIndex).getId() : -1);
 
             if (university.getFaculties() != null && university.getFaculties().size() > 0) {
                 Faculty faculty = university.getFaculties().get(0);
@@ -161,7 +161,7 @@ public class ProfileFragment extends Fragment {
             }
         }else {
             spUniversity.setSelection(0);
-            configureFacultiesData(-1L);
+            configureFacultiesData(view, -1L);
         }
 
         etNickname.addTextChangedListener(new NicknameTextChangedListener());
@@ -204,7 +204,7 @@ public class ProfileFragment extends Fragment {
         facultiesData.add(null);
     }
 
-    private void configureFacultiesData(Long universityId) {
+    private void configureFacultiesData(View view, Long universityId) {
         if (universityId == -1) {
             facultiesData = new ArrayList<>();
             facultiesData.add(null);
@@ -216,7 +216,9 @@ public class ProfileFragment extends Fragment {
             if (faculties != null && faculties.size() > 0) {
                 facultiesData.addAll(faculties);
 
-                spFaculty = (Spinner) getView().findViewById(R.id.faculty_sp);
+                if (spFaculty == null)
+                    spFaculty = (Spinner) view.findViewById(R.id.faculty_sp);
+
                 facultyAdapter = new CustomFacultySpinnerAdapter(getContext(), R.layout.spinner_faculties_rows, facultiesData);
                 spFaculty.setAdapter(facultyAdapter);
             }
@@ -260,9 +262,9 @@ public class ProfileFragment extends Fragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 System.out.println("Selected: i="+i+" l="+l);
                 if (i == 0)
-                    configureFacultiesData(-1L);
+                    configureFacultiesData(view, -1L);
                 else
-                    configureFacultiesData(universitiesData.get(i).getId());
+                    configureFacultiesData(view, universitiesData.get(i).getId());
             }
 
             @Override

@@ -13,37 +13,42 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
         android:paddingLeft="25dp">
-    <com.joooonho.SelectableRoundedImageView
-        android:layout_width="74dp"
-        android:layout_height="74dp"
-        app:sriv_left_bottom_corner_radius="37dp"
-        app:sriv_left_top_corner_radius="37dp"
-        app:sriv_right_bottom_corner_radius="37dp"
-        app:sriv_right_top_corner_radius="37dp"
-        app:sriv_border_width="1dp"
-        app:sriv_border_color="@color/image_border_color"
-        android:src="@drawable/test_face"/>
+
+        <com.joooonho.SelectableRoundedImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:sriv_left_bottom_corner_radius="37dp"
+            app:sriv_left_top_corner_radius="37dp"
+            app:sriv_right_bottom_corner_radius="37dp"
+            app:sriv_right_top_corner_radius="37dp"
+            app:sriv_border_width="1dp"
+            app:sriv_border_color="@color/image_border_color"
+            android:src="@drawable/test_face"
+            android:id="@+id/selectableRoundedImageView" />
+
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="75dp"
+            android:layout_height="100dp"
             android:orientation="vertical"
             android:layout_marginLeft="30dp"
             android:gravity="center_vertical"
             >
-            <TextView
+            <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="22sp"
+                android:textSize="16sp"
                 android:id="@+id/name"
                 android:text="Albert Nickson"
                 android:textStyle="bold"/>
 
-            <TextView
+            <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:paddingTop="30dp"
+                android:textSize="14sp"
                 android:id="@+id/nickname"
                 android:text="@string/test_nickname"
+                android:hint="@string/enter_nickname"
                 android:textStyle="bold"/>
         </LinearLayout>
 
@@ -54,21 +59,61 @@
         android:layout_height="wrap_content"
         android:paddingLeft="50dp"
         android:paddingTop="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/email"
+            android:layout_weight="3"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:id="@+id/textView" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="email@mail.ru"
+            android:textSize="14sp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:id="@+id/email"/>
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="50dp"
+        android:paddingTop="20dp">
+
         <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
             android:text="@string/university"
             android:layout_weight="3"
-            android:textSize="16sp"
-            android:textStyle="bold"/>
-        <TextView
-            android:layout_width="match_parent"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:id="@+id/textView2" />
+
+        <Spinner
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="KPI"
-            android:textSize="16sp"
             android:layout_marginLeft="30dp"
-            android:id="@+id/university_tv"/>
+            android:layout_marginRight="30dp"
+            android:id="@+id/university_sp"
+            />
+
+        <!--<EditText-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:text="KPI"-->
+            <!--android:textSize="14sp"-->
+            <!--android:layout_marginLeft="30dp"-->
+            <!--android:layout_marginRight="30dp"-->
+            <!--android:id="@+id/university_et"/>-->
 
     </TableRow>
 
@@ -82,16 +127,27 @@
             android:layout_height="wrap_content"
             android:text="@string/faculty"
             android:layout_weight="3"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textStyle="bold"/>
-        <TextView
-            android:layout_width="match_parent"
+
+        <Spinner
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="FICT"
             android:layout_weight="1"
-            android:textSize="16sp"
             android:layout_marginLeft="30dp"
-            android:id="@+id/faculty_tv"/>
+            android:layout_marginRight="30dp"
+            android:id="@+id/faculty_sp"
+            />
+
+        <!--<EditText-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="FICT"-->
+            <!--android:layout_weight="1"-->
+            <!--android:textSize="14sp"-->
+            <!--android:layout_marginLeft="30dp"-->
+            <!--android:layout_marginRight="30dp"-->
+            <!--android:id="@+id/faculty_et"/>-->
 
     </TableRow>
 
@@ -105,16 +161,18 @@
             android:layout_height="wrap_content"
             android:text="@string/speciality"
             android:layout_weight="3"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textStyle="bold"/>
-        <TextView
+
+        <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Computer Engineering"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:layout_weight="1"
             android:layout_marginLeft="30dp"
-            android:id="@+id/speciality_tv"/>
+            android:layout_marginRight="30dp"
+            android:id="@+id/speciality_et"/>
 
     </TableRow>
     <View
@@ -124,4 +182,20 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"/>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        android:paddingBottom="20dp">
+
+        <Button
+            android:text="@string/apply"
+            android:textColor="@color/text_white"
+            android:background="@color/green"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:id="@+id/btn_apply"/>
+
+    </TableRow>
 </LinearLayout>

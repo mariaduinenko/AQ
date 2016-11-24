@@ -1,7 +1,5 @@
 package com.cococompany.android.aq.fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -11,17 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cococompany.android.aq.R;
 import com.cococompany.android.aq.adapters.CustomFacultySpinnerAdapter;
 import com.cococompany.android.aq.adapters.CustomUniversitySpinnerAdapter;
-import com.cococompany.android.aq.models.Category;
 import com.cococompany.android.aq.models.Faculty;
 import com.cococompany.android.aq.models.Speciality;
 import com.cococompany.android.aq.models.University;
@@ -32,8 +27,6 @@ import com.cococompany.android.aq.utils.UniversityService;
 import com.cococompany.android.aq.utils.UserService;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 

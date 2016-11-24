@@ -15,17 +15,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.cococompany.android.aq.models.Category;
 import com.cococompany.android.aq.models.User;
 import com.cococompany.android.aq.utils.AQService;
+import com.cococompany.android.aq.utils.LoginPreferences;
 import com.cococompany.android.aq.utils.RegistrationService;
 import com.cococompany.android.aq.utils.UIutils;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private Button sign_in_button;
     private EditText email_edit;
     private EditText password_edit;
+    private CheckBox remember_user_checkBox;
     private HashMap<String, String> temp;
     private Retrofit retrofit;
     private User currentUser;
@@ -62,10 +68,11 @@ public class MainActivity extends AppCompatActivity {
         temp.put("user1@gmail.com","pass1");
         temp.put("user2@gmail.com","pass2");
         temp.put("user3@gmail.com","pass3");
+        remember_user_checkBox = (CheckBox) findViewById(R.id.remember_user);
         log_in_button = (Button) findViewById(R.id.log_in_button);
         sign_in_button =  (Button) findViewById(R.id.sign_in_button);
         email_edit= (EditText) findViewById(R.id.email_edit);
-        email_edit.setText("amyagkiy@icloud.com");
+        email_edit.setText("mail@mail.ru");
         password_edit = (EditText) findViewById(R.id.password_edit);
         sign_in_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,12 +90,28 @@ public class MainActivity extends AppCompatActivity {
                     user = registrationService.login(email_edit.getText().toString(),password_edit.getText().toString());
 
                     if(user!=null){
-                        /*if (temp.get(email_edit.getText().toString()).equals(password_edit.getText().toString())){
-                          Toast.makeText(MainActivity.this,"Login Completed",Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(MainActivity.this, ContentActivity.class);
+                        LoginPreferences preferences = new LoginPreferences(MainActivity.this);
+                        preferences.setUserId(user.getId());
+                        preferences.setUserPassword(password_edit.getText().toString());
+                        preferences.setUserAvatar(user.getAvatar());
+                        preferences.setUserBirtdate(user.getBirthdate());
+                        preferences.setUserEmail(user.getEmail());
+                        preferences.setUserFirstname(user.getFirstName());
+                        preferences.setUserLastname(user.getLastName());
+                        preferences.setUserMiddlename(user.getMiddleName());
+                        preferences.setUserNickname(user.getNickname());
+
+                        Set<String> categories = new HashSet<String>();
+                        for (Category category: user.getCategories()) {
+                            categories.add(category.getName());
                         }
-                        else{
-                          Toast.makeText(MainActivity.this,"Wrong Password",Toast.LENGTH_SHORT).show();
-                        }*/
+                        preferences.setUserCategories(categories);
+
+                        System.out.println("Preferences successfully saved: id="+preferences.getUserId()+"; pass="+preferences.getUserPassword() + "; email="+preferences.getUserEmail() + "; bdate="+preferences.getUserBirthdate() + "; fname="+preferences.getUserFirstname() + "; lname="+preferences.getUserLastname() + "; mname="+preferences.getUserMiddlename() + "; nick="+preferences.getUserNickname() + "; avatar="+preferences.getUserAvatar() + "; categories="+preferences.getUserCategories());
+                        startActivity(intent);
+
+
                     }
                     else{
                         Toast.makeText(MainActivity.this,"User doesn't exist",Toast.LENGTH_SHORT).show();

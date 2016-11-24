@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
 
 import com.cococompany.android.aq.QuestionActivity;
 import com.cococompany.android.aq.R;
@@ -38,11 +39,18 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.QuestionHolder
 
     @Override
     public void onBindViewHolder(QuestionHolder holder, final int position) {
+        ((TextView) holder.itemView.findViewById(R.id.question_owner)).setText(questions.get(position).getUser().getFirstName()+" "+questions.get(position).getUser().getLastName());
+        ((TextView) holder.itemView.findViewById(R.id.question_date)).setText(questions.get(position).getCreationTime());
+        ((TextView) holder.itemView.findViewById(R.id.question_title)).setText(questions.get(position).getTitle());
+        ((TextView) holder.itemView.findViewById(R.id.comment_count)).setText(Integer.toString(questions.get(position).getAnswers().size()));
+        ((TextView) holder.itemView.findViewById(R.id.count_likes)).setText(Integer.toString(questions.get(position).getLikes().size()));
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(activity, QuestionActivity.class);
-                    //intent.putExtra("question_id",questions.get(position).getId());
+
+                    intent.putExtra("question_id",questions.get(position).getId());
+                    System.out.println("position "+position+" id  "+questions.get(position).getId());
                     activity.startActivity(intent);
                 }
             });
@@ -50,7 +58,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.QuestionHolder
 
     @Override
     public int getItemCount() {
-        return 8;
+        return questions.size();
     }
 
     public static class QuestionHolder extends RecyclerView.ViewHolder{

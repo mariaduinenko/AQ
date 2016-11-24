@@ -1,16 +1,73 @@
 package com.cococompany.android.aq.models;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Valentin on 05.11.2016.
  */
 public class Question {
+
+    @SerializedName("creationTime")
+    @Expose
+    private String creationTime;
+
+    @SerializedName("id")
+    @Expose
+    private Long id;
+
+    @SerializedName("title")
+    @Expose
     private String title;
+
+    @SerializedName("comment")
+    @Expose
     private String comment;
-    private Date date;
-    private User owner;
-    private int id;
+
+    @SerializedName("user")
+    @Expose
+    private User user;
+
+    @SerializedName("answers")
+    @Expose
+    private List<Answer> answers = new ArrayList<Answer>();
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "creationTime='" + creationTime + '\'' +
+                ", id=" + id +
+                ", title='" + title + '\'' +
+                ", comment='" + comment + '\'' +
+                ", user=" + user +
+                ", answers=" + answers +
+                ", likes=" + likes +
+                '}';
+    }
+
+    @SerializedName("likes")
+    @Expose
+    private List<Like> likes = new ArrayList<>();
+
+    public String getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(String creationTime) {
+        this.creationTime = creationTime;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;
@@ -28,27 +85,27 @@ public class Question {
         this.comment = comment;
     }
 
-    public Date getDate() {
-        return date;
+    public User getUser() {
+        return user;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public User getOwner() {
-        return owner;
+    public List<Answer> getAnswers() {
+        return answers;
     }
 
-    public void setOwner(User owner) {
-        this.owner = owner;
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
     }
 
-    public int getId() {
-        return id;
+    public List<Like> getLikes() {
+        return likes;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setLikes(List<Like> likes) {
+        this.likes = likes;
     }
 }

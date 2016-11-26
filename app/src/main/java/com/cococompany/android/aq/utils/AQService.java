@@ -2,8 +2,10 @@ package com.cococompany.android.aq.utils;
 
 import com.cococompany.android.aq.models.Faculty;
 import com.cococompany.android.aq.models.Question;
+import com.cococompany.android.aq.models.Speciality;
 import com.cococompany.android.aq.models.University;
 import com.cococompany.android.aq.models.User;
+import com.cococompany.android.aq.models.UserUniversityInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,5 +52,23 @@ public interface AQService {
 
     @GET("/rest/faculties/universities/{id}")
     Call<List<Faculty>> getFacultiesByUniversityId(@Path("id") Long id);
+
+    //useruniversityinfos
+    @GET("/rest/useruniversityinfos")
+    Call<List<UserUniversityInfo>> getUserUniversityInfos();
+    @GET("/rest/useruniversityinfos/users/{userId}")
+    Call<List<UserUniversityInfo>> getUserUniversityInfosByUserId(@Path("userId") Long userId);
+    @PUT("/rest/useruniversityinfos/{id}")
+    Call<UserUniversityInfo> updateUui(@Path("id") Long id, @Body UserUniversityInfo uui);
+    @POST("/rest/useruniversityinfos")
+    Call<UserUniversityInfo> createUui(@Body UserUniversityInfo uui);
+
+    //specialities
+    @GET("/rest/specialities")
+    Call<List<Speciality>> getSpecialities();
+    @GET("/rest/specialities/universities/{universityId}")
+    Call<List<Speciality>> getSpecialitiesByUniversityId(@Path("universityId") Long universityId);
+    @GET("/rest/specialities/faculties/{id}")
+    Call<List<Speciality>> getSpecialitiesByFacultyId(@Path("id") Long id);
 
 }

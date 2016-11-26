@@ -23,11 +23,13 @@ import android.widget.Toast;
 import com.cococompany.android.aq.models.Category;
 import com.cococompany.android.aq.models.University;
 import com.cococompany.android.aq.models.User;
+import com.cococompany.android.aq.models.UserUniversityInfo;
 import com.cococompany.android.aq.utils.AQService;
 import com.cococompany.android.aq.utils.LoginPreferences;
 import com.cococompany.android.aq.utils.RegistrationService;
 import com.cococompany.android.aq.utils.UIutils;
 import com.cococompany.android.aq.utils.UniversityService;
+import com.cococompany.android.aq.utils.UserUniversityInfoService;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -53,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private User currentUser;
     private RegistrationService registrationService;
-    private UniversityService universityService;
+    private UserUniversityInfoService uuiService;
     private AQService aqService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,11 +67,12 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
 
-
+        //services initialization
         aqService = retrofit.create(AQService.class);
         registrationService = new RegistrationService(this);
-        universityService = new UniversityService(this);
-        temp=  new HashMap<String, String>();
+        uuiService = new UserUniversityInfoService(this);
+
+        temp = new HashMap<String, String>();
         temp.put("user1@gmail.com","pass1");
         temp.put("user2@gmail.com","pass2");
         temp.put("user3@gmail.com","pass3");
@@ -78,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         sign_in_button =  (Button) findViewById(R.id.sign_in_button);
         email_edit= (EditText) findViewById(R.id.email_edit);
         email_edit.setText("myagkiyalexandr@hotmail.com");
+//        email_edit.setText("myagkiyalexandr@hotmail.com");
         password_edit = (EditText) findViewById(R.id.password_edit);
         sign_in_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,12 +117,11 @@ public class MainActivity extends AppCompatActivity {
                         }
                         preferences.setUserCategories(categories);
 
-                        System.out.println("User id="+user.getId());
-                        List<University> universities = universityService.getUniversitiesByUserId(user.getId());
-                        preferences.setUserUniversities(universities);
+                        List<UserUniversityInfo> uuis = uuiService.getUserUniversityInfosByUserId(user.getId());
+                        preferences.setUserUniversityInfos(uuis);
 
                         System.out.println("Preferences successfully saved: id="+preferences.getUserId()+"; pass="+preferences.getUserPassword() + "; email="+preferences.getUserEmail() + "; bdate="+preferences.getUserBirthdate() + "; fname="+preferences.getUserFirstname() + "; lname="+preferences.getUserLastname() + "; mname="+preferences.getUserMiddlename() + "; nick="+preferences.getUserNickname() + "; avatar="+preferences.getUserAvatar() + "; categories="+preferences.getUserCategories());
-                        System.out.println("Also saved preference - univesity list=" + preferences.getUserUniversities());
+                        System.out.println("Also saved preference - uui list=" + preferences.getUserUniversityInfos());
                         startActivity(intent);
 
 

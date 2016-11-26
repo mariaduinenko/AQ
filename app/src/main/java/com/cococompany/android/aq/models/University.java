@@ -18,9 +18,6 @@ public class University {
     @SerializedName("name")
     @Expose
     private String name;
-    @SerializedName("faculties")
-    @Expose
-    private List<Faculty> faculties = new ArrayList<Faculty>();
 
     public University() {
     }
@@ -28,12 +25,6 @@ public class University {
     public University(Long id, String name) {
         this.id = id;
         this.name = name;
-    }
-
-    public University(Long id, String name, List<Faculty> faculties) {
-        this.id = id;
-        this.name = name;
-        this.faculties = faculties;
     }
 
     /**
@@ -70,24 +61,6 @@ public class University {
      */
     public void setName(String name) {
         this.name = name;
-    }
-
-    /**
-     *
-     * @return
-     * The faculties
-     */
-    public List<Faculty> getFaculties() {
-        return faculties;
-    }
-
-    /**
-     *
-     * @param faculties
-     * The faculties
-     */
-    public void setFaculties(List<Faculty> faculties) {
-        this.faculties = faculties;
     }
 
 }

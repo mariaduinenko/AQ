@@ -6,6 +6,7 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.cococompany.android.aq.models.University;
+import com.cococompany.android.aq.models.UserUniversityInfo;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -34,7 +35,7 @@ public class LoginPreferences {
     private final static String USER_AVATAR = "user_avatar";
     private final static String USER_BIRTHDATE = "user_birthdate";
     private final static String USER_CATEGORIES = "user_categories";
-    private final static String USER_UNIVERSITIES = "user_universities";
+    private final static String USER_UUIS = "user_uuis";
 
     public LoginPreferences(Context context){
         sharedPreferences = context.getSharedPreferences(LOGIN_PREFERENCES,Context.MODE_PRIVATE);
@@ -139,23 +140,23 @@ public class LoginPreferences {
         return (categories != null)? new HashSet<>(Arrays.asList(categories.toString())) : new HashSet<String>();
     }
 
-    public void setUserUniversities(List<University> universities) {
+    public void setUserUniversityInfos(List<UserUniversityInfo> uuis) {
         SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
         Gson gson = new Gson();
-        String json = gson.toJson(universities);
-        prefsEditor.putString(USER_UNIVERSITIES, json);
+        String json = gson.toJson(uuis);
+        prefsEditor.putString(USER_UUIS, json);
         prefsEditor.commit();
     }
 
-    public List<University> getUserUniversities() {
+    public List<UserUniversityInfo> getUserUniversityInfos() {
         Gson gson = new Gson();
-        String json = sharedPreferences.getString(USER_UNIVERSITIES, "");
+        String json = sharedPreferences.getString(USER_UUIS, "");
 //        List<University> universities = gson.fromJson(json, new TypeToken<List<University>>() {}.getType());
-        University[] universities = gson.fromJson(json, University[].class);
+        UserUniversityInfo[] uuis = gson.fromJson(json, UserUniversityInfo[].class);
 
-        List<University> us = new ArrayList<>();
-        if (universities != null)
-            us = Arrays.asList(universities);
+        List<UserUniversityInfo> us = new ArrayList<>();
+        if (uuis != null)
+            us = Arrays.asList(uuis);
 
         return us;
     }

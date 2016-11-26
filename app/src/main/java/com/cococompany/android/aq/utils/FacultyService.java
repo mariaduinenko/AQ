@@ -8,6 +8,7 @@ import com.cococompany.android.aq.models.Faculty;
 import com.cococompany.android.aq.models.University;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -48,6 +49,9 @@ public class FacultyService {
             e.printStackTrace();
         }
 
+        if (result == null)
+            result = new ArrayList<>();
+
         return  result;
     }
 
@@ -65,6 +69,9 @@ public class FacultyService {
             e.printStackTrace();
         }
 
+        if (result == null)
+            result = new ArrayList<>();
+
         return  result;
     }
 
@@ -81,6 +88,9 @@ public class FacultyService {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
+
+        if (result == null)
+            result = new ArrayList<>();
 
         return  result;
     }

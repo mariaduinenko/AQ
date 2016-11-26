@@ -21,12 +21,9 @@ public class Faculty {
     @SerializedName("name")
     @Expose
     private String name;
-//    @SerializedName("university")
-//    @Expose
-//    private University university;
-    @SerializedName("specialities")
+    @SerializedName("university")
     @Expose
-    private List<Speciality> specialities = new ArrayList<Speciality>();
+    private University university;
 
     public Faculty() {
     }
@@ -42,11 +39,11 @@ public class Faculty {
         this.name = name;
     }
 
-    public Faculty(Long id, String creationTime, String name, List<Speciality> specialities) {
+    public Faculty(Long id, String creationTime, String name, University university) {
         this.id = id;
         this.creationTime = creationTime;
         this.name = name;
-        this.specialities = specialities;
+        this.university = university;
     }
 
     /**
@@ -108,35 +105,17 @@ public class Faculty {
      * @return
      * The university
      */
-//    public University getUniversity() {
-//        return university;
-//    }
+    public University getUniversity() {
+        return university;
+    }
 
     /**
      *
      * @param university
      * The university
      */
-//    public void setUniversity(University university) {
-//        this.university = university;
-//    }
-
-    /**
-     *
-     * @return
-     * The specialities
-     */
-    public List<Speciality> getSpecialities() {
-        return specialities;
-    }
-
-    /**
-     *
-     * @param specialities
-     * The specialities
-     */
-    public void setSpecialities(List<Speciality> specialities) {
-        this.specialities = specialities;
+    public void setUniversity(University university) {
+        this.university = university;
     }
 
 }

@@ -21,6 +21,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class UserService {
+
     private Retrofit retrofit;
     private AQService aqService;
 

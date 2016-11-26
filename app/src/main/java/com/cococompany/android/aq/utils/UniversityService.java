@@ -49,6 +49,9 @@ public class UniversityService {
             e.printStackTrace();
         }
 
+        if (result == null)
+            result = new ArrayList<>();
+
         return  result;
     }
 
@@ -65,6 +68,9 @@ public class UniversityService {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
+
+        if (result == null)
+            result = new ArrayList<>();
 
         return  result;
     }

@@ -2,10 +2,12 @@ package com.cococompany.android.aq.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -16,15 +18,19 @@ import android.widget.Toast;
 
 import com.cococompany.android.aq.R;
 import com.cococompany.android.aq.adapters.CustomFacultySpinnerAdapter;
+import com.cococompany.android.aq.adapters.CustomSpecialitySpinnerAdapter;
 import com.cococompany.android.aq.adapters.CustomUniversitySpinnerAdapter;
+import com.cococompany.android.aq.adapters.CustomUuiSwipeAdapter;
 import com.cococompany.android.aq.models.Faculty;
 import com.cococompany.android.aq.models.Speciality;
 import com.cococompany.android.aq.models.University;
 import com.cococompany.android.aq.models.User;
+import com.cococompany.android.aq.models.UserUniversityInfo;
 import com.cococompany.android.aq.utils.FacultyService;
 import com.cococompany.android.aq.utils.LoginPreferences;
 import com.cococompany.android.aq.utils.UniversityService;
 import com.cococompany.android.aq.utils.UserService;
+import com.cococompany.android.aq.utils.UserUniversityInfoService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,12 +50,28 @@ public class ProfileFragment extends Fragment {
 
     private Spinner spUniversity = null;
     private Spinner spFaculty = null;
+    private Spinner spSpeciality = null;
 
-    private CustomUniversitySpinnerAdapter adapter;
+    private CustomUniversitySpinnerAdapter universityAdapter;
     private CustomFacultySpinnerAdapter facultyAdapter;
+    private CustomSpecialitySpinnerAdapter specialityAdapter;
 
     private List<University> universitiesData = null;
     private List<Faculty> facultiesData = null;
+    private List<Speciality> specialitiesData = null;
+    private List<UserUniversityInfo> uuiData = null;
+
+    private UserUniversityInfo[] userUniversityInfos = null;
+
+    private Long selectedUniversityId = -1L;
+    private Long selectedUuiId = -1L;
+
+    private ViewPager viewPager;
+    private CustomUuiSwipeAdapter uuiSwipeAdapter;
+
+    public static User user = null;
+
+    public static int pagePosition = 0;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -89,8 +111,25 @@ public class ProfileFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        configureUniversitiesData();
-        configureSpinner(view);
+        ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                pagePosition = position;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        };
+
+        viewPager = (ViewPager) view.findViewById(R.id.uui_view_pager);
+        viewPager.addOnPageChangeListener(onPageChangeListener);
 
         //receiving preferences
         preferences = new LoginPreferences(getContext());
@@ -108,8 +147,9 @@ public class ProfileFragment extends Fragment {
         EditText etName = (EditText) view.findViewById(R.id.name);
         EditText etNickname = (EditText) view.findViewById(R.id.nickname);
         EditText etEmail = (EditText) view.findViewById(R.id.email);
-        EditText etSpeciality = (EditText) view.findViewById(R.id.speciality_et);
         Button btnApply = (Button) view.findViewById(R.id.btn_apply);
+
+        user = new User(userId);
 
         String firstPart = "", secondPart = "", thirdPart = "";
         if (userLastname.length() > 1) {
@@ -126,40 +166,31 @@ public class ProfileFragment extends Fragment {
         etNickname.setText(userNickname);
         etEmail.setText(userEmail);
 
-        int universitiesCount = (preferences.getUserUniversities() != null)? preferences.getUserUniversities().size() : 0;
-        if (universitiesCount > 0) {
-            University university = preferences.getUserUniversities().get(0);
-            String name = university.getName();
+        int uuisCount = (preferences.getUserUniversityInfos() != null)? preferences.getUserUniversityInfos().size() : 0;
+        if (uuisCount > 0) {
+            List<UserUniversityInfo> uuiList = preferences.getUserUniversityInfos();
 
-            //university spinner configuration
-            int universityIndex = findUniversityIndex(name);
-            System.out.println("Index of universities = "+universityIndex);
-            spUniversity.setSelection(universityIndex);
+            userUniversityInfos = new UserUniversityInfo[uuiList.size()];
+            uuiList.toArray(userUniversityInfos);
 
-            configureFacultiesData(view, (universityIndex > 0) ? universitiesData.get(universityIndex).getId() : -1);
-
-            if (university.getFaculties() != null && university.getFaculties().size() > 0) {
-                Faculty faculty = university.getFaculties().get(0);
-                String facultyName = faculty.getName();
-
-                int facultyIndex = findFacultyIndex(facultyName);
-                configureFacultiesSpinner(view);
-                spFaculty.setSelection(facultyIndex);
-
-                if (faculty.getSpecialities() != null && faculty.getSpecialities().size() > 0) {
-                    Speciality speciality = faculty.getSpecialities().get(0);
-                    String specialityName = speciality.getName();
-                    etSpeciality.setText(specialityName);
-                }
-            }
+            uuiSwipeAdapter = new CustomUuiSwipeAdapter(getContext(), userUniversityInfos);
+            viewPager.setAdapter(uuiSwipeAdapter);
         }else {
-            spUniversity.setSelection(0);
-            configureFacultiesData(view, -1L);
+            userUniversityInfos = new UserUniversityInfo[1];
+            UserUniversityInfo uui = new UserUniversityInfo();
+            uui.setUser(new User(userId));
+            userUniversityInfos[0] = uui;
+
+            uuiSwipeAdapter = new CustomUuiSwipeAdapter(getContext(), userUniversityInfos);
+            viewPager.setAdapter(uuiSwipeAdapter);
         }
 
+        //listeners
         etNickname.addTextChangedListener(new NicknameTextChangedListener());
         etName.addTextChangedListener(new NameTextChangedListener());
         etEmail.addTextChangedListener(new EmailTextChangedListener());
+
+        //Saving user profile
         btnApply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -184,97 +215,6 @@ public class ProfileFragment extends Fragment {
 
         // Inflate the layout for this fragment
         return view;
-    }
-
-    private void configureUniversitiesData() {
-        UniversityService universityService = new UniversityService(getContext());
-        List<University> universities = universityService.getUniversities();
-        universitiesData = new ArrayList<>();
-        universitiesData.add(null);
-        universitiesData.addAll(universities);
-
-        facultiesData = new ArrayList<>();
-        facultiesData.add(null);
-    }
-
-    private void configureFacultiesData(View view, Long universityId) {
-        if (universityId == -1) {
-            facultiesData = new ArrayList<>();
-            facultiesData.add(null);
-        }else {
-            FacultyService facultyService = new FacultyService(getContext());
-            List<Faculty> faculties = facultyService.getFacultiesByUniversityId(universityId);
-            facultiesData = new ArrayList<>();
-            facultiesData.add(null);
-            if (faculties != null && faculties.size() > 0) {
-                facultiesData.addAll(faculties);
-
-                if (spFaculty == null)
-                    spFaculty = (Spinner) view.findViewById(R.id.faculty_sp);
-
-                facultyAdapter = new CustomFacultySpinnerAdapter(getContext(), R.layout.spinner_faculties_rows, facultiesData);
-                spFaculty.setAdapter(facultyAdapter);
-            }
-        }
-    }
-
-    private int findUniversityIndex(String name) {
-        University found = null;
-        for (University u : universitiesData) {
-            if (u != null && u.getName().equals(name)) {
-                found = u;
-                break;
-            }
-        }
-        if (found != null)
-            return universitiesData.indexOf(found);
-        return 0;
-    }
-
-    private int findFacultyIndex(String name) {
-        Faculty found = null;
-        for (Faculty f : facultiesData) {
-            if (f != null && f.getName().equals(name)) {
-                found = f;
-                break;
-            }
-        }
-        if (found != null)
-            return facultiesData.indexOf(found);
-        return 0;
-    }
-
-    private void configureSpinner(View view) {
-        spUniversity = (Spinner) view.findViewById(R.id.university_sp);
-
-        adapter = new CustomUniversitySpinnerAdapter(getContext(), R.layout.spinner_universities_rows, universitiesData);
-
-        spUniversity.setAdapter(adapter);
-        spUniversity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                System.out.println("Selected: i="+i+" l="+l);
-                if (i == 0)
-                    configureFacultiesData(view, -1L);
-                else
-                    configureFacultiesData(view, universitiesData.get(i).getId());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-    }
-
-    private void configureFacultiesSpinner(View view) {
-        spFaculty = (Spinner) view.findViewById(R.id.faculty_sp);
-
-        facultyAdapter = new CustomFacultySpinnerAdapter(getContext(), R.layout.spinner_faculties_rows, facultiesData);
-
-        spFaculty.setAdapter(facultyAdapter);
-
     }
 
     public class NicknameTextChangedListener implements TextWatcher {

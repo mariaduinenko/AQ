@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.cococompany.android.aq.R;
 import com.cococompany.android.aq.models.Faculty;
-import com.cococompany.android.aq.models.University;
+import com.cococompany.android.aq.models.Speciality;
 
 import java.util.List;
 
@@ -17,13 +17,13 @@ import java.util.List;
  * Created by alexandr on 24.11.16.
  */
 
-public class CustomFacultySpinnerAdapter extends ArrayAdapter<Faculty> {
+public class CustomSpecialitySpinnerAdapter extends ArrayAdapter<Speciality> {
 
-    private List<Faculty> itemList;
+    private List<Speciality> itemList;
 
     LayoutInflater inflator;
 
-    public CustomFacultySpinnerAdapter(Context context, int textViewResourceId, List<Faculty> itemList)
+    public CustomSpecialitySpinnerAdapter(Context context, int textViewResourceId, List<Speciality> itemList)
     {
         super(context, textViewResourceId, itemList);
 
@@ -43,16 +43,16 @@ public class CustomFacultySpinnerAdapter extends ArrayAdapter<Faculty> {
     }
 
     public View getCustomView(int position, View convertView, ViewGroup parent) {
-        View row = inflator.inflate(R.layout.spinner_faculties_rows, parent, false);
+        View row = inflator.inflate(R.layout.spinner_specialities_rows, parent, false);
 
-        Faculty fac = itemList.get(position);
-        TextView label = (TextView) row.findViewById(R.id.tvSpinnerFacultyItem);
+        Speciality speciality = itemList.get(position);
+        TextView label = (TextView) row.findViewById(R.id.tvSpinnerSpecialityItem);
 
         if (position == 0) {
-            label.setText("Please select faculty");
+            label.setText("Please select speciality");
         }
         else {
-            label.setText(fac.getName());
+            label.setText(speciality.getName());
         }
 
         return row;

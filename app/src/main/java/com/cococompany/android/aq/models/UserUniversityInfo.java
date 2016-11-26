@@ -21,6 +21,18 @@ public class UserUniversityInfo {
     @SerializedName("graduationDate")
     @Expose
     private Object graduationDate;
+    @SerializedName("speciality")
+    @Expose
+    private Speciality speciality;
+    @SerializedName("faculty")
+    @Expose
+    private Faculty faculty;
+    @SerializedName("university")
+    @Expose
+    private University university;
+    @SerializedName("user")
+    @Expose
+    private User user;
 
     public UserUniversityInfo() {
     }
@@ -29,6 +41,36 @@ public class UserUniversityInfo {
         this.id = id;
         this.entranceDate = entranceDate;
         this.graduationDate = graduationDate;
+    }
+
+    public UserUniversityInfo(Long id, Object entranceDate, Object graduationDate, Speciality speciality, Faculty faculty, University university) {
+        this.id = id;
+        this.entranceDate = entranceDate;
+        this.graduationDate = graduationDate;
+        this.speciality = speciality;
+        this.faculty = faculty;
+        this.university = university;
+    }
+
+    public UserUniversityInfo(Long id, Object entranceDate, Object graduationDate, Speciality speciality) {
+        this.id = id;
+        this.entranceDate = entranceDate;
+        this.graduationDate = graduationDate;
+        this.speciality = speciality;
+    }
+
+    public UserUniversityInfo(Long id, Object entranceDate, Faculty faculty, Object graduationDate) {
+        this.id = id;
+        this.entranceDate = entranceDate;
+        this.faculty = faculty;
+        this.graduationDate = graduationDate;
+    }
+
+    public UserUniversityInfo(Long id, Object entranceDate, Object graduationDate, University university) {
+        this.id = id;
+        this.entranceDate = entranceDate;
+        this.graduationDate = graduationDate;
+        this.university = university;
     }
 
     public UserUniversityInfo(Long id) {
@@ -89,4 +131,35 @@ public class UserUniversityInfo {
         this.graduationDate = graduationDate;
     }
 
+    public Speciality getSpeciality() {
+        return speciality;
+    }
+
+    public void setSpeciality(Speciality speciality) {
+        this.speciality = speciality;
+    }
+
+    public Faculty getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(Faculty faculty) {
+        this.faculty = faculty;
+    }
+
+    public University getUniversity() {
+        return university;
+    }
+
+    public void setUniversity(University university) {
+        this.university = university;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

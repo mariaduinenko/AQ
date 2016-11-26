@@ -13,115 +13,122 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
         android:paddingLeft="25dp">
-    <com.joooonho.SelectableRoundedImageView
-        android:layout_width="74dp"
-        android:layout_height="74dp"
-        app:sriv_left_bottom_corner_radius="37dp"
-        app:sriv_left_top_corner_radius="37dp"
-        app:sriv_right_bottom_corner_radius="37dp"
-        app:sriv_right_top_corner_radius="37dp"
-        app:sriv_border_width="1dp"
-        app:sriv_border_color="@color/image_border_color"
-        android:src="@drawable/test_face"/>
+
+        <com.joooonho.SelectableRoundedImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:sriv_left_bottom_corner_radius="37dp"
+            app:sriv_left_top_corner_radius="37dp"
+            app:sriv_right_bottom_corner_radius="37dp"
+            app:sriv_right_top_corner_radius="37dp"
+            app:sriv_border_width="1dp"
+            app:sriv_border_color="@color/image_border_color"
+            android:src="@drawable/test_face"
+            android:id="@+id/selectableRoundedImageView" />
+
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="75dp"
+            android:layout_height="80dp"
             android:orientation="vertical"
             android:layout_marginLeft="30dp"
             android:gravity="center_vertical"
             >
-            <TextView
+            <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="22sp"
+                android:textSize="16sp"
                 android:id="@+id/name"
                 android:text="Albert Nickson"
                 android:textStyle="bold"/>
 
-            <TextView
+            <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:paddingTop="5dp"
+                android:textSize="14sp"
                 android:id="@+id/nickname"
                 android:text="@string/test_nickname"
+                android:hint="@string/enter_nickname"
                 android:textStyle="bold"/>
         </LinearLayout>
-
     </TableRow>
 
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="50dp"
-        android:paddingTop="20dp">
-        <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-            android:text="@string/university"
-            android:layout_weight="3"
-            android:textSize="16sp"
-            android:textStyle="bold"/>
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="KPI"
-            android:textSize="16sp"
-            android:layout_marginLeft="30dp"
-            android:id="@+id/university_tv"/>
+            android:text="@string/email"
+            android:layout_weight="3"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:id="@+id/textView" />
 
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="email@mail.ru"
+            android:textSize="14sp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:id="@+id/email"/>
     </TableRow>
 
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="50dp"
-        android:paddingTop="20dp">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/faculty"
-            android:layout_weight="3"
-            android:textSize="16sp"
-            android:textStyle="bold"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="FICT"
-            android:layout_weight="1"
-            android:textSize="16sp"
-            android:layout_marginLeft="30dp"
-            android:id="@+id/faculty_tv"/>
+        android:gravity="center">
 
+        <Button
+            android:text="@string/apply"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/txt_small"
+            android:background="@color/green"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_apply"/>
     </TableRow>
 
-    <TableRow
-        android:layout_width="match_parent"
+    <!--<TableRow-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
+        <!--<Button-->
+            <!--android:text="@string/add"-->
+            <!--android:textColor="@color/text_white"-->
+            <!--android:background="@color/green"-->
+            <!--android:layout_marginLeft="10dp"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--android:id="@+id/btn_add"/>-->
+    <!--</TableRow>-->
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/uui_view_pager"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="50dp"
-        android:paddingTop="20dp">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/speciality"
-            android:layout_weight="3"
-            android:textSize="16sp"
-            android:textStyle="bold"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Computer Engineering"
-            android:textSize="16sp"
-            android:layout_weight="1"
-            android:layout_marginLeft="30dp"
-            android:id="@+id/speciality_tv"/>
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp">
 
-    </TableRow>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider_color"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"/>
+    </android.support.v4.view.ViewPager>
+
+    <!--<TableRow-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:gravity="bottom"-->
+        <!--android:paddingBottom="20dp">-->
+
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:background="@color/divider_color"-->
+            <!--android:layout_marginLeft="20dp"-->
+            <!--android:layout_marginRight="20dp"-->
+            <!--android:layout_marginTop="20dp"/>-->
+
+    <!--</TableRow>-->
+
 </LinearLayout>

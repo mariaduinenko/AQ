@@ -34,6 +34,10 @@ public class QuestionService extends AbsrtactService {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
+
+        if (result == null)
+            result = new ArrayList<>();
+
         return result;
     }
 
@@ -49,6 +53,7 @@ public class QuestionService extends AbsrtactService {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
+
         return result;
     }
 

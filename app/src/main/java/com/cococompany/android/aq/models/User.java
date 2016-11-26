@@ -61,6 +61,13 @@ public class User {
     @Expose
     private String avatar;
 
+    public User() {
+    }
+
+    public User(Long id) {
+        this.id = id;
+    }
+
     public void setPasswordConfirm(String passwordConfirm) {
         this.passwordConfirm = passwordConfirm;
     }

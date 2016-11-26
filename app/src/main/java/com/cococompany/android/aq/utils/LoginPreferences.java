@@ -5,8 +5,15 @@ import android.content.SharedPreferences;
 import android.util.Base64;
 import android.util.Log;
 
+import com.cococompany.android.aq.models.University;
+import com.cococompany.android.aq.models.UserUniversityInfo;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -28,6 +35,7 @@ public class LoginPreferences {
     private final static String USER_AVATAR = "user_avatar";
     private final static String USER_BIRTHDATE = "user_birthdate";
     private final static String USER_CATEGORIES = "user_categories";
+    private final static String USER_UUIS = "user_uuis";
 
     public LoginPreferences(Context context){
         sharedPreferences = context.getSharedPreferences(LOGIN_PREFERENCES,Context.MODE_PRIVATE);
@@ -130,5 +138,26 @@ public class LoginPreferences {
     public Set<String> getUserCategories() {
         Object categories = sharedPreferences.getAll().get(USER_CATEGORIES);
         return (categories != null)? new HashSet<>(Arrays.asList(categories.toString())) : new HashSet<String>();
+    }
+
+    public void setUserUniversityInfos(List<UserUniversityInfo> uuis) {
+        SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(uuis);
+        prefsEditor.putString(USER_UUIS, json);
+        prefsEditor.commit();
+    }
+
+    public List<UserUniversityInfo> getUserUniversityInfos() {
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString(USER_UUIS, "");
+//        List<University> universities = gson.fromJson(json, new TypeToken<List<University>>() {}.getType());
+        UserUniversityInfo[] uuis = gson.fromJson(json, UserUniversityInfo[].class);
+
+        List<UserUniversityInfo> us = new ArrayList<>();
+        if (uuis != null)
+            us = Arrays.asList(uuis);
+
+        return us;
     }
 }

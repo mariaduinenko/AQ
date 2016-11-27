@@ -30,6 +30,9 @@ public interface AQService {
 
     @GET("/rest/feed/8")
     Call<ArrayList<Question>> getQuestions();
+    //questions
+    @POST("/rest/questions")
+    Call<Question> createQuestion(@Body Question question);
 
     @GET("/rest/questions/{id}")
     Call<Question> getQuestionById(@Path("id") Long id);

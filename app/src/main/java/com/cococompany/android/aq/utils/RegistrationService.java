@@ -35,31 +35,6 @@ public class RegistrationService {
     public User register(final User newUser){
 
         User result = null;
-
-//        Thread thread = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                Call<User> call  = aqService.registerUser(newUser);
-//                Response<User> response = null;
-//                try {
-//                    response = call.execute();
-//
-//                    resultUser = response.body();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//                System.out.println(response.isSuccessful());
-//                if(!response.isSuccessful()){
-//                try {
-//                    System.out.println(response.code()+response.errorBody().string());
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//                }
-//            }
-//        });
-//        thread.start();
-
         RegisterTask registerTask = new RegisterTask();
         registerTask.execute(newUser);
         try {

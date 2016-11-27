@@ -58,6 +58,8 @@ public class FeedFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        questionService = new QuestionService(getContext());
+        questions = questionService.getQuestions();
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -69,9 +71,7 @@ public class FeedFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_feed, container, false);
-        questionService = new QuestionService(getContext());
         feedRecyclerView = (RecyclerView) v.findViewById(R.id.feed);
-        questions = questionService.getQuestions();
         feedAdapter = new FeedAdapter(questions,getActivity());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         feedRecyclerView.setAdapter(feedAdapter);

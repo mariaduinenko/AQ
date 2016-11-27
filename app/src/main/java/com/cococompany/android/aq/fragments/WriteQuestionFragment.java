@@ -7,8 +7,19 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.cococompany.android.aq.R;
+import com.cococompany.android.aq.models.Category;
+import com.cococompany.android.aq.models.Question;
+import com.cococompany.android.aq.models.User;
+import com.cococompany.android.aq.utils.LoginPreferences;
+import com.cococompany.android.aq.utils.QuestionService;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class WriteQuestionFragment extends Fragment {
@@ -16,10 +27,14 @@ public class WriteQuestionFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    private Button ask;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private LoginPreferences loginPreferences;
+    private QuestionService questionServise;
+    private EditText bodyOfQuestion;
+    private EditText tags;
 
     public WriteQuestionFragment() {
         // Required empty public constructor
@@ -46,6 +61,8 @@ public class WriteQuestionFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loginPreferences = new LoginPreferences(getContext());
+        questionServise = new QuestionService(getContext());
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -56,7 +73,34 @@ public class WriteQuestionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_write_question, container, false);
+        View v = inflater.inflate(R.layout.fragment_write_question, container, false);
+        bodyOfQuestion = (EditText) v.findViewById(R.id.question_body);
+        tags = (EditText) v.findViewById(R.id.tags);
+        ask = (Button) v.findViewById(R.id.ask_question_button);
+        ask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String separator = "\n";
+                String[] lines = bodyOfQuestion.getText().toString().split(separator);
+                Question question = new Question();
+                User user = new User();
+                user.setId(loginPreferences.getUserId());
+                List<Category> categories = new ArrayList<Category>();
+                question.setUser(user);
+                question.setCategories(categories);
+                question.setTitle(lines[0]);
+                if (lines.length>1){
+                    StringBuilder builder = new StringBuilder();
+                    for (int i = 1; i < lines.length; i++) {
+                        builder.append(lines[i]);
+                    }
+                    question.setComment(builder.toString());
+                }
+                questionServise.createQuestion(question);
+
+            }
+        });
+        return v;
     }
 
 }

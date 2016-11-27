@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Valentin on 05.11.2016.
@@ -19,6 +20,10 @@ public class Question {
     @SerializedName("id")
     @Expose
     private Long id;
+
+    @SerializedName("categories")
+    @Expose
+    private List<Category> categories;
 
     @SerializedName("title")
     @Expose
@@ -35,6 +40,8 @@ public class Question {
     @SerializedName("answers")
     @Expose
     private List<Answer> answers = new ArrayList<Answer>();
+
+
 
     @Override
     public String toString() {
@@ -107,5 +114,13 @@ public class Question {
 
     public void setLikes(List<Like> likes) {
         this.likes = likes;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 }

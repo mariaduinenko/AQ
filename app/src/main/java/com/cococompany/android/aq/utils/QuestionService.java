@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.cococompany.android.aq.models.Question;
+import com.cococompany.android.aq.models.User;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,6 +58,21 @@ public class QuestionService extends AbsrtactService {
         return result;
     }
 
+    public Question createQuestion(Question question){
+        Question result = null;
+        QuestionService.CreateQuestionTask createQuestionTask = new QuestionService.CreateQuestionTask();
+        createQuestionTask.execute(question);
+        try {
+            result =  createQuestionTask.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return  result;
+    }
+
     class QuestionsTask extends AsyncTask<Void,Void,ArrayList<Question>>{
 
         @Override
@@ -105,5 +121,31 @@ public class QuestionService extends AbsrtactService {
             return result;
         }
         }
+
+    class CreateQuestionTask extends AsyncTask<Question,Void,Question>{
+
+
+        @Override
+        protected Question doInBackground(Question... questions) {
+            Question result = null;
+            Call<Question> call = getAqService().createQuestion(questions[0]);
+
+            Response<Question> response = null;
+
+            try {
+                response = call.execute();
+                if (response.isSuccessful())
+                    System.out.println("One QUESTION: "+response.body().toString());
+                else
+                    System.out.println("ERROR: "+response.errorBody().string());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            result = response.body();
+
+            return result;
+        }
+    }
     }
 

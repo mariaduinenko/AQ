@@ -52,7 +52,7 @@ public class Question {
                 ", comment='" + comment + '\'' +
                 ", user=" + user +
                 ", answers=" + answers +
-                ", likes=" + likes +
+                ", likes=" + likes.toString() +
                 '}';
     }
 

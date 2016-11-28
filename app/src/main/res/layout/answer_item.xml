@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.joooonho.SelectableRoundedImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:sriv_left_bottom_corner_radius="20dp"
+        app:sriv_left_top_corner_radius="20dp"
+        app:sriv_right_bottom_corner_radius="20dp"
+        app:sriv_right_top_corner_radius="20dp"
+        app:sriv_border_width="1dp"
+        app:sriv_border_color="@color/image_border_color"
+        android:src="@drawable/test_face"
+        android:id="@+id/answer_avatar" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/answer_user_name"
+                android:gravity="left"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/date_of_answer"
+                android:gravity="right"/>
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/answer_body"/>
+    </LinearLayout>
+</LinearLayout>

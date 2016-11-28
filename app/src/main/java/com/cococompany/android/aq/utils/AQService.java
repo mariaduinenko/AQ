@@ -28,8 +28,8 @@ public interface AQService {
     @POST("/rest/profile")
     Call<User> loginUser(@Body User user);
 
-    @GET("/rest/feed/8")
-    Call<ArrayList<Question>> getQuestions();
+    @GET("/rest/feed/{length}")
+    Call<ArrayList<Question>> getQuestions(@Path("length") int length);
     //questions
     @POST("/rest/questions")
     Call<Question> createQuestion(@Body Question question);

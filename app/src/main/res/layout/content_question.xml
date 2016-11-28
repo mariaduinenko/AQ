@@ -95,5 +95,13 @@
             android:textColor="@color/text_color_violet"/>
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/answers_container"
+        android:orientation="vertical" >
+
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -19,6 +19,7 @@ import retrofit2.Response;
  */
 
 public class QuestionService extends AbsrtactService {
+    private int length = 12;
     public QuestionService(Context context) {
         super(context);
     }
@@ -78,7 +79,7 @@ public class QuestionService extends AbsrtactService {
         @Override
         protected ArrayList<Question> doInBackground(Void... voids) {
             ArrayList<Question> result = null;
-            Call<ArrayList<Question>> call = getAqService().getQuestions();
+            Call<ArrayList<Question>> call = getAqService().getQuestions(length);
 
             Response<ArrayList<Question>> response = null;
 

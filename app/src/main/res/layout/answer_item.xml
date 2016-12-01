@@ -7,6 +7,7 @@
     <com.joooonho.SelectableRoundedImageView
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:scaleType="centerCrop"
         app:sriv_left_bottom_corner_radius="20dp"
         app:sriv_left_top_corner_radius="20dp"
         app:sriv_right_bottom_corner_radius="20dp"

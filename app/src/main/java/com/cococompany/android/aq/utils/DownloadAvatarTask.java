@@ -18,19 +18,19 @@ import java.net.URLConnection;
 public class DownloadAvatarTask extends AsyncTask<String,Void,Bitmap> {
     @Override
     protected Bitmap doInBackground(String... strings) {
-        Bitmap bm = null;
-        try {
-            URL aURL = new URL(strings[0]);
-            URLConnection conn = aURL.openConnection();
-            conn.connect();
-            InputStream is = conn.getInputStream();
-            BufferedInputStream bis = new BufferedInputStream(is);
-            bm = BitmapFactory.decodeStream(bis);
-            bis.close();
-            is.close();
-        } catch (IOException e) {
-            Log.e("download", "Error getting bitmap", e);
-        }
-        return bm;
+            Bitmap bm = null;
+            try {
+                URL aURL = new URL(strings[0]);
+                URLConnection conn = aURL.openConnection();
+                conn.connect();
+                InputStream is = conn.getInputStream();
+                BufferedInputStream bis = new BufferedInputStream(is);
+                bm = BitmapFactory.decodeStream(bis);
+                bis.close();
+                is.close();
+            } catch (IOException e) {
+                Log.e("download", "Error getting bitmap", e);
+            }
+            return bm;
     }
 }

@@ -124,7 +124,10 @@ public class Speciality {
                 "creationTime='" + creationTime + '\'' +
                 ", id=" + id +
                 ", name='" + name + '\'' +
+<<<<<<< HEAD
                 ", faculty=" + faculty +
+=======
+>>>>>>> 63badb1f60f49c7aeb7fc97546a4078bd4dc9871
                 '}';
     }
 }

@@ -60,15 +60,24 @@ public class CustomUuiSwipeAdapter extends PagerAdapter {
     private UniversityService universityService = null;
 
     private Long[] initialUniversityId = new Long[ProfileFragment.userUniversityInfos.length],
+<<<<<<< HEAD
             initialSpecialityId = new Long[ProfileFragment.userUniversityInfos.length],
             initialFacultyId = new Long[ProfileFragment.userUniversityInfos.length];
+=======
+                 initialSpecialityId = new Long[ProfileFragment.userUniversityInfos.length],
+                 initialFacultyId = new Long[ProfileFragment.userUniversityInfos.length];
+>>>>>>> 63badb1f60f49c7aeb7fc97546a4078bd4dc9871
 
     TextView titlePosition = null;
     TextView titleTotal = null;
     Button btnAddUui = null;
 
     private long startTime = 0L,
+<<<<<<< HEAD
             finishTime = 0L;
+=======
+                 finishTime = 0L;
+>>>>>>> 63badb1f60f49c7aeb7fc97546a4078bd4dc9871
 
     public CustomUuiSwipeAdapter(Context ctx) {
         this.ctx = ctx;

@@ -49,11 +49,19 @@ public class ProfileFragment extends Fragment {
     private String mParam2;
 
     private long startTime = 0L,
+<<<<<<< HEAD
             finishTime = 0L;
 
     public static UserUniversityInfo[] userUniversityInfos = null;
 
     //    private Long selectedUniversityId = -1L;
+=======
+                 finishTime = 0L;
+
+    public static UserUniversityInfo[] userUniversityInfos = null;
+
+//    private Long selectedUniversityId = -1L;
+>>>>>>> 63badb1f60f49c7aeb7fc97546a4078bd4dc9871
     private Long selectedUuiId = -1L;
 
     private ViewPager viewPager;

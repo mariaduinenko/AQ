@@ -9,11 +9,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class Id {
 
-<<<<<<< HEAD
+
     @SerializedName("user")
-=======
-    @SerializedName("creationTime")
->>>>>>> 63badb1f60f49c7aeb7fc97546a4078bd4dc9871
     @Expose
     private User user;
 
@@ -38,8 +35,6 @@ public class Id {
                 "user=" + user +
                 '}';
     }
-<<<<<<< HEAD
+
 }
-=======
-}
->>>>>>> 63badb1f60f49c7aeb7fc97546a4078bd4dc9871
+

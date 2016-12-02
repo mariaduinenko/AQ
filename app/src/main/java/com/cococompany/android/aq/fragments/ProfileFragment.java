@@ -48,26 +48,18 @@ public class ProfileFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private Spinner spUniversity = null;
-    private Spinner spFaculty = null;
-    private Spinner spSpeciality = null;
+    private long startTime = 0L,
+            finishTime = 0L;
 
-    private CustomUniversitySpinnerAdapter universityAdapter;
-    private CustomFacultySpinnerAdapter facultyAdapter;
-    private CustomSpecialitySpinnerAdapter specialityAdapter;
+    public static UserUniversityInfo[] userUniversityInfos = null;
 
-    private List<University> universitiesData = null;
-    private List<Faculty> facultiesData = null;
-    private List<Speciality> specialitiesData = null;
-    private List<UserUniversityInfo> uuiData = null;
-
-    private UserUniversityInfo[] userUniversityInfos = null;
-
-    private Long selectedUniversityId = -1L;
+    //    private Long selectedUniversityId = -1L;
     private Long selectedUuiId = -1L;
 
     private ViewPager viewPager;
     private CustomUuiSwipeAdapter uuiSwipeAdapter;
+
+    private UserUniversityInfoService uuiService = null;
 
     public static User user = null;
 
@@ -120,6 +112,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onPageSelected(int position) {
                 pagePosition = position;
+                selectedUuiId = (userUniversityInfos[pagePosition] != null)? userUniversityInfos[pagePosition].getId() : -1L;
             }
 
             @Override
@@ -128,21 +121,26 @@ public class ProfileFragment extends Fragment {
             }
         };
 
+        uuiService = new UserUniversityInfoService(getContext());
+
         viewPager = (ViewPager) view.findViewById(R.id.uui_view_pager);
         viewPager.addOnPageChangeListener(onPageChangeListener);
 
+        startTime = System.currentTimeMillis();
         //receiving preferences
         preferences = new LoginPreferences(getContext());
         final Long userId = preferences.getUserId();
-        String userPass = preferences.getUserPassword();
-        String userAvatar = preferences.getUserAvatar();
-        String userBirthdate = preferences.getUserBirthdate();
+//        String userPass = preferences.getUserPassword();
+//        String userAvatar = preferences.getUserAvatar();
+//        String userBirthdate = preferences.getUserBirthdate();
         String userEmail = preferences.getUserEmail();
         String userFirstname = preferences.getUserFirstname();
         String userLastname = preferences.getUserLastname();
         String userMiddlename = preferences.getUserMiddlename();
         String userNickname = preferences.getUserNickname();
-        Set<String> categories = preferences.getUserCategories();
+//        Set<String> categories = preferences.getUserCategories();
+        finishTime = System.currentTimeMillis();
+        System.out.println("%\\_(^_^)_/%" + "load params|execution time:" + (finishTime - startTime));
 
         EditText etName = (EditText) view.findViewById(R.id.name);
         EditText etNickname = (EditText) view.findViewById(R.id.nickname);
@@ -151,6 +149,8 @@ public class ProfileFragment extends Fragment {
 
         user = new User(userId);
 
+        /*Setting up user related information
+        * */
         String firstPart = "", secondPart = "", thirdPart = "";
         if (userLastname.length() > 1) {
             firstPart = userLastname.substring(0, 1).toUpperCase() + userLastname.substring(1) + " ";
@@ -168,21 +168,25 @@ public class ProfileFragment extends Fragment {
 
         int uuisCount = (preferences.getUserUniversityInfos() != null)? preferences.getUserUniversityInfos().size() : 0;
         if (uuisCount > 0) {
+            startTime = System.currentTimeMillis();
             List<UserUniversityInfo> uuiList = preferences.getUserUniversityInfos();
 
             userUniversityInfos = new UserUniversityInfo[uuiList.size()];
             uuiList.toArray(userUniversityInfos);
 
-            uuiSwipeAdapter = new CustomUuiSwipeAdapter(getContext(), userUniversityInfos);
+            uuiSwipeAdapter = new CustomUuiSwipeAdapter(getContext());
             viewPager.setAdapter(uuiSwipeAdapter);
+            finishTime = System.currentTimeMillis();
         }else {
+            startTime = System.currentTimeMillis();
             userUniversityInfos = new UserUniversityInfo[1];
             UserUniversityInfo uui = new UserUniversityInfo();
             uui.setUser(new User(userId));
             userUniversityInfos[0] = uui;
 
-            uuiSwipeAdapter = new CustomUuiSwipeAdapter(getContext(), userUniversityInfos);
+            uuiSwipeAdapter = new CustomUuiSwipeAdapter(getContext());
             viewPager.setAdapter(uuiSwipeAdapter);
+            finishTime = System.currentTimeMillis();
         }
 
         //listeners
@@ -194,6 +198,7 @@ public class ProfileFragment extends Fragment {
         btnApply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                startTime = System.currentTimeMillis();
                 UserService userService = new UserService(getContext());
 
                 User user = new User();
@@ -206,6 +211,11 @@ public class ProfileFragment extends Fragment {
 
                 userService.lightUpdate(user);
 
+                for (int i = 0; i < userUniversityInfos.length; i++) {
+                    userUniversityInfos[i] = uuiService.updateUui(userUniversityInfos[i]);
+                }
+
+                finishTime = System.currentTimeMillis();
                 String s = "Saved prefs:\nName:"+preferences.getUserLastname()+" "+preferences.getUserFirstname()+" "+preferences.getUserMiddlename()+"\nNickname:"+preferences.getUserNickname()+
                         "\nEmail:"+preferences.getUserEmail();
                 showToast(view, s);

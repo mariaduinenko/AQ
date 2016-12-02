@@ -3,9 +3,11 @@ package com.cococompany.android.aq.fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 import com.cococompany.android.aq.R;
 import com.cococompany.android.aq.adapters.FeedAdapter;
 import com.cococompany.android.aq.models.Question;
+import com.cococompany.android.aq.utils.OnLoadMoreListener;
 import com.cococompany.android.aq.utils.QuestionService;
 
 import java.util.ArrayList;
@@ -72,19 +75,50 @@ public class FeedFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_feed, container, false);
         feedRecyclerView = (RecyclerView) v.findViewById(R.id.feed);
-        feedAdapter = new FeedAdapter(questions,getActivity());
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        feedRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        feedAdapter = new FeedAdapter(questions,getActivity(),feedRecyclerView);
         feedRecyclerView.setAdapter(feedAdapter);
-        feedRecyclerView.setLayoutManager(linearLayoutManager);
-        /*feedRecyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+        feedAdapter.setmRecyclerView(feedRecyclerView);
+        feedAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
-            public void onScrollChange(View view, int i, int i1, int i2, int i3) {
+            public void onLoadMore() {
+                Log.e("haint", "Load More");
+                feedAdapter.getQuestions().add(null);
+                feedAdapter.notifyItemInserted(feedAdapter.getQuestions().size() - 1);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.e("haint", "Load More 2");
+                        //Remove loading item
+                        feedAdapter.getQuestions().remove(feedAdapter.getQuestions().size() - 1);
+                        feedAdapter.notifyItemRemoved(feedAdapter.getQuestions().size());
+
+                        //Load data
+                        long index = feedAdapter.getQuestions().get(feedAdapter.getQuestions().size()-1).getId();
+                        int lastPosition = feedAdapter.getItemCount()-1;
+                        Log.e("haint", "start loading");
+                        ArrayList<Question> nextQuestions = questionService.getNextQuestion(index,6);
+                        Log.e("haint", "end loading");
+                        if (nextQuestions!=null)
+                            for (int i = 0; i < nextQuestions.size(); i++) {
+                                feedAdapter.getQuestions().add(nextQuestions.get(i));
+                            }
+                        Log.e("haint", "added to local data");
+
+                        feedAdapter.notifyDataSetChanged();
+                        feedAdapter.setLoaded();
+                        //feedRecyclerView.getLayoutManager().scrollToPosition(1);
+                    }
+                },2000);
+
 
             }
-        });*/
+
+        });
         return v;
+}
 
     }
 
 
-}
+

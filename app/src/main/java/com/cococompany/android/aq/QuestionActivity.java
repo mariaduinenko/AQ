@@ -14,8 +14,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.cococompany.android.aq.models.Like;
 import com.cococompany.android.aq.models.Question;
 import com.cococompany.android.aq.utils.DownloadAvatarTask;
+import com.cococompany.android.aq.utils.LoginPreferences;
 import com.cococompany.android.aq.utils.QuestionService;
 import com.cococompany.android.aq.utils.UIutils;
 import com.joooonho.SelectableRoundedImageView;
@@ -38,13 +40,15 @@ public class QuestionActivity extends AppCompatActivity {
     private ImageView like;
     private TextView count_of_likes;
     private LinearLayout answer_container;
+    private LoginPreferences loginPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question);
         UIutils.setToolbarWithBackButton(R.id.toolbar, this);
         question_id = getIntent().getLongExtra("question_id", -1);
-        QuestionService questionService = new QuestionService(this);
+        final QuestionService questionService = new QuestionService(this);
+        loginPreferences = new LoginPreferences(this);
         current_question = questionService.getQuestionById(question_id);
         name_of_asker = (TextView) findViewById(R.id.name_of_asker_view);
         question_date = (TextView) findViewById(R.id.question_date);
@@ -52,6 +56,31 @@ public class QuestionActivity extends AppCompatActivity {
         comment_of_question = (TextView) findViewById(R.id.question_commnet);
         count_of_likes = (TextView) findViewById(R.id.question_count_of_likes);
         like = (ImageView) findViewById(R.id.like);
+        /*
+        if (isMyLike())
+            like.setImageResource(R.drawable.own_like);
+        else
+            like.setImageResource(R.drawable.like);
+        like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.out.println(loginPreferences.getUserId());
+                if (!isMyLike()){
+                    if (questionService.putLikeOnQuestion(loginPreferences.getUserId(),current_question.getId())){
+                        like.setImageResource(R.drawable.own_like);
+                        count_of_likes.setText(Integer.toString(Integer.valueOf(count_of_likes.getText().toString())+1));
+                        current_question = questionService.getQuestionById(question_id);
+                    }
+                }
+                else{
+                    if (questionService.disLikeOnQuestion(loginPreferences.getUserId(),current_question.getId())){
+                        like.setImageResource(R.drawable.like);
+                        count_of_likes.setText(Integer.toString(Integer.valueOf(count_of_likes.getText().toString())-1));
+                        current_question = questionService.getQuestionById(question_id);
+                    }
+                }
+            }
+        });*/
         answer_container = (LinearLayout) findViewById(R.id.answers_container);
         name_of_asker.setText(current_question.getUser().getFirstName() + " " + current_question.getUser().getLastName());
         question_date.setText(current_question.getCreationTime());
@@ -83,6 +112,18 @@ public class QuestionActivity extends AppCompatActivity {
             }
 
         }
+    }
+
+    public boolean isMyLike(){
+        boolean result = false;
+        int count = 0;
+        while((count<current_question.getLikes().size()||!result)&&current_question.getLikes().size()>0){
+            if (current_question.getLikes().get(count).getUser().getId()==loginPreferences.getUserId())
+                result=true;
+            count++;
+        }
+
+        return result;
     }
 
 

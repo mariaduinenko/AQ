@@ -1,6 +1,7 @@
 package com.cococompany.android.aq.utils;
 
 import com.cococompany.android.aq.models.Faculty;
+import com.cococompany.android.aq.models.Like;
 import com.cococompany.android.aq.models.Question;
 import com.cococompany.android.aq.models.Speciality;
 import com.cococompany.android.aq.models.University;
@@ -27,15 +28,22 @@ public interface AQService {
 
     @POST("/rest/profile")
     Call<User> loginUser(@Body User user);
-
+    //questions and likes
     @GET("/rest/feed/{length}")
     Call<ArrayList<Question>> getQuestions(@Path("length") int length);
-    //questions
+    @GET("/rest/feed/{id}/{length}")
+    Call<ArrayList<Question>> getNextQuestionsInFeed(@Path("id") long id,@Path("length") int length);
     @POST("/rest/questions")
     Call<Question> createQuestion(@Body Question question);
 
     @GET("/rest/questions/{id}")
     Call<Question> getQuestionById(@Path("id") Long id);
+
+    @PUT("/rest/questions/like/{userId}/{questionId}")
+    Call<Like> putLikeOnQuestion(@Path("userId") Long userId, @Path("questionId") Long questionId);
+
+    @PUT("/rest/questions/dislike/{userId}/{questionId}")
+    Call<Like> disLikeOnQuestion(@Path("userId") Long userId, @Path("questionId") Long questionId);
 
     @GET("/rest/universities/users/{userId}")
     Call<List<University>> getUniversitiesByUserId(@Path("userId") Long userId);

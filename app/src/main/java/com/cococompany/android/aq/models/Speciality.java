@@ -118,4 +118,13 @@ public class Speciality {
         this.faculty = faculty;
     }
 
+    @Override
+    public String toString() {
+        return "Speciality{" +
+                "creationTime='" + creationTime + '\'' +
+                ", id=" + id +
+                ", name='" + name + '\'' +
+                ", faculty=" + faculty +
+                '}';
+    }
 }

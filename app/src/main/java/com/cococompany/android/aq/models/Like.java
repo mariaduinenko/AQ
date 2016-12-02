@@ -14,7 +14,7 @@ public class Like {
 
     @SerializedName("id")
     @Expose
-    private Long id;
+    private Id id;
 
     @SerializedName("user")
     @Expose
@@ -42,11 +42,11 @@ public class Like {
         this.creationTime = creationTime;
     }
 
-    public Long getId() {
+    public Id getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Id id) {
         this.id = id;
     }
 

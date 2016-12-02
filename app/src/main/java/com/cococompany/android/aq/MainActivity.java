@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         registrationService = new RegistrationService(this);
         uuiService = new UserUniversityInfoService(this);
 
+
         temp = new HashMap<String, String>();
         temp.put("user1@gmail.com","pass1");
         temp.put("user2@gmail.com","pass2");

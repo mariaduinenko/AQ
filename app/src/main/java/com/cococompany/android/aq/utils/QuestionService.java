@@ -3,6 +3,7 @@ package com.cococompany.android.aq.utils;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.cococompany.android.aq.models.Like;
 import com.cococompany.android.aq.models.Question;
 import com.cococompany.android.aq.models.User;
 
@@ -19,7 +20,7 @@ import retrofit2.Response;
  */
 
 public class QuestionService extends AbsrtactService {
-    private int length = 12;
+    private int length = 8;
     public QuestionService(Context context) {
         super(context);
     }
@@ -40,6 +41,20 @@ public class QuestionService extends AbsrtactService {
         if (result == null)
             result = new ArrayList<>();
 
+        return result;
+    }
+
+    public ArrayList<Question> getNextQuestion(long id, int length){
+        ArrayList<Question> result = null;
+        NextQuestionTask nextQuestionTask = new NextQuestionTask();
+        nextQuestionTask.execute((int)id,length);
+        try {
+            result =  nextQuestionTask.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
         return result;
     }
 
@@ -65,6 +80,36 @@ public class QuestionService extends AbsrtactService {
         createQuestionTask.execute(question);
         try {
             result =  createQuestionTask.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return  result;
+    }
+
+    public boolean putLikeOnQuestion(long userId, long questionId){
+        boolean result = false;
+        QuestionService.PutLikeTask putLikeTask = new PutLikeTask();
+        putLikeTask.execute(userId, questionId);
+        try {
+            result =  putLikeTask.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return  result;
+    }
+
+    public boolean disLikeOnQuestion(long userId, long questionId){
+        boolean result = false;
+        QuestionService.DisLikeTask disLikeTask = new DisLikeTask();
+        disLikeTask.execute(userId, questionId);
+        try {
+            result =  disLikeTask.get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -136,7 +181,7 @@ public class QuestionService extends AbsrtactService {
             try {
                 response = call.execute();
                 if (response.isSuccessful())
-                    System.out.println("One QUESTION: "+response.body().toString());
+                    System.out.println("One Like: "+response.body().toString());
                 else
                     System.out.println("ERROR: "+response.errorBody().string());
             } catch (IOException e) {
@@ -144,6 +189,87 @@ public class QuestionService extends AbsrtactService {
             }
 
             result = response.body();
+
+            return result;
+        }
+    }
+
+    class NextQuestionTask extends  AsyncTask<Integer,Void,ArrayList<Question>>{
+
+
+        @Override
+        protected ArrayList<Question> doInBackground(Integer... integers) {
+            ArrayList<Question> result = null;
+            Call<ArrayList<Question>> call = getAqService().getNextQuestionsInFeed((long)integers[0],integers[1]);
+
+            Response<ArrayList<Question>> response = null;
+
+            try {
+                response = call.execute();
+                result = response.body();
+                if (response.isSuccessful())
+                    System.out.println("One QUESTION: "+response.body().toString());
+                else
+                    System.out.println("ERROR: "+response.errorBody().string());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return result;
+        }
+    }
+
+
+    class PutLikeTask extends AsyncTask<Long,Void,Boolean>{
+
+
+        @Override
+        protected Boolean doInBackground(Long... id) {
+            Boolean result = null;
+            Call<Like> call = getAqService().putLikeOnQuestion(id[0], id[1]);
+            Response<Like> response = null;
+
+            try {
+                response = call.execute();
+                result =  call.isExecuted();
+                if (response.isSuccessful()){
+                    System.out.println("One DisLike: "+response.body().toString());
+                }
+                else
+                    System.out.println("ERROR: "+response.errorBody().string());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+
+            return result;
+        }
+    }
+
+    class DisLikeTask extends AsyncTask<Long,Void,Boolean>{
+
+
+        @Override
+        protected Boolean doInBackground(Long... id) {
+            Boolean result = null;
+            Call<Like> call = getAqService().disLikeOnQuestion(id[0], id[1]);
+
+            Response<Like> response = null;
+
+            try {
+                response = call.execute();
+                result = response.isSuccessful();
+                if (response.isSuccessful()){
+                    System.out.println("One QUESTION: "+response.body().toString());
+                }
+                else
+                    System.out.println("ERROR: "+response.errorBody().string());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
 
             return result;
         }

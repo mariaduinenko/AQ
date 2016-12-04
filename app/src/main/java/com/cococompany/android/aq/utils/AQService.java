@@ -31,13 +31,19 @@ public interface AQService {
     //questions and likes
     @GET("/rest/feed/{length}")
     Call<ArrayList<Question>> getQuestions(@Path("length") int length);
+    @GET("/rest/feed/internal/{length}")
+    Call<ArrayList<Question>> getQuestionsInternal(@Path("length") int length);
     @GET("/rest/feed/{id}/{length}")
     Call<ArrayList<Question>> getNextQuestionsInFeed(@Path("id") long id,@Path("length") int length);
+    @GET("/rest/feed/internal/{id}/{length}")
+    Call<ArrayList<Question>> getNextQuestionsInFeedInternal(@Path("id") long id,@Path("length") int length);
     @POST("/rest/questions")
     Call<Question> createQuestion(@Body Question question);
 
     @GET("/rest/questions/{id}")
     Call<Question> getQuestionById(@Path("id") Long id);
+    @GET("/rest/questions/internal/{id}")
+    Call<Question> getQuestionInternalById(@Path("id") Long id);
 
     @PUT("/rest/questions/like/{userId}/{questionId}")
     Call<Like> putLikeOnQuestion(@Path("userId") Long userId, @Path("questionId") Long questionId);

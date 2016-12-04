@@ -3,6 +3,9 @@ package com.cococompany.android.aq.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Valentin on 23.11.2016.
  */
@@ -28,6 +31,10 @@ public class Answer {
     @SerializedName("question")
     @Expose
     private Question question;
+
+    @SerializedName("answerLikes")
+    @Expose
+    private List<Like> likes = new ArrayList<>();
 
     public String getCreationTime() {
         return creationTime;
@@ -67,6 +74,14 @@ public class Answer {
 
     public void setQuestion(Question question) {
         this.question = question;
+    }
+
+    public List<Like> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(List<Like> likes) {
+        this.likes = likes;
     }
 
     @Override

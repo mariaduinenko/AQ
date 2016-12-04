@@ -49,7 +49,7 @@ public class QuestionActivity extends AppCompatActivity {
         question_id = getIntent().getLongExtra("question_id", -1);
         final QuestionService questionService = new QuestionService(this);
         loginPreferences = new LoginPreferences(this);
-        current_question = questionService.getQuestionById(question_id);
+        current_question = questionService.getQuestionInternalById(question_id);
         name_of_asker = (TextView) findViewById(R.id.name_of_asker_view);
         question_date = (TextView) findViewById(R.id.question_date);
         title_of_question = (TextView) findViewById(R.id.question_title);

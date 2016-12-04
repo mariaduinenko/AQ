@@ -62,7 +62,7 @@ public class FeedFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         questionService = new QuestionService(getContext());
-        questions = questionService.getQuestions();
+        questions = questionService.getQuestionsInternal();
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);

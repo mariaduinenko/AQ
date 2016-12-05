@@ -66,12 +66,10 @@ public class MainActivity extends AppCompatActivity {
                 .baseUrl(getResources().getString(R.string.project_url))
                 .build();
 
-
         //services initialization
         aqService = retrofit.create(AQService.class);
         registrationService = new RegistrationService(this);
         uuiService = new UserUniversityInfoService(this);
-
 
         temp = new HashMap<String, String>();
         temp.put("user1@gmail.com","pass1");

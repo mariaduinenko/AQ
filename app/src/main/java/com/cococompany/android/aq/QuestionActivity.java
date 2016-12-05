@@ -56,7 +56,8 @@ public class QuestionActivity extends AppCompatActivity {
         comment_of_question = (TextView) findViewById(R.id.question_commnet);
         count_of_likes = (TextView) findViewById(R.id.question_count_of_likes);
         like = (ImageView) findViewById(R.id.like);
-        /*
+
+
         if (isMyLike())
             like.setImageResource(R.drawable.own_like);
         else
@@ -69,18 +70,19 @@ public class QuestionActivity extends AppCompatActivity {
                     if (questionService.putLikeOnQuestion(loginPreferences.getUserId(),current_question.getId())){
                         like.setImageResource(R.drawable.own_like);
                         count_of_likes.setText(Integer.toString(Integer.valueOf(count_of_likes.getText().toString())+1));
-                        current_question = questionService.getQuestionById(question_id);
+                        current_question = questionService.getQuestionInternalById(question_id);
                     }
                 }
                 else{
                     if (questionService.disLikeOnQuestion(loginPreferences.getUserId(),current_question.getId())){
                         like.setImageResource(R.drawable.like);
                         count_of_likes.setText(Integer.toString(Integer.valueOf(count_of_likes.getText().toString())-1));
-                        current_question = questionService.getQuestionById(question_id);
+                        current_question = questionService.getQuestionInternalById(question_id);
                     }
                 }
             }
-        });*/
+        });
+
         answer_container = (LinearLayout) findViewById(R.id.answers_container);
         name_of_asker.setText(current_question.getUser().getFirstName() + " " + current_question.getUser().getLastName());
         question_date.setText(current_question.getCreationTime());

@@ -25,7 +25,10 @@ public class UIutils {
         Toolbar toolbar = (Toolbar) activity.findViewById(id);
         activity.setSupportActionBar(toolbar);
         activity.getSupportActionBar().setDisplayShowTitleEnabled(false);
-        Drawable logo = activity.getDrawable(R.mipmap.aq_logo);
+        Drawable logo = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            logo = activity.getDrawable(R.mipmap.aq_logo);
+        }
         toolbar.setLogo(logo);
     }
 
@@ -50,12 +53,14 @@ public class UIutils {
     }
 
     public  static boolean isValidEmail(String email){
+        email = email.trim();
         Pattern pattern = Patterns.EMAIL_ADDRESS;
         Matcher m = pattern.matcher(email);
         return m.matches();
     }
 
     public static boolean isValidName(String name){
+        name = name.trim();
         Pattern p = Pattern.compile("^\\w+\\s\\w+\\s\\w+");
         Matcher m = p.matcher(name);
         return m.matches();

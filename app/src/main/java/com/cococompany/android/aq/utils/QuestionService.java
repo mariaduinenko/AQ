@@ -199,21 +199,6 @@ public class QuestionService {
         return  result;
     }
 
-    public boolean disLikeOnQuestion(long userId, long questionId){
-        boolean result = false;
-        QuestionService.DisLikeTask disLikeTask = new DisLikeTask();
-        disLikeTask.execute(userId, questionId);
-        try {
-            result =  disLikeTask.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        return  result;
-    }
-
     class QuestionsTask extends AsyncTask<Void,Void,ArrayList<Question>>{
         @Override
         protected ArrayList<Question> doInBackground(Void... voids) {
@@ -381,7 +366,6 @@ public class QuestionService {
         }
     }
 
-
     class PutLikeTask extends AsyncTask<Long,Void,Boolean>{
         @Override
         protected Boolean doInBackground(Long... id) {
@@ -393,40 +377,12 @@ public class QuestionService {
                 response = call.execute();
                 result =  call.isExecuted();
                 if (response.isSuccessful()){
-//                    System.out.println("One DisLike: "+response.body().toString());
-                }
-                else
-                    System.out.println("ERROR: "+response.errorBody().string());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
+                }
+                else { System.out.println("Like/Dislike setting unsuccessfull. Response invalid"); }
+            } catch (IOException e) {e.printStackTrace();}
             return result;
         }
     }
-
-    class DisLikeTask extends AsyncTask<Long,Void,Boolean>{
-        @Override
-        protected Boolean doInBackground(Long... id) {
-            Boolean result = null;
-            Call<Like> call = getAqService().disLikeOnQuestion(id[0], id[1]);
-
-            Response<Like> response = null;
-
-            try {
-                response = call.execute();
-                result = response.isSuccessful();
-                if (response.isSuccessful()){
-                    System.out.println("One QUESTION: "+response.body().toString());
-                }
-                else
-                    System.out.println("ERROR: "+response.errorBody().string());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return result;
-        }
-    }
-    }
+}
 

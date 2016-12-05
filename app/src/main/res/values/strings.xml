@@ -29,6 +29,10 @@
     <string name="university">University</string>
     <string name="faculty">Faculty</string>
     <string name="speciality">Speciality</string>
+    <string name="entranceDate">Entrance date</string>
+    <string name="graduationDate">Graduation date</string>
+    <string name="dateOfEntrance">date of entrance</string>
+    <string name="dateOfGraduation">date of graduation</string>
     <string name="from">От</string>
     <string name="title_activity_question">QuestionActivity</string>
     <string name="project_url">https://pure-mesa-13823.herokuapp.com</string>

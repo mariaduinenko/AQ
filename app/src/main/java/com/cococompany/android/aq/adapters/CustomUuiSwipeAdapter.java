@@ -1,15 +1,19 @@
 package com.cococompany.android.aq.adapters;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutCompat;
+import android.text.InputType;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -27,9 +31,12 @@ import com.cococompany.android.aq.utils.SpecialityService;
 import com.cococompany.android.aq.utils.UniversityService;
 import com.cococompany.android.aq.utils.UserUniversityInfoService;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import static com.cococompany.android.aq.R.string.speciality;
 

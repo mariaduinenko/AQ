@@ -1,5 +1,6 @@
 package com.cococompany.android.aq.fragments;
 
+import android.app.DialogFragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,39 +11,25 @@ import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cococompany.android.aq.R;
-import com.cococompany.android.aq.adapters.CustomFacultySpinnerAdapter;
-import com.cococompany.android.aq.adapters.CustomSpecialitySpinnerAdapter;
-import com.cococompany.android.aq.adapters.CustomUniversitySpinnerAdapter;
 import com.cococompany.android.aq.adapters.CustomUuiSwipeAdapter;
-import com.cococompany.android.aq.models.Faculty;
-import com.cococompany.android.aq.models.Speciality;
-import com.cococompany.android.aq.models.University;
 import com.cococompany.android.aq.models.User;
 import com.cococompany.android.aq.models.UserUniversityInfo;
-import com.cococompany.android.aq.utils.FacultyService;
+import com.cococompany.android.aq.utils.DatePickerFragment;
 import com.cococompany.android.aq.utils.LoginPreferences;
-import com.cococompany.android.aq.utils.UniversityService;
 import com.cococompany.android.aq.utils.UserService;
 import com.cococompany.android.aq.utils.UserUniversityInfoService;
 
-import org.w3c.dom.Text;
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class ProfileFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -57,13 +44,11 @@ public class ProfileFragment extends Fragment {
     private String mParam2;
 
     private long startTime = 0L,
-
             finishTime = 0L;
-
-
 
     //    private Long selectedUniversityId = -1L;
 
+    private SimpleDateFormat dateFormatter;
 
     public static List<UserUniversityInfo> userUniversityInfos = new ArrayList<>();
 //    public static UserUniversityInfo[] userUniversityInfos = null;
@@ -72,7 +57,7 @@ public class ProfileFragment extends Fragment {
 
     private Long selectedUuiId = -1L;
 
-    private ViewPager viewPager;
+    public static ViewPager viewPager;
     private CustomUuiSwipeAdapter uuiSwipeAdapter;
 
     private UserUniversityInfoService uuiService = null;
@@ -192,9 +177,29 @@ public class ProfileFragment extends Fragment {
             viewPager.setAdapter(uuiSwipeAdapter);
 
             for (int i = 0; i < userUniversityInfos.size(); i++) {
+                final int pos = i;
+
                 LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                LinearLayout item_view = (LinearLayout) layoutInflater.inflate(R.layout.profile_uui_swipe_layout, null);
+                final LinearLayout item_view = (LinearLayout) layoutInflater.inflate(R.layout.profile_uui_swipe_layout, null);
                 uuiSwipeAdapter.addView(item_view, i);
+
+                EditText etEntranceDate = (EditText) item_view.findViewById(R.id.etEntranceDate);
+                etEntranceDate.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        DialogFragment fragment = new DatePickerFragment();
+                        fragment.show(getActivity().getFragmentManager(), "Date Picker");
+                    }
+                });
+
+                EditText etGraduationDate = (EditText) item_view.findViewById(R.id.etGraduationDate);
+                etGraduationDate.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        DialogFragment fragment = new DatePickerFragment();
+                        fragment.show(getActivity().getFragmentManager(), "Date Picker");
+                    }
+                });
 
                 registerForContextMenu(item_view);
                 Button btnAddUui = (Button) item_view.findViewById(R.id.btnAddUui);
@@ -208,6 +213,7 @@ public class ProfileFragment extends Fragment {
 
                         LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         LinearLayout item_view = (LinearLayout) layoutInflater.inflate(R.layout.profile_uui_swipe_layout, null);
+
                         uuiSwipeAdapter.addView(item_view, userUniversityInfos.size()-1);
                         registerForContextMenu(item_view);
                         Button btnAddUui = (Button) item_view.findViewById(R.id.btnAddUui);

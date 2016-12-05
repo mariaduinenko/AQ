@@ -76,8 +76,12 @@ public class FeedDeserializer implements JsonDeserializer<ArrayList<Question>> {
                     for (int j = 0; j < jsonRoles.size(); j++) {
                         JsonObject jsonRole = jsonRoles.get(j).getAsJsonObject();
                         Role role = new Role();
-                        role.setId(jsonRole.get("id").getAsLong());
-                        role.setName(jsonRole.get("name").getAsString());
+                        if (jsonRole.has("id"))
+                            role.setId(jsonRole.get("id").getAsLong());
+                        else break;
+                        if (jsonRole.has("name"))
+                            role.setName(jsonRole.get("name").getAsString());
+                        else break;
                         roles.add(role);
                     }
                 }
@@ -98,7 +102,10 @@ public class FeedDeserializer implements JsonDeserializer<ArrayList<Question>> {
                 for (int j = 0; j < jsonLikes.size(); j++) {
                     JsonObject jsonLike = jsonLikes.get(j).getAsJsonObject();
                     Like like = new Like();
-                    like.setCreationTime(jsonLike.get("creationTime").getAsString());
+                    if (jsonLike.has("creationTime"))
+                        like.setCreationTime(jsonLike.get("creationTime").getAsString());
+                    else
+                        break;
                     likes.add(like);
                 }
             }
@@ -112,9 +119,12 @@ public class FeedDeserializer implements JsonDeserializer<ArrayList<Question>> {
                 for (int j = 0; j < jsonAnswers.size(); j++) {
                     JsonObject jsonAnswer = jsonAnswers.get(j).getAsJsonObject();
                     Answer answer = new Answer();
-                    answer.setCreationTime(jsonAnswer.get("creationTime").getAsString());
-                    answer.setId(jsonAnswer.get("id").getAsLong());
-                    answer.setContent(jsonAnswer.get("content").getAsString());
+                    if (jsonAnswer.has("creationTime"))
+                        answer.setCreationTime(jsonAnswer.get("creationTime").getAsString());
+                    if (jsonAnswer.has("id"))
+                        answer.setId(jsonAnswer.get("id").getAsLong());
+                    if (jsonAnswer.has("content"))
+                        answer.setContent(jsonAnswer.get("content").getAsString());
 
                     //retrieving likes for answers
                     List<Like> answerLikes = null;
@@ -124,7 +134,9 @@ public class FeedDeserializer implements JsonDeserializer<ArrayList<Question>> {
                         for (int k = 0; k < jsonAnswerLikes.size(); k++) {
                             JsonObject jsonAnswerLike = jsonAnswerLikes.get(k).getAsJsonObject();
                             Like like = new Like();
-                            like.setCreationTime(jsonAnswerLike.get("creationTime").getAsString());
+                            if (jsonAnswerLike.has("creationtime"))
+                                like.setCreationTime(jsonAnswerLike.get("creationTime").getAsString());
+                            else break;
                             answerLikes.add(like);
                         }
                     }

@@ -64,7 +64,40 @@ public class QuestionDeserializer implements JsonDeserializer<Question> {
             for (int j = 0; j < jsonLikes.size(); j++) {
                 JsonObject jsonLike = jsonLikes.get(j).getAsJsonObject();
                 Like like = new Like();
-                like.setCreationTime(jsonLike.get("creationTime").getAsString());
+                if (jsonLike.has("creationTime")) {
+                    like.setCreationTime(jsonLike.get("creationTime").getAsString());
+                } else break;
+
+                if (jsonLike.has("id") && jsonLike.get("id").isJsonObject()) {
+                    jsonLike = jsonLike.getAsJsonObject("id");
+                    if (jsonLike.has("user")) {
+                        User likeUser = new User();
+                        if (jsonLike.get("user").isJsonObject()) {
+                            JsonObject jsonUser = jsonLike.get("user").getAsJsonObject();
+                            likeUser.setId(jsonUser.get("id").getAsLong());
+                            if (jsonUser.has("email"))
+                                likeUser.setEmail(jsonUser.get("email").getAsString());
+                            if (jsonUser.has("firstName"))
+                                likeUser.setFirstName(jsonUser.get("firstName").getAsString());
+                            if (jsonUser.has("lastName"))
+                                likeUser.setLastName(jsonUser.get("lastName").getAsString());
+                            if (jsonUser.has("middleName"))
+                                likeUser.setMiddleName(jsonUser.get("middleName").getAsString());
+                            if (jsonUser.has("nickname"))
+                                likeUser.setNickname(jsonUser.get("nickname").getAsString());
+                            if (jsonUser.has("active"))
+                                likeUser.setActive(jsonUser.get("active").getAsBoolean());
+                            if (jsonUser.has("avatar"))
+                                likeUser.setAvatar(jsonUser.get("avatar").getAsString());
+                            users.add(likeUser);
+                        } else {
+                            likeUser = findUserById(jsonLike.get("user").getAsLong());
+                        }
+
+                        like.setUser(likeUser);
+                    }
+                }
+
                 likes.add(like);
             }
         }
@@ -135,6 +168,6 @@ public class QuestionDeserializer implements JsonDeserializer<Question> {
             if (id == sUser.getId())
                 return sUser;
         }
-        return null;
+        return new User(id);
     }
 }

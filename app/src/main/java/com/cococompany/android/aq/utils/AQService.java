@@ -52,9 +52,11 @@ public interface AQService {
     Call<Question> getQuestionById(@Path("id") Long id);
     @GET("/rest/questions/internal/{id}")
     Call<Question> getQuestionInternalById(@Path("id") Long id);
+    @GET("/rest/questions/liking/{id}")
+    Call<Question> getQuestionLikingById(@Path("id") Long id);
 
     @PUT("/rest/questions/like/{userId}/{questionId}")
-    Call<Like> putLikeOnQuestion(@Path("userId") Long userId, @Path("questionId") Long questionId);
+    Call<Void> putLikeOnQuestion(@Path("userId") Long userId, @Path("questionId") Long questionId);
 
     @PUT("/rest/questions/dislike/{userId}/{questionId}")
     Call<Like> disLikeOnQuestion(@Path("userId") Long userId, @Path("questionId") Long questionId);

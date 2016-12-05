@@ -2,6 +2,7 @@ package com.cococompany.android.aq.models;
 
 import java.sql.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.google.gson.annotations.Expose;
@@ -60,6 +61,10 @@ public class User {
     @SerializedName("avatar")
     @Expose
     private String avatar;
+
+    @SerializedName("userUniversityInfos")
+    @Expose
+    private List<UserUniversityInfo> uuis;
 
     public User(Long id) {
         this.id = id;
@@ -184,10 +189,20 @@ public class User {
         this.birthdate = birthdate;
     }
 
+    public List<UserUniversityInfo> getUuis() {
+        return uuis;
+    }
+
+    public void setUuis(List<UserUniversityInfo> uuis) {
+        this.uuis = uuis;
+    }
+
     @Override
     public String toString() {
         return "User{" +
-                "creationTime='" + creationTime + '\'' +
+                "passwordConfirm='" + passwordConfirm + '\'' +
+                ", birthdate='" + birthdate + '\'' +
+                ", creationTime='" + creationTime + '\'' +
                 ", active=" + active +
                 ", id=" + id +
                 ", email='" + email + '\'' +
@@ -196,7 +211,10 @@ public class User {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", middleName='" + middleName + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", uuis=" + uuis +
                 ", roles=" + roles +
+                ", categories=" + categories +
                 '}';
     }
 }

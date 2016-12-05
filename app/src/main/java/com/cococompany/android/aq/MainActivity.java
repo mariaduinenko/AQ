@@ -97,10 +97,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (UIutils.isValidEmail(email_edit.getText().toString())){
                     User user = null;
-                    user = registrationService.login(email_edit.getText().toString(),password_edit.getText().toString());
+                    user = registrationService.loginProfile(email_edit.getText().toString(),password_edit.getText().toString());
 
-                    if(user!=null){
+                    if(user!=null) {
                         Intent intent = new Intent(MainActivity.this, ContentActivity.class);
+
                         LoginPreferences preferences = new LoginPreferences(MainActivity.this);
                         preferences.setUserId(user.getId());
                         preferences.setUserPassword(password_edit.getText().toString());
@@ -118,19 +119,16 @@ public class MainActivity extends AppCompatActivity {
                         }
                         preferences.setUserCategories(categories);
 
-                        List<UserUniversityInfo> uuis = uuiService.getUserUniversityInfosByUserId(user.getId());
-                        preferences.setUserUniversityInfos(uuis);
+//                        List<UserUniversityInfo> uuis = uuiService.getUserUniversityInfosByUserId(user.getId());
+                        preferences.setUserUniversityInfos(user.getUuis());
 
                         System.out.println("Preferences successfully saved: id="+preferences.getUserId()+"; pass="+preferences.getUserPassword() + "; email="+preferences.getUserEmail() + "; bdate="+preferences.getUserBirthdate() + "; fname="+preferences.getUserFirstname() + "; lname="+preferences.getUserLastname() + "; mname="+preferences.getUserMiddlename() + "; nick="+preferences.getUserNickname() + "; avatar="+preferences.getUserAvatar() + "; categories="+preferences.getUserCategories());
                         System.out.println("Also saved preference - uui list=" + preferences.getUserUniversityInfos());
                         startActivity(intent);
-
-
                     }
                     else{
                         Toast.makeText(MainActivity.this,"User doesn't exist",Toast.LENGTH_SHORT).show();
                     }
-
                 }
                 else{
                     Toast.makeText(MainActivity.this,"Wrong email",Toast.LENGTH_SHORT).show();

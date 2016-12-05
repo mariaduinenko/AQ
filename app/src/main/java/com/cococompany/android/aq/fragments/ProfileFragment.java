@@ -1,19 +1,25 @@
 package com.cococompany.android.aq.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cococompany.android.aq.R;
@@ -31,6 +37,8 @@ import com.cococompany.android.aq.utils.LoginPreferences;
 import com.cococompany.android.aq.utils.UniversityService;
 import com.cococompany.android.aq.utils.UserService;
 import com.cococompany.android.aq.utils.UserUniversityInfoService;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +65,8 @@ public class ProfileFragment extends Fragment {
     //    private Long selectedUniversityId = -1L;
 
 
-    public static UserUniversityInfo[] userUniversityInfos = null;
+    public static List<UserUniversityInfo> userUniversityInfos = new ArrayList<>();
+//    public static UserUniversityInfo[] userUniversityInfos = null;
 
 //    private Long selectedUniversityId = -1L;
 
@@ -119,7 +128,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onPageSelected(int position) {
                 pagePosition = position;
-                selectedUuiId = (userUniversityInfos[pagePosition] != null)? userUniversityInfos[pagePosition].getId() : -1L;
+                selectedUuiId = (userUniversityInfos.get(pagePosition) != null)? userUniversityInfos.get(pagePosition).getId() : -1L;
             }
 
             @Override
@@ -173,25 +182,54 @@ public class ProfileFragment extends Fragment {
         etNickname.setText(userNickname);
         etEmail.setText(userEmail);
 
-        int uuisCount = (preferences.getUserUniversityInfos() != null)? preferences.getUserUniversityInfos().size() : 0;
+        final int uuisCount = (preferences.getUserUniversityInfos() != null)? preferences.getUserUniversityInfos().size() : 0;
         if (uuisCount > 0) {
             startTime = System.currentTimeMillis();
-            List<UserUniversityInfo> uuiList = preferences.getUserUniversityInfos();
-
-            userUniversityInfos = new UserUniversityInfo[uuiList.size()];
-            uuiList.toArray(userUniversityInfos);
+            userUniversityInfos = new ArrayList<>(preferences.getUserUniversityInfos());
 
             uuiSwipeAdapter = new CustomUuiSwipeAdapter(getContext());
+//            uuiSwipeAdapter = new CustomUuiSwipeAdapter(getContext(), this);
             viewPager.setAdapter(uuiSwipeAdapter);
+
+            for (int i = 0; i < userUniversityInfos.size(); i++) {
+                LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                LinearLayout item_view = (LinearLayout) layoutInflater.inflate(R.layout.profile_uui_swipe_layout, null);
+                uuiSwipeAdapter.addView(item_view, i);
+
+                registerForContextMenu(item_view);
+                Button btnAddUui = (Button) item_view.findViewById(R.id.btnAddUui);
+                btnAddUui.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        UserUniversityInfo uui = new UserUniversityInfo();
+                        uui.setUser(user);
+                        uui = uuiService.createUui(uui);
+                        userUniversityInfos.add(uui);
+
+                        LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        LinearLayout item_view = (LinearLayout) layoutInflater.inflate(R.layout.profile_uui_swipe_layout, null);
+                        uuiSwipeAdapter.addView(item_view, userUniversityInfos.size()-1);
+                        registerForContextMenu(item_view);
+                        Button btnAddUui = (Button) item_view.findViewById(R.id.btnAddUui);
+                        btnAddUui.setOnClickListener(this);
+                        uuiSwipeAdapter.changeTotalIcon();
+                        uuiSwipeAdapter.notifyDataSetChanged();
+                        viewPager.setCurrentItem(userUniversityInfos.size()-1);
+                    }
+                });
+
+                uuiSwipeAdapter.notifyDataSetChanged();
+            }
             finishTime = System.currentTimeMillis();
         }else {
             startTime = System.currentTimeMillis();
-            userUniversityInfos = new UserUniversityInfo[1];
+            userUniversityInfos = new ArrayList<>();
             UserUniversityInfo uui = new UserUniversityInfo();
             uui.setUser(new User(userId));
-            userUniversityInfos[0] = uui;
+            userUniversityInfos.add(uuiService.createUui(uui));
 
             uuiSwipeAdapter = new CustomUuiSwipeAdapter(getContext());
+//            uuiSwipeAdapter = new CustomUuiSwipeAdapter(getContext(), this);
             viewPager.setAdapter(uuiSwipeAdapter);
             finishTime = System.currentTimeMillis();
         }
@@ -218,8 +256,9 @@ public class ProfileFragment extends Fragment {
 
                 userService.lightUpdate(user);
 
-                for (int i = 0; i < userUniversityInfos.length; i++) {
-                    userUniversityInfos[i] = uuiService.updateUui(userUniversityInfos[i]);
+                for (int i = 0; i < userUniversityInfos.size(); i++) {
+                    userUniversityInfos.get(i).setUser(user);
+                    userUniversityInfos.set(i, uuiService.updateUui(userUniversityInfos.get(i)));
                 }
 
                 finishTime = System.currentTimeMillis();
@@ -229,9 +268,32 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-
         // Inflate the layout for this fragment
         return view;
+    }
+
+    public void addView(View newPage)
+    {
+        int pageIndex = uuiSwipeAdapter.addView (newPage);
+        viewPager.setCurrentItem(pageIndex, true);
+    }
+
+    public void removeView(View defunctPage)
+    {
+        int pageIndex = uuiSwipeAdapter.removeView(viewPager, defunctPage);
+        if (pageIndex == uuiSwipeAdapter.getCount())
+            pageIndex--;
+        viewPager.setCurrentItem(pageIndex);
+    }
+
+    public View getCurrentPage()
+    {
+        return uuiSwipeAdapter.getView(viewPager.getCurrentItem());
+    }
+
+    public void setCurrentPage(View pageToShow)
+    {
+        viewPager.setCurrentItem(uuiSwipeAdapter.getItemPosition (pageToShow), true);
     }
 
     public class NicknameTextChangedListener implements TextWatcher {
@@ -281,6 +343,30 @@ public class ProfileFragment extends Fragment {
             EditText etEmail = (EditText) getView().findViewById(R.id.email);
             preferences.setUserEmail(etEmail.getText().toString());
         }
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        menu.setHeaderTitle("Context Menu");
+        menu.add(0, v.getId(), 0, "Remove University Info");
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        if (item.getTitle() == "Remove University Info") {
+            uuiService.removeUui(userUniversityInfos.get(pagePosition).getId());
+            //remove ui components too
+            uuiSwipeAdapter.removeView(viewPager, pagePosition);
+            userUniversityInfos.remove(pagePosition);
+            uuiSwipeAdapter.changeTotalIcon();
+//            Toast.makeText(getContext(), "Remove University Info invoked. Current page = " + pagePosition, Toast.LENGTH_SHORT).show();
+            uuiSwipeAdapter.notifyDataSetChanged();
+        } else {
+            return false;
+        }
+        return true;
     }
 
     public void showToast(View view, String text) {

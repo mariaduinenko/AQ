@@ -39,17 +39,19 @@ import static com.cococompany.android.aq.R.string.speciality;
 
 public class CustomUuiSwipeAdapter extends PagerAdapter {
 
-    private List<Speciality>[] specialitiesData = new ArrayList[ProfileFragment.userUniversityInfos.length];
-    private List<Faculty>[] facultiesData = new ArrayList[ProfileFragment.userUniversityInfos.length];
-    private List<University>[] universitiesData = new ArrayList[ProfileFragment.userUniversityInfos.length];
+    private ArrayList<View> views = new ArrayList<View>();
 
-    private Spinner[] spSpecialities = new Spinner[ProfileFragment.userUniversityInfos.length];
-    private Spinner[] spFaculties = new Spinner[ProfileFragment.userUniversityInfos.length];
-    private Spinner[] spUniversities = new Spinner[ProfileFragment.userUniversityInfos.length];
+    private List<List<Speciality>> specialitiesData = new ArrayList<>(ProfileFragment.userUniversityInfos.size());
+    private List<List<Faculty>> facultiesData = new ArrayList<>(ProfileFragment.userUniversityInfos.size());
+    private List<List<University>> universitiesData = new ArrayList<>(ProfileFragment.userUniversityInfos.size());
 
-    private CustomUniversitySpinnerAdapter universityAdapter;
-    private CustomFacultySpinnerAdapter facultyAdapter;
-    private CustomSpecialitySpinnerAdapter specialityAdapter;
+    private List<Spinner> spSpecialities = new ArrayList<>(ProfileFragment.userUniversityInfos.size());
+    private List<Spinner> spFaculties = new ArrayList<>(ProfileFragment.userUniversityInfos.size());
+    private List<Spinner> spUniversities = new ArrayList<>(ProfileFragment.userUniversityInfos.size());
+
+    private CustomUniversitySpinnerAdapter universityAdapter = null;
+    private CustomFacultySpinnerAdapter facultyAdapter = null;
+    private CustomSpecialitySpinnerAdapter specialityAdapter = null;
 
     private Context ctx;
     private LayoutInflater layoutInflater;
@@ -59,16 +61,47 @@ public class CustomUuiSwipeAdapter extends PagerAdapter {
     private FacultyService facultyService = null;
     private UniversityService universityService = null;
 
-    private Long[] initialUniversityId = new Long[ProfileFragment.userUniversityInfos.length],
-            initialSpecialityId = new Long[ProfileFragment.userUniversityInfos.length],
-            initialFacultyId = new Long[ProfileFragment.userUniversityInfos.length];
+    private List<Long> initialUniversityId = new ArrayList<>(ProfileFragment.userUniversityInfos.size()),
+            initialSpecialityId = new ArrayList<>(ProfileFragment.userUniversityInfos.size()),
+            initialFacultyId = new ArrayList<>(ProfileFragment.userUniversityInfos.size());
 
-    TextView titlePosition = null;
-    TextView titleTotal = null;
+    List<TextView> titlePosition = new ArrayList<>(ProfileFragment.userUniversityInfos.size());
+    List<TextView> titleTotal = new ArrayList<>(ProfileFragment.userUniversityInfos.size());
     Button btnAddUui = null;
+
+    private ProfileFragment profileFragment;
 
     private long startTime = 0L,
             finishTime = 0L;
+
+//    public CustomUuiSwipeAdapter(Context ctx, ProfileFragment profileFragment) {
+//        this.ctx = ctx;
+//
+//        this.profileFragment = profileFragment;
+//
+//        startTime = System.currentTimeMillis();
+//        uuiService = new UserUniversityInfoService(ctx);
+//        specialityService = new SpecialityService(ctx);
+//        facultyService = new FacultyService(ctx);
+//        universityService = new UniversityService(ctx);
+//
+//        //configure initial Ids
+//        for (int i = 0; i < ProfileFragment.userUniversityInfos.length; i++) {
+//            initialUniversityId[i] = -1L;
+//            initialSpecialityId[i] = -1L;
+//            initialFacultyId[i] = -1L;
+//        }
+//
+//        //fulfilling datas
+//        for (int i = 0; i < universitiesData.length; i++)
+//            universitiesData[i] = new ArrayList<University>();
+//        for (int i = 0; i < facultiesData.length; i++)
+//            facultiesData[i] = new ArrayList<Faculty>();
+//        for (int i = 0; i < specialitiesData.length; i++)
+//            specialitiesData[i] = new ArrayList<Speciality>();
+//        finishTime = System.currentTimeMillis();
+//        System.out.println("%\\_(^_^)_/%" + "load services|execution time:" + (finishTime - startTime));
+//    }
 
     public CustomUuiSwipeAdapter(Context ctx) {
         this.ctx = ctx;
@@ -78,28 +111,37 @@ public class CustomUuiSwipeAdapter extends PagerAdapter {
         specialityService = new SpecialityService(ctx);
         facultyService = new FacultyService(ctx);
         universityService = new UniversityService(ctx);
+        finishTime = System.currentTimeMillis();
 
         //configure initial Ids
-        for (int i = 0; i < ProfileFragment.userUniversityInfos.length; i++) {
-            initialUniversityId[i] = -1L;
-            initialSpecialityId[i] = -1L;
-            initialFacultyId[i] = -1L;
+        for (int i = 0; i < initialUniversityId.size(); i++) {
+            initialUniversityId.set(i, -1L);
+            initialSpecialityId.set(i, -1L);
+            initialFacultyId.set(i, -1L);
         }
 
         //fulfilling datas
-        for (int i = 0; i < universitiesData.length; i++)
-            universitiesData[i] = new ArrayList<University>();
-        for (int i = 0; i < facultiesData.length; i++)
-            facultiesData[i] = new ArrayList<Faculty>();
-        for (int i = 0; i < specialitiesData.length; i++)
-            specialitiesData[i] = new ArrayList<Speciality>();
-        finishTime = System.currentTimeMillis();
-        System.out.println("%\\_(^_^)_/%" + "load services|execution time:" + (finishTime - startTime));
+        for (int i = 0; i < ProfileFragment.userUniversityInfos.size(); i++) {
+            universitiesData.add(new ArrayList<University>());
+            facultiesData.add(new ArrayList<Faculty>());
+            specialitiesData.add(new ArrayList<Speciality>());
+        }
+
+    }
+
+    @Override
+    public int getItemPosition(Object object) {
+        int index = views.indexOf(object);
+        if (index == -1)
+            return POSITION_NONE;
+        else
+            return index;
     }
 
     @Override
     public int getCount() {
-        return ProfileFragment.userUniversityInfos.length;
+//        return ProfileFragment.userUniversityInfos.length;
+        return views.size();
     }
 
     @Override
@@ -107,217 +149,416 @@ public class CustomUuiSwipeAdapter extends PagerAdapter {
         return view == (LinearLayout) object;
     }
 
+    public int addView(View v)
+    {
+        return addView(v, views.size());
+    }
+
+    public int addView(View v, int position)
+    {
+        views.add(position, v);
+        return position;
+    }
+
+    public int removeView(ViewPager pager, View v)
+    {
+        return removeView(pager, views.indexOf(v));
+    }
+
+    public int removeView(ViewPager pager, int position)
+    {
+        pager.setAdapter(null);
+        views.remove(position);
+        //additional work
+        universitiesData.remove(position);
+        specialitiesData.remove(position);
+        facultiesData.remove(position);
+        spUniversities.remove(position);
+        spFaculties.remove(position);
+        spSpecialities.remove(position);
+        initialUniversityId.remove(position);
+        initialFacultyId.remove(position);
+        initialSpecialityId.remove(position);
+        titlePosition.remove(position);
+        titleTotal.remove(position);
+        pager.setAdapter(this);
+
+        return position;
+    }
+
+    public View getView(int position)
+    {
+        return views.get(position);
+    }
+
     //Main code part
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        layoutInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View item_view = layoutInflater.inflate(R.layout.profile_uui_swipe_layout, container, false);
 
-        //filling the fields
-        btnAddUui = (Button) item_view.findViewById(R.id.btnAddUui);
-        //add onclick listener to button (add new uui)
-        btnAddUui.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (lastUuiEmpty())
-                    return;
+        fillData(position);
 
-                List<UserUniversityInfo> userUniversityInfos = new ArrayList<UserUniversityInfo>();
-                userUniversityInfos.addAll(Arrays.asList(ProfileFragment.userUniversityInfos));
+        View v = views.get(position);
+        container.addView(v);
+        return v;
 
-                UserUniversityInfo addedUui = new UserUniversityInfo();
-                addedUui.setUser(ProfileFragment.user);
-                addedUui = uuiService.createUui(addedUui);
 
-                userUniversityInfos.add(addedUui);
+//        layoutInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//        View item_view = layoutInflater.inflate(R.layout.profile_uui_swipe_layout, container, false);
+//
+//        //filling the fields
+//        btnAddUui = (Button) item_view.findViewById(R.id.btnAddUui);
+//        //add onclick listener to button (add new uui)
+//        btnAddUui.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (lastUuiEmpty())
+//                    return;
+//
+//                List<UserUniversityInfo> userUniversityInfos = new ArrayList<UserUniversityInfo>();
+//                userUniversityInfos.addAll(Arrays.asList(ProfileFragment.userUniversityInfos));
+//
+//                UserUniversityInfo addedUui = new UserUniversityInfo();
+//                addedUui.setUser(ProfileFragment.user);
+//                addedUui = uuiService.createUui(addedUui);
+//
+//                userUniversityInfos.add(addedUui);
+//
+//                ProfileFragment.userUniversityInfos = new UserUniversityInfo[userUniversityInfos.size()];
+//                userUniversityInfos.toArray(ProfileFragment.userUniversityInfos);
+//
+//                //initial Ids configuring
+//                Long[] extendedUniversityId = new Long[initialUniversityId.length+1];
+//                Long[] extendedFacultyId = new Long[initialFacultyId.length+1];
+//                Long[] extendedSpecialityId = new Long[initialSpecialityId.length+1];
+//
+//                for (int i = 0; i < extendedUniversityId.length; i++) {
+//                    if (i == (extendedUniversityId.length-1)) {
+//                        extendedUniversityId[i] = null;
+//                        break;
+//                    }
+//                    extendedUniversityId[i] = initialUniversityId[i];
+//                }
+//
+//                for (int i = 0; i < extendedFacultyId.length; i++) {
+//                    if (i == (extendedFacultyId.length-1)) {
+//                        extendedFacultyId[i] = null;
+//                        break;
+//                    }
+//                    extendedFacultyId[i] = initialFacultyId[i];
+//                }
+//
+//                for (int i = 0; i < extendedSpecialityId.length; i++) {
+//                    if (i == (extendedSpecialityId.length-1)) {
+//                        extendedSpecialityId[i] = null;
+//                        break;
+//                    }
+//                    extendedSpecialityId[i] = initialSpecialityId[i];
+//                }
+//
+//                initialUniversityId = extendedUniversityId.clone();
+//                initialFacultyId = extendedFacultyId.clone();
+//                initialSpecialityId = extendedSpecialityId.clone();
+//
+//                extendedUniversityId = null;
+//                extendedFacultyId = null;
+//                extendedSpecialityId = null;
+//
+//                //spinners configuring
+//                Spinner[] extendedSpUniversities = new Spinner[spUniversities.length+1];
+//                Spinner[] extendedSpFaculties = new Spinner[spFaculties.length+1];
+//                Spinner[] extendedSpSpecialities = new Spinner[spSpecialities.length+1];
+//
+//                for (int i = 0; i < extendedSpUniversities.length; i++) {
+//                    if (i == (extendedSpUniversities.length-1)) {
+//                        extendedSpUniversities[i] = null;
+//                        break;
+//                    }
+//                    extendedSpUniversities[i] = spUniversities[i];
+//                }
+//
+//                for (int i = 0; i < extendedSpFaculties.length; i++) {
+//                    if (i == (extendedSpFaculties.length-1)) {
+//                        extendedSpFaculties[i] = null;
+//                        break;
+//                    }
+//                    extendedSpFaculties[i] = spFaculties[i];
+//                }
+//
+//                for (int i = 0; i < extendedSpSpecialities.length; i++) {
+//                    if (i == (extendedSpSpecialities.length-1)) {
+//                        extendedSpSpecialities[i] = null;
+//                        break;
+//                    }
+//                    extendedSpSpecialities[i] = spSpecialities[i];
+//                }
+//
+//                //datas configuring
+//                List[] extendedUniversitiesData = new List[universitiesData.length+1];
+//                List[] extendedFacultiesData = new List[facultiesData.length+1];
+//                List[] extendedSpecialitiesData = new List[specialitiesData.length+1];
+//
+//                for (int i = 0; i < extendedUniversitiesData.length; i++) {
+//                    if (i == (extendedUniversitiesData.length-1)) {
+//                        extendedUniversitiesData[i] = new ArrayList<University>();
+//                        break;
+//                    }
+//                    extendedUniversitiesData[i] = universitiesData[i];
+//                }
+//
+//                for (int i = 0; i < extendedFacultiesData.length; i++) {
+//                    if (i == (extendedFacultiesData.length-1)) {
+//                        extendedFacultiesData[i] = new ArrayList<Faculty>();
+//                        break;
+//                    }
+//                    extendedFacultiesData[i] = facultiesData[i];
+//                }
+//
+//                for (int i = 0; i < extendedSpecialitiesData.length; i++) {
+//                    if (i == (extendedSpecialitiesData.length-1)) {
+//                        extendedSpecialitiesData[i] = new ArrayList<Speciality>();
+//                        break;
+//                    }
+//                    extendedSpecialitiesData[i] = specialitiesData[i];
+//                }
+//
+//                universitiesData = extendedUniversitiesData.clone();
+//                facultiesData = extendedFacultiesData.clone();
+//                specialitiesData = extendedSpecialitiesData.clone();
+//
+//                extendedUniversitiesData = null;
+//                extendedFacultiesData = null;
+//                extendedSpecialitiesData = null;
+//
+//                titleTotal.setText(String.valueOf(ProfileFragment.userUniversityInfos.length));
+//
+//                notifyDataSetChanged();
+//            }
+//        });
+//
+//        titlePosition = (TextView) item_view.findViewById(R.id.titleContentProfileUui);
+//        titlePosition.setText(String.valueOf(position+1));
+//        titleTotal = (TextView) item_view.findViewById(R.id.titleEndProfileUui);
+//        titleTotal.setText(String.valueOf(ProfileFragment.userUniversityInfos.length));
+//
+//        spSpecialities[position] = (Spinner) item_view.findViewById(R.id.speciality_sp);
+//        spFaculties[position] = (Spinner) item_view.findViewById(R.id.faculty_sp);
+//        spUniversities[position] = (Spinner) item_view.findViewById(R.id.university_sp);
+//
+//        TextView lblUniversityUui = (TextView) item_view.findViewById(R.id.lblUniversityUui);
+//        TextView lblFacultyUui = (TextView) item_view.findViewById(R.id.lblFacultyUui);
+//        TextView lblSpecialityUui = (TextView) item_view.findViewById(R.id.lblSpecialityUui);
+//
+//        if (lblUniversityUui != null)
+//            profileFragment.registerForContextMenu(lblUniversityUui);
+//        if (lblFacultyUui != null)
+//            profileFragment.registerForContextMenu(lblFacultyUui);
+//        if (lblSpecialityUui != null)
+//            profileFragment.registerForContextMenu(lblSpecialityUui);
+////        if (spUniversities[position] != null)
+////            profileFragment.registerForContextMenu(spUniversities[position]);
+////        if (spFaculties[position] != null)
+////            profileFragment.registerForContextMenu(spFaculties[position]);
+////        if (spSpecialities[position] != null)
+////            profileFragment.registerForContextMenu(spSpecialities[position]);
+//
+//        //university configuration
+//        initialUniversityId[position] = 0L;
+//        University university = ProfileFragment.userUniversityInfos[position].getUniversity();
+//        if (university != null) {
+//            startTime = System.currentTimeMillis();
+//            initialUniversityId[position] = university.getId();
+//            universitiesData[position].clear();
+//            universitiesData[position].add(null);
+//            universitiesData[position].addAll(universityService.getUniversities());
+//
+//            configureUniversitySpinner(universityIndex(university.getId(), position), position);
+//            finishTime = System.currentTimeMillis();
+//            System.out.println("("+position+")-(instantiateItem)" + "-(university is not null, universitiesData:"+universitiesData[position]+")|execution time:" + (finishTime - startTime) + " msec");
+//        } else {
+//            configureUniversitiesList(position);
+//
+//            configureUniversitySpinner(0, position);
+//            System.out.println("("+position+")-(instantiateItem)" + "-(university is null, universitiesData:"+universitiesData[position]+", selected none of universities)");
+//        }
+//
+//        //faculty configuration
+//        initialFacultyId[position] = 0L;
+//        Faculty faculty = ProfileFragment.userUniversityInfos[position].getFaculty();
+//        if (faculty != null) {
+//            startTime = System.currentTimeMillis();
+//            initialFacultyId[position] = faculty.getId();
+//            facultiesData[position].clear();
+//            facultiesData[position].add(null);
+//            if (university != null)
+//                facultiesData[position].addAll(facultyService.getFacultiesByUniversityId(university.getId()));
+//
+//            configureFacultySpinner(facultyIndex(faculty.getId(), position), position);
+//            finishTime = System.currentTimeMillis();
+//            System.out.println("("+position+")-(instantiateItem)" + "-(faculty is not null, facultiesData:"+facultiesData[position]+")|execution time:" + (finishTime - startTime) + " msec");
+//        } else {
+//            if (university == null) {
+//                facultiesData[position] = new ArrayList<>();
+//                facultiesData[position].add(null);
+//
+//                configureFacultySpinner(0, position);
+//                System.out.println("("+position+")-(instantiateItem)" + "-(faculty is null and university too, facultiesData:"+facultiesData[position]+", selected none of faculties)");
+//            } else {
+//                configureFacultiesList(university.getId(), position);
+//                configureFacultySpinner(0, position);
+//                System.out.println("("+position+")-(instantiateItem)" + "-(faculty is null and university is not, facultiesData:"+facultiesData[position]+", selected none of faculties)");
+//            }
+//        }
+//
+//        //speciality configuration
+//        initialSpecialityId[position] = 0L;
+//        Speciality speciality = ProfileFragment.userUniversityInfos[position].getSpeciality();
+//        if (speciality != null) {
+//            startTime = System.currentTimeMillis();
+//            initialSpecialityId[position] = speciality.getId();
+//            specialitiesData[position].clear();
+//            specialitiesData[position].add(null);
+//            if (university != null) {
+//                if (faculty != null) {
+//                    List<Speciality> specialities = specialityService.getSpecialitiesByFacultyId(faculty.getId());
+//                    specialitiesData[position].addAll(specialities);
+//                    System.out.println("("+position+")-(instantiateItem)" + "-(speciality is not null and faculty too, specialitiesData:"+specialitiesData[position]+")|execution time:" + (finishTime - startTime) + " msec");
+//                }
+//                else {
+//                    List<Speciality> specialities = specialityService.getSpecialitiesByUniversityId(university.getId());
+//                    specialitiesData[position].addAll(specialities);
+//                    System.out.println("("+position+")-(instantiateItem)" + "-(speciality is not null and faculty is null, specialitiesData:"+specialitiesData[position]+")|execution time:" + (finishTime - startTime) + " msec");
+//                }
+//            }
+//
+//            System.out.println("("+position+")-(instantiateItem)" + "-(speciality index=" + specialityIndex(speciality.getId(), position) + ")");
+//            configureSpecialitySpinner(specialityIndex(speciality.getId(), position), position);
+//            finishTime = System.currentTimeMillis();
+//            System.out.println("("+position+")-(instantiateItem)" + "-(specialities spinner configured)|execution time:" + (finishTime - startTime) + " msec");
+//        } else {
+//            if (university == null) {
+//                specialitiesData[position].clear();
+//                specialitiesData[position].add(null);
+//
+//                configureSpecialitySpinner(0, position);
+//                System.out.println("(" + position + ")-(instantiateItem)" + "-(speciality is null and university too, selected none of specialities)");
+//            } else {
+//                if (faculty == null) {
+//                    configureSpecialitiesListByUniversity(university.getId(), position);
+//                    configureSpecialitySpinner(0, position);
+//                } else {
+//                    configureSpecialitiesListByFaculty(faculty.getId(), position);
+//                    configureSpecialitySpinner(0, position);
+//                }
+//            }
+//        }
+//
+//        container.addView(item_view);
+//
+//        return item_view;
+    }
 
-                ProfileFragment.userUniversityInfos = new UserUniversityInfo[userUniversityInfos.size()];
-                userUniversityInfos.toArray(ProfileFragment.userUniversityInfos);
+    public void changeTotalIcon() {
+        //change total icon for each uui
+        for (int i = 0; i < titlePosition.size(); i++) {
+            titleTotal.get(i).setText(String.valueOf(ProfileFragment.userUniversityInfos.size()));
+        }
+    }
 
-                //initial Ids configuring
-                Long[] extendedUniversityId = new Long[initialUniversityId.length+1];
-                Long[] extendedFacultyId = new Long[initialFacultyId.length+1];
-                Long[] extendedSpecialityId = new Long[initialSpecialityId.length+1];
+    private void fillData(final int position) {
 
-                for (int i = 0; i < extendedUniversityId.length; i++) {
-                    if (i == (extendedUniversityId.length-1)) {
-                        extendedUniversityId[i] = null;
-                        break;
-                    }
-                    extendedUniversityId[i] = initialUniversityId[i];
-                }
+        if (position == spUniversities.size()) {
+            titlePosition.add((TextView) views.get(position).findViewById(R.id.titleContentProfileUui));
+            titleTotal.add((TextView) views.get(position).findViewById(R.id.titleEndProfileUui));
 
-                for (int i = 0; i < extendedFacultyId.length; i++) {
-                    if (i == (extendedFacultyId.length-1)) {
-                        extendedFacultyId[i] = null;
-                        break;
-                    }
-                    extendedFacultyId[i] = initialFacultyId[i];
-                }
+            spUniversities.add((Spinner) views.get(position).findViewById(R.id.university_sp));
+            spFaculties.add((Spinner) views.get(position).findViewById(R.id.faculty_sp));
+            spSpecialities.add((Spinner) views.get(position).findViewById(R.id.speciality_sp));
 
-                for (int i = 0; i < extendedSpecialityId.length; i++) {
-                    if (i == (extendedSpecialityId.length-1)) {
-                        extendedSpecialityId[i] = null;
-                        break;
-                    }
-                    extendedSpecialityId[i] = initialSpecialityId[i];
-                }
+            initialUniversityId.add(-1L);
+            initialFacultyId.add(-1L);
+            initialSpecialityId.add(-1L);
 
-                initialUniversityId = extendedUniversityId.clone();
-                initialFacultyId = extendedFacultyId.clone();
-                initialSpecialityId = extendedSpecialityId.clone();
+            universitiesData.add(new ArrayList<University>());
+            facultiesData.add(new ArrayList<Faculty>());
+            specialitiesData.add(new ArrayList<Speciality>());
+        } else {
+            titlePosition.set(position, (TextView) views.get(position).findViewById(R.id.titleContentProfileUui));
+            titleTotal.set(position, (TextView) views.get(position).findViewById(R.id.titleEndProfileUui));
 
-                extendedUniversityId = null;
-                extendedFacultyId = null;
-                extendedSpecialityId = null;
+            spUniversities.set(position, (Spinner) views.get(position).findViewById(R.id.university_sp));
+            spFaculties.set(position, (Spinner) views.get(position).findViewById(R.id.faculty_sp));
+            spSpecialities.set(position, (Spinner) views.get(position).findViewById(R.id.speciality_sp));
+        }
 
-                //spinners configuring
-                Spinner[] extendedSpUniversities = new Spinner[spUniversities.length+1];
-                Spinner[] extendedSpFaculties = new Spinner[spFaculties.length+1];
-                Spinner[] extendedSpSpecialities = new Spinner[spSpecialities.length+1];
-
-                for (int i = 0; i < extendedSpUniversities.length; i++) {
-                    if (i == (extendedSpUniversities.length-1)) {
-                        extendedSpUniversities[i] = null;
-                        break;
-                    }
-                    extendedSpUniversities[i] = spUniversities[i];
-                }
-
-                for (int i = 0; i < extendedSpFaculties.length; i++) {
-                    if (i == (extendedSpFaculties.length-1)) {
-                        extendedSpFaculties[i] = null;
-                        break;
-                    }
-                    extendedSpFaculties[i] = spFaculties[i];
-                }
-
-                for (int i = 0; i < extendedSpSpecialities.length; i++) {
-                    if (i == (extendedSpSpecialities.length-1)) {
-                        extendedSpSpecialities[i] = null;
-                        break;
-                    }
-                    extendedSpSpecialities[i] = spSpecialities[i];
-                }
-
-                //datas configuring
-                List[] extendedUniversitiesData = new List[universitiesData.length+1];
-                List[] extendedFacultiesData = new List[facultiesData.length+1];
-                List[] extendedSpecialitiesData = new List[specialitiesData.length+1];
-
-                for (int i = 0; i < extendedUniversitiesData.length; i++) {
-                    if (i == (extendedUniversitiesData.length-1)) {
-                        extendedUniversitiesData[i] = new ArrayList<University>();
-                        break;
-                    }
-                    extendedUniversitiesData[i] = universitiesData[i];
-                }
-
-                for (int i = 0; i < extendedFacultiesData.length; i++) {
-                    if (i == (extendedFacultiesData.length-1)) {
-                        extendedFacultiesData[i] = new ArrayList<Faculty>();
-                        break;
-                    }
-                    extendedFacultiesData[i] = facultiesData[i];
-                }
-
-                for (int i = 0; i < extendedSpecialitiesData.length; i++) {
-                    if (i == (extendedSpecialitiesData.length-1)) {
-                        extendedSpecialitiesData[i] = new ArrayList<Speciality>();
-                        break;
-                    }
-                    extendedSpecialitiesData[i] = specialitiesData[i];
-                }
-
-                universitiesData = extendedUniversitiesData.clone();
-                facultiesData = extendedFacultiesData.clone();
-                specialitiesData = extendedSpecialitiesData.clone();
-
-                extendedUniversitiesData = null;
-                extendedFacultiesData = null;
-                extendedSpecialitiesData = null;
-
-                titleTotal.setText(String.valueOf(ProfileFragment.userUniversityInfos.length));
-
-                notifyDataSetChanged();
-            }
-        });
-
-        titlePosition = (TextView) item_view.findViewById(R.id.titleContentProfileUui);
-        titlePosition.setText(String.valueOf(position+1));
-        titleTotal = (TextView) item_view.findViewById(R.id.titleEndProfileUui);
-        titleTotal.setText(String.valueOf(ProfileFragment.userUniversityInfos.length));
-
-        spSpecialities[position] = (Spinner) item_view.findViewById(R.id.speciality_sp);
-        spFaculties[position] = (Spinner) item_view.findViewById(R.id.faculty_sp);
-        spUniversities[position] = (Spinner) item_view.findViewById(R.id.university_sp);
+        titlePosition.get(position).setText(String.valueOf(position+1));
+        titleTotal.get(position).setText(String.valueOf(ProfileFragment.userUniversityInfos.size()));
 
         //university configuration
-        initialUniversityId[position] = 0L;
-        University university = ProfileFragment.userUniversityInfos[position].getUniversity();
+        initialUniversityId.set(position, 0L);
+        University university = ProfileFragment.userUniversityInfos.get(position).getUniversity();
         if (university != null) {
             startTime = System.currentTimeMillis();
-            initialUniversityId[position] = university.getId();
-            universitiesData[position].clear();
-            universitiesData[position].add(null);
-            universitiesData[position].addAll(universityService.getUniversities());
+            initialUniversityId.set(position, university.getId());
+            universitiesData.get(position).clear();
+            universitiesData.get(position).add(null);
+            universitiesData.get(position).addAll(universityService.getUniversities());
 
             configureUniversitySpinner(universityIndex(university.getId(), position), position);
             finishTime = System.currentTimeMillis();
-            System.out.println("("+position+")-(instantiateItem)" + "-(university is not null, universitiesData:"+universitiesData[position]+")|execution time:" + (finishTime - startTime) + " msec");
+            System.out.println("("+position+")-(instantiateItem)" + "-(university is not null, universitiesData:"+universitiesData.get(position)+")|execution time:" + (finishTime - startTime) + " msec");
         } else {
             configureUniversitiesList(position);
 
             configureUniversitySpinner(0, position);
-            System.out.println("("+position+")-(instantiateItem)" + "-(university is null, universitiesData:"+universitiesData[position]+", selected none of universities)");
+            System.out.println("("+position+")-(instantiateItem)" + "-(university is null, universitiesData:"+universitiesData.get(position)+", selected none of universities)");
         }
 
         //faculty configuration
-        initialFacultyId[position] = 0L;
-        Faculty faculty = ProfileFragment.userUniversityInfos[position].getFaculty();
+        initialFacultyId.set(position, 0L);
+        Faculty faculty = ProfileFragment.userUniversityInfos.get(position).getFaculty();
         if (faculty != null) {
             startTime = System.currentTimeMillis();
-            initialFacultyId[position] = faculty.getId();
-            facultiesData[position].clear();
-            facultiesData[position].add(null);
+            initialFacultyId.set(position, faculty.getId());
+            facultiesData.get(position).clear();
+            facultiesData.get(position).add(null);
             if (university != null)
-                facultiesData[position].addAll(facultyService.getFacultiesByUniversityId(university.getId()));
+                facultiesData.get(position).addAll(facultyService.getFacultiesByUniversityId(university.getId()));
 
             configureFacultySpinner(facultyIndex(faculty.getId(), position), position);
             finishTime = System.currentTimeMillis();
-            System.out.println("("+position+")-(instantiateItem)" + "-(faculty is not null, facultiesData:"+facultiesData[position]+")|execution time:" + (finishTime - startTime) + " msec");
+            System.out.println("("+position+")-(instantiateItem)" + "-(faculty is not null, facultiesData:"+facultiesData.get(position)+")|execution time:" + (finishTime - startTime) + " msec");
         } else {
             if (university == null) {
-                facultiesData[position] = new ArrayList<>();
-                facultiesData[position].add(null);
+                facultiesData.set(position, new ArrayList<Faculty>());
+                facultiesData.get(position).add(null);
 
                 configureFacultySpinner(0, position);
-                System.out.println("("+position+")-(instantiateItem)" + "-(faculty is null and university too, facultiesData:"+facultiesData[position]+", selected none of faculties)");
+                System.out.println("("+position+")-(instantiateItem)" + "-(faculty is null and university too, facultiesData:"+facultiesData.get(position)+", selected none of faculties)");
             } else {
                 configureFacultiesList(university.getId(), position);
                 configureFacultySpinner(0, position);
-                System.out.println("("+position+")-(instantiateItem)" + "-(faculty is null and university is not, facultiesData:"+facultiesData[position]+", selected none of faculties)");
+                System.out.println("("+position+")-(instantiateItem)" + "-(faculty is null and university is not, facultiesData:"+facultiesData.get(position)+", selected none of faculties)");
             }
         }
 
         //speciality configuration
-        initialSpecialityId[position] = 0L;
-        Speciality speciality = ProfileFragment.userUniversityInfos[position].getSpeciality();
+        initialSpecialityId.set(position, 0L);
+        Speciality speciality = ProfileFragment.userUniversityInfos.get(position).getSpeciality();
         if (speciality != null) {
             startTime = System.currentTimeMillis();
-            initialSpecialityId[position] = speciality.getId();
-            specialitiesData[position].clear();
-            specialitiesData[position].add(null);
+            initialSpecialityId.set(position, speciality.getId());
+            specialitiesData.get(position).clear();
+            specialitiesData.get(position).add(null);
             if (university != null) {
                 if (faculty != null) {
                     List<Speciality> specialities = specialityService.getSpecialitiesByFacultyId(faculty.getId());
-                    specialitiesData[position].addAll(specialities);
-                    System.out.println("("+position+")-(instantiateItem)" + "-(speciality is not null and faculty too, specialitiesData:"+specialitiesData[position]+")|execution time:" + (finishTime - startTime) + " msec");
+                    specialitiesData.get(position).addAll(specialities);
+                    System.out.println("("+position+")-(instantiateItem)" + "-(speciality is not null and faculty too, specialitiesData:"+specialitiesData.get(position)+")|execution time:" + (finishTime - startTime) + " msec");
                 }
                 else {
                     List<Speciality> specialities = specialityService.getSpecialitiesByUniversityId(university.getId());
-                    specialitiesData[position].addAll(specialities);
-                    System.out.println("("+position+")-(instantiateItem)" + "-(speciality is not null and faculty is null, specialitiesData:"+specialitiesData[position]+")|execution time:" + (finishTime - startTime) + " msec");
+                    specialitiesData.get(position).addAll(specialities);
+                    System.out.println("("+position+")-(instantiateItem)" + "-(speciality is not null and faculty is null, specialitiesData:"+specialitiesData.get(position)+")|execution time:" + (finishTime - startTime) + " msec");
                 }
             }
 
@@ -327,8 +568,8 @@ public class CustomUuiSwipeAdapter extends PagerAdapter {
             System.out.println("("+position+")-(instantiateItem)" + "-(specialities spinner configured)|execution time:" + (finishTime - startTime) + " msec");
         } else {
             if (university == null) {
-                specialitiesData[position].clear();
-                specialitiesData[position].add(null);
+                specialitiesData.get(position).clear();
+                specialitiesData.get(position).add(null);
 
                 configureSpecialitySpinner(0, position);
                 System.out.println("(" + position + ")-(instantiateItem)" + "-(speciality is null and university too, selected none of specialities)");
@@ -342,14 +583,10 @@ public class CustomUuiSwipeAdapter extends PagerAdapter {
                 }
             }
         }
-
-        container.addView(item_view);
-
-        return item_view;
     }
 
     private boolean lastUuiEmpty() {
-        UserUniversityInfo uui = ProfileFragment.userUniversityInfos[ProfileFragment.userUniversityInfos.length-1];
+        UserUniversityInfo uui = ProfileFragment.userUniversityInfos.get(ProfileFragment.userUniversityInfos.size()-1);
 
         if (uui == null || (uui.getId() == null && uui.getSpeciality() == null && uui.getFaculty() == null))
             return true;
@@ -359,39 +596,41 @@ public class CustomUuiSwipeAdapter extends PagerAdapter {
 
     private void configureFacultiesList(int position) {
         startTime = System.currentTimeMillis();
-        facultiesData[position].clear();
-        facultiesData[position].add(null);
-        facultiesData[position].addAll(facultyService.getFaculties());
+        facultiesData.get(position).clear();
+        facultiesData.get(position).add(null);
+        facultiesData.get(position).addAll(facultyService.getFaculties());
         finishTime = System.currentTimeMillis();
         System.out.println("("+position+")-(configureFacultiesList)" + "-(configured faculties list with all faculties)|execution time:" + (finishTime - startTime) + " msec");
     }
 
     private void configureUniversitiesList(int position) {
         startTime = System.currentTimeMillis();
-        universitiesData[position].clear();
-        universitiesData[position].add(null);
-        universitiesData[position].addAll(universityService.getUniversities());
+        universitiesData.get(position).clear();
+        universitiesData.get(position).add(null);
+        universitiesData.get(position).addAll(universityService.getUniversities());
         finishTime = System.currentTimeMillis();
         System.out.println("("+position+")-(configureUniversitiesList)" + "-(configured universities list with all universities)|execution time:" + (finishTime - startTime) + " msec");
     }
 
     private void configureSpecialitySpinner(final int selectPosition, final int currentPos) {
-        if (spSpecialities == null || spSpecialities[currentPos] == null)
+        if (spSpecialities == null || spSpecialities.get(currentPos) == null)
             return;
 
-        specialityAdapter = new CustomSpecialitySpinnerAdapter(ctx, R.layout.spinner_specialities_rows, specialitiesData[currentPos]);
+        specialityAdapter = new CustomSpecialitySpinnerAdapter(ctx, R.layout.spinner_specialities_rows, specialitiesData.get(currentPos));
 
-        spSpecialities[currentPos].setAdapter(specialityAdapter);
-        spSpecialities[currentPos].setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spSpecialities.get(currentPos).setAdapter(specialityAdapter);
+        spSpecialities.get(currentPos).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (initialSpecialityId[currentPos] > 0) {
-                    ProfileFragment.userUniversityInfos[currentPos].setSpeciality(specialitiesData[currentPos].get(selectPosition));
-                    initialSpecialityId[currentPos] = -2L;
-                    System.out.println("("+currentPos+")-(configureSpecialitySpinner, onItemSelected)" + "-(selected speciality first time, i="+i+")");
+                if (initialSpecialityId.get(currentPos) > 0) {
+                    return;
+
+//                    ProfileFragment.userUniversityInfos[currentPos].setSpeciality(specialitiesData[currentPos].get(selectPosition));
+//                    initialSpecialityId[currentPos] = -2L;
+//                    System.out.println("("+currentPos+")-(configureSpecialitySpinner, onItemSelected)" + "-(selected speciality first time, i="+i+")");
                 } else {
                     System.out.println("("+currentPos+")-(configureSpecialitySpinner, onItemSelected)" + "-(selected speciality not first time, i="+i+")");
-                    ProfileFragment.userUniversityInfos[currentPos].setSpeciality(specialitiesData[currentPos].get(i));
+                    ProfileFragment.userUniversityInfos.get(currentPos).setSpeciality(specialitiesData.get(currentPos).get(i));
 //                    ProfileFragment.userUniversityInfos[currentPos] = uuiService.updateUui(ProfileFragment.userUniversityInfos[currentPos]);
                 }
             }
@@ -401,38 +640,40 @@ public class CustomUuiSwipeAdapter extends PagerAdapter {
 
             }
         });
-        spSpecialities[currentPos].setSelection(selectPosition);
+        spSpecialities.get(currentPos).setSelection(selectPosition);
         System.out.println("("+currentPos+")-(configureSpecialitySpinner)" + "-(selected speciality index = "+selectPosition+")");
     }
 
     private void configureFacultySpinner(final int selectPosition, final int currentPos) {
-        if (spFaculties == null || spFaculties[currentPos] == null)
+        if (spFaculties == null || spFaculties.get(currentPos) == null)
             return;
 
-        facultyAdapter = new CustomFacultySpinnerAdapter(ctx, R.layout.spinner_faculties_rows, facultiesData[currentPos]);
+        facultyAdapter = new CustomFacultySpinnerAdapter(ctx, R.layout.spinner_faculties_rows, facultiesData.get(currentPos));
 
-        spFaculties[currentPos].setAdapter(facultyAdapter);
-        spFaculties[currentPos].setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spFaculties.get(currentPos).setAdapter(facultyAdapter);
+        spFaculties.get(currentPos).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (initialFacultyId[currentPos] > 0) {
-                    ProfileFragment.userUniversityInfos[currentPos].setFaculty(facultiesData[currentPos].get(selectPosition));
-                    System.out.println("("+currentPos+")-(configureFacultySpinner, onItemSelected)" + "-(selected faculty first time, i="+i+")");
+                if (initialFacultyId.get(currentPos) > 0) {
+                    return;
+
+//                    ProfileFragment.userUniversityInfos[currentPos].setFaculty(facultiesData[currentPos].get(selectPosition));
+//                    System.out.println("("+currentPos+")-(configureFacultySpinner, onItemSelected)" + "-(selected faculty first time, i="+i+")");
                 } else {
                     System.out.println("("+currentPos+")-(configureFacultySpinner, onItemSelected)" + "-(selected faculty not first time, i="+i+")");
-                    ProfileFragment.userUniversityInfos[currentPos].setFaculty(facultiesData[currentPos].get(i));
+                    ProfileFragment.userUniversityInfos.get(currentPos).setFaculty(facultiesData.get(currentPos).get(i));
 //                    ProfileFragment.userUniversityInfos[currentPos] = uuiService.updateUui(ProfileFragment.userUniversityInfos[currentPos]);
                 }
 
-                if (i > 0 && facultiesData[currentPos] != null && facultiesData[currentPos].get(i) != null && initialFacultyId[currentPos] < 0) {
+                if (i > 0 && facultiesData.get(currentPos) != null && facultiesData.get(currentPos).get(i) != null && initialFacultyId.get(currentPos) < 0) {
                     //load all specialities related with specified faculty
                     System.out.println("("+currentPos+")-(configureFacultySpinner, onItemSelected)" + "-(configuring related specialities)");
-                    configureSpecialitiesListByFaculty(facultiesData[currentPos].get(i).getId(), currentPos);
+                    configureSpecialitiesListByFaculty(facultiesData.get(currentPos).get(i).getId(), currentPos);
                     configureSpecialitySpinner(0, currentPos);
                 }
 
-                if (initialFacultyId[currentPos] > 0) {
-                    initialFacultyId[currentPos] = -2L;
+                if (initialFacultyId.get(currentPos) > 0) {
+                    initialFacultyId.set(currentPos, -2L);
                 }
             }
 
@@ -441,78 +682,80 @@ public class CustomUuiSwipeAdapter extends PagerAdapter {
 
             }
         });
-        spFaculties[currentPos].setSelection(selectPosition);
+        spFaculties.get(currentPos).setSelection(selectPosition);
         System.out.println("("+currentPos+")-(configureFacultySpinner)" + "-(selected faculty index = "+selectPosition+")");
     }
 
     private void configureUniversitySpinner(final int selectPosition, final int currentPos) {
-        if (spUniversities == null || spUniversities[currentPos] == null)
+        if (spUniversities == null || spUniversities.get(currentPos) == null)
             return;
 
-        universityAdapter = new CustomUniversitySpinnerAdapter(ctx, R.layout.spinner_universities_rows, universitiesData[currentPos]);
+        universityAdapter = new CustomUniversitySpinnerAdapter(ctx, R.layout.spinner_universities_rows, universitiesData.get(currentPos));
 
-        spUniversities[currentPos].setAdapter(universityAdapter);
-        spUniversities[currentPos].setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spUniversities.get(currentPos).setAdapter(universityAdapter);
+        spUniversities.get(currentPos).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (initialUniversityId[currentPos] > 0) {
-                    //saving specified university
-                    if (ProfileFragment.userUniversityInfos[currentPos] == null || ProfileFragment.userUniversityInfos[currentPos].getId() == null) {
-                        ProfileFragment.userUniversityInfos[currentPos].setUniversity(universitiesData[currentPos].get(i));
-                        ProfileFragment.userUniversityInfos[currentPos].setUser(ProfileFragment.user);
-                        System.out.println("("+currentPos+")-(configureUniversitySpinner, onItemSelected)" + "-(selected university first time, i="+i+", saving university and user)");
-                    }
-                    else {
-                        ProfileFragment.userUniversityInfos[currentPos].setUniversity(universitiesData[currentPos].get(i));
-                        System.out.println("("+currentPos+")-(configureUniversitySpinner, onItemSelected)" + "-(selected university first time, i="+i+", saving university)");
-                    }
+                if (initialUniversityId.get(currentPos) > 0) {
+                    return;
 
-                    if (i > 0 && universitiesData[currentPos] != null && universitiesData[currentPos].get(i) != null) {
-                        //load all faculties and specialities related with specified university
-                        System.out.println("("+currentPos+")-(configureUniversitySpinner, onItemSelected)" + "-(configuring faculties and specialities related with university)");
-                        configureFacultiesList(universitiesData[currentPos].get(i).getId(), currentPos);
-                        configureFacultySpinner(0, currentPos);
-
-                        configureSpecialitiesListByUniversity(universitiesData[currentPos].get(i).getId(), currentPos);
-                        configureSpecialitySpinner(0, currentPos);
-                    }
+//                    //saving specified university
+//                    if (ProfileFragment.userUniversityInfos[currentPos] == null || ProfileFragment.userUniversityInfos[currentPos].getId() == null) {
+//                        ProfileFragment.userUniversityInfos[currentPos].setUniversity(universitiesData[currentPos].get(i));
+//                        ProfileFragment.userUniversityInfos[currentPos].setUser(ProfileFragment.user);
+//                        System.out.println("("+currentPos+")-(configureUniversitySpinner, onItemSelected)" + "-(selected university first time, i="+i+", saving university and user)");
+//                    }
+//                    else {
+//                        ProfileFragment.userUniversityInfos[currentPos].setUniversity(universitiesData[currentPos].get(i));
+//                        System.out.println("("+currentPos+")-(configureUniversitySpinner, onItemSelected)" + "-(selected university first time, i="+i+", saving university)");
+//                    }
+//
+//                    if (i > 0 && universitiesData[currentPos] != null && universitiesData[currentPos].get(i) != null) {
+//                        //load all faculties and specialities related with specified university
+//                        System.out.println("("+currentPos+")-(configureUniversitySpinner, onItemSelected)" + "-(configuring faculties and specialities related with university)");
+//                        configureFacultiesList(universitiesData[currentPos].get(i).getId(), currentPos);
+//                        configureFacultySpinner(0, currentPos);
+//
+//                        configureSpecialitiesListByUniversity(universitiesData[currentPos].get(i).getId(), currentPos);
+//                        configureSpecialitySpinner(0, currentPos);
+//                    }
                 } else {
                     //saving specified university
-                    if (ProfileFragment.userUniversityInfos[currentPos] == null || ProfileFragment.userUniversityInfos[currentPos].getId() == null) {
-                        ProfileFragment.userUniversityInfos[currentPos].setUniversity(universitiesData[currentPos].get(i));
-                        ProfileFragment.userUniversityInfos[currentPos].setUser(ProfileFragment.user);
+                    if (ProfileFragment.userUniversityInfos.get(currentPos) == null || ProfileFragment.userUniversityInfos.get(currentPos).getId() == null) {
+                        ProfileFragment.userUniversityInfos.get(currentPos).setUniversity(universitiesData.get(currentPos).get(i));
+//                        ProfileFragment.userUniversityInfos[currentPos].setUser(ProfileFragment.user);
                         System.out.println("("+currentPos+")-(configureUniversitySpinner, onItemSelected)" + "-(selected university not first time, i="+i+", saving university and user)");
 //                        ProfileFragment.userUniversityInfos[currentPos] = uuiService.createUui(ProfileFragment.userUniversityInfos[currentPos]);
                     }
                     else {
-                        ProfileFragment.userUniversityInfos[currentPos].setUniversity(universitiesData[currentPos].get(i));
+                        ProfileFragment.userUniversityInfos.get(currentPos).setUniversity(universitiesData.get(currentPos).get(i));
                         System.out.println("("+currentPos+")-(configureUniversitySpinner, onItemSelected)" + "-(selected university not first time, i="+i+", saving university)");
 //                        ProfileFragment.userUniversityInfos[currentPos] = uuiService.updateUui(ProfileFragment.userUniversityInfos[currentPos]);
                     }
 
-                    if (i > 0 && universitiesData[currentPos] != null && universitiesData[currentPos].get(i) != null) {
+                    if (i > 0 && universitiesData.get(currentPos) != null && universitiesData.get(currentPos).get(i) != null) {
                         //load all faculties and specialities related with specified university
                         System.out.println("("+currentPos+")-(configureUniversitySpinner, onItemSelected)" + "-(configuring faculties and specialities related with university)");
-                        configureFacultiesList(universitiesData[currentPos].get(i).getId(), currentPos);
+                        configureFacultiesList(universitiesData.get(currentPos).get(i).getId(), currentPos);
                         configureFacultySpinner(0, currentPos);
 
-                        configureSpecialitiesListByUniversity(universitiesData[currentPos].get(i).getId(), currentPos);
+                        configureSpecialitiesListByUniversity(universitiesData.get(currentPos).get(i).getId(), currentPos);
                         configureSpecialitySpinner(0, currentPos);
                     }
                 }
 
-                if (i > 0 && universitiesData[currentPos] != null && universitiesData[currentPos].get(i) != null && initialUniversityId[currentPos] < 0) {
+                if (i > 0 && universitiesData.get(currentPos) != null && universitiesData.get(currentPos).get(i) != null && initialUniversityId.get(currentPos) < 0) {
                     //load all faculties and specialities related with specified university
                     System.out.println("("+currentPos+")-(configureUniversitySpinner, onItemSelected)" + "-(configuring faculties and specialities related with university)");
-                    configureFacultiesList(universitiesData[currentPos].get(i).getId(), currentPos);
+                    configureFacultiesList(universitiesData.get(currentPos).get(i).getId(), currentPos);
                     configureFacultySpinner(0, currentPos);
 
-                    configureSpecialitiesListByUniversity(universitiesData[currentPos].get(i).getId(), currentPos);
+                    configureSpecialitiesListByUniversity(universitiesData.get(currentPos).get(i).getId(), currentPos);
                     configureSpecialitySpinner(0, currentPos);
                 }
 
-                if (initialUniversityId[currentPos] > 0) {
-                    initialUniversityId[currentPos] = -2L;
+                if (initialUniversityId.get(currentPos) > 0) {
+                    initialUniversityId.set(currentPos, -2L);
                 }
             }
 
@@ -521,50 +764,50 @@ public class CustomUuiSwipeAdapter extends PagerAdapter {
 
             }
         });
-        spUniversities[currentPos].setSelection(selectPosition);
+        spUniversities.get(currentPos).setSelection(selectPosition);
     }
 
     private void configureSpecialitiesList(int position) {
         startTime = System.currentTimeMillis();
-        specialitiesData[position].clear();
-        specialitiesData[position].add(null);
-        specialitiesData[position].addAll(specialityService.getSpecialities());
+        specialitiesData.get(position).clear();
+        specialitiesData.get(position).add(null);
+        specialitiesData.get(position).addAll(specialityService.getSpecialities());
         finishTime = System.currentTimeMillis();
         System.out.println("("+position+")-(configureSpecialitiesList)" + "-(configured specialities list with all specialities)|execution time:" + (finishTime - startTime) + " msec");
     }
 
     private void configureSpecialitiesListByUniversity(Long universityId, int pos) {
-        specialitiesData[pos].clear();
-        specialitiesData[pos].add(null);
+        specialitiesData.get(pos).clear();
+        specialitiesData.get(pos).add(null);
         List<Speciality> specialitiesByUniversity = specialityService.getSpecialitiesByUniversityId(universityId);
-        specialitiesData[pos].addAll(specialitiesByUniversity);
+        specialitiesData.get(pos).addAll(specialitiesByUniversity);
         System.out.println("("+pos+")-(configureSpecialitiesListByUniversity)" + "-(configured specialities list by university)-(universityId="+universityId+", specialitiesData="+specialitiesData+")");
     }
 
     private void configureSpecialitiesListByFaculty(Long facultyId, int pos) {
-        specialitiesData[pos].clear();
-        specialitiesData[pos].add(null);
+        specialitiesData.get(pos).clear();
+        specialitiesData.get(pos).add(null);
         List<Speciality> specialitiesByFaculty = specialityService.getSpecialitiesByFacultyId(facultyId);
-        specialitiesData[pos].addAll(specialitiesByFaculty);
+        specialitiesData.get(pos).addAll(specialitiesByFaculty);
         System.out.println("("+pos+")-(configureSpecialitiesListByFaculty)" + "-(configured specialities list by faculty)-(facultyId="+facultyId+", specialitiesData="+specialitiesData+")");
     }
 
     private void configureFacultiesList(Long universityId, int pos) {
-        facultiesData[pos].clear();
-        facultiesData[pos].add(null);
+        facultiesData.get(pos).clear();
+        facultiesData.get(pos).add(null);
         List<Faculty> facultiesByUniversity = facultyService.getFacultiesByUniversityId(universityId);
-        facultiesData[pos].addAll(facultiesByUniversity);
+        facultiesData.get(pos).addAll(facultiesByUniversity);
         System.out.println("("+pos+")-(configureFacultiesList)" + "-(configured faculties list by university)-(universityId="+universityId+", facultiesData="+facultiesData+")");
     }
 
     private int specialityIndex(Long id, int pos) {
         int index = 0;
 
-        if (specialitiesData[pos] == null || specialitiesData[pos].size() == 1)
+        if (specialitiesData.get(pos) == null || specialitiesData.get(pos).size() == 1)
             return index;
 
-        for (int i = 1; i < specialitiesData[pos].size(); i++)
-            if (specialitiesData[pos].get(i).getId().equals(id)) {
+        for (int i = 1; i < specialitiesData.get(pos).size(); i++)
+            if (specialitiesData.get(pos).get(i).getId().equals(id)) {
                 return (i);
             }
         return index;
@@ -573,11 +816,11 @@ public class CustomUuiSwipeAdapter extends PagerAdapter {
     private int facultyIndex(Long id, int pos) {
         int index = 0;
 
-        if (facultiesData[pos] == null || facultiesData[pos].size() == 1)
+        if (facultiesData.get(pos) == null || facultiesData.get(pos).size() == 1)
             return index;
 
-        for (int i = 1; i < facultiesData[pos].size(); i++)
-            if (facultiesData[pos].get(i).getId().equals(id)) {
+        for (int i = 1; i < facultiesData.get(pos).size(); i++)
+            if (facultiesData.get(pos).get(i).getId().equals(id)) {
                 return (i);
             }
         return index;
@@ -586,11 +829,11 @@ public class CustomUuiSwipeAdapter extends PagerAdapter {
     private int universityIndex(Long id, int pos) {
         int index = 0;
 
-        if (universitiesData == null || universitiesData[pos].size() == 1)
+        if (universitiesData == null || universitiesData.get(pos).size() == 1)
             return index;
 
-        for (int i = 1; i < universitiesData[pos].size(); i++)
-            if (universitiesData[pos].get(i).getId().equals(id)) {
+        for (int i = 1; i < universitiesData.get(pos).size(); i++)
+            if (universitiesData.get(pos).get(i).getId().equals(id)) {
                 return (i);
             }
         return index;
@@ -598,7 +841,8 @@ public class CustomUuiSwipeAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        container.removeView((LinearLayout) object);
+//        container.removeView((LinearLayout) object);
+        container.removeView(views.get(position));
     }
 
     public void showToast(View view, String text) {

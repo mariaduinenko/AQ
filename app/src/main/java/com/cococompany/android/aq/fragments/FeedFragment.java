@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -76,7 +77,7 @@ public class FeedFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_feed, container, false);
         feedRecyclerView = (RecyclerView) v.findViewById(R.id.feed);
         feedRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        feedAdapter = new FeedAdapter(questions,getActivity(),feedRecyclerView);
+        feedAdapter = new FeedAdapter(questions, getActivity(), feedRecyclerView);
         feedRecyclerView.setAdapter(feedAdapter);
         feedAdapter.setmRecyclerView(feedRecyclerView);
         feedAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
@@ -109,16 +110,26 @@ public class FeedFragment extends Fragment {
                         feedAdapter.setLoaded();
                         //feedRecyclerView.getLayoutManager().scrollToPosition(1);
                     }
-                },2000);
+                } ,2000);
 
 
             }
 
         });
-        return v;
-}
 
+        return v;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+    }
+}
 
 
 

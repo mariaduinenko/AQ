@@ -162,4 +162,16 @@ public class UserUniversityInfo {
     public void setUser(User user) {
         this.user = user;
     }
+
+    @Override
+    public String toString() {
+        return "UserUniversityInfo{" +
+                "id=" + id +
+                ", entranceDate=" + entranceDate +
+                ", graduationDate=" + graduationDate +
+                ", speciality=" + speciality +
+                ", faculty=" + faculty +
+                ", university=" + university +
+                '}';
+    }
 }

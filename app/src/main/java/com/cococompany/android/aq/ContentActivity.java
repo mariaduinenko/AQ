@@ -21,14 +21,38 @@ public class ContentActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private QuestionPagerAdapter questionPagerAdapter;
     private BottomNavigationView bottomBar;
+    public static int currentFragment = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content);
         UIutils.setToolbar(R.id.toolbar,this);
-        viewPager=  (ViewPager) findViewById(R.id.pager);
+
+        ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                currentFragment = position;
+                if (currentFragment == 0) {
+//                    questionPagerAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        };
+
+        viewPager = (ViewPager) findViewById(R.id.pager);
         questionPagerAdapter = new QuestionPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(questionPagerAdapter);
+        viewPager.addOnPageChangeListener(onPageChangeListener);
         viewPager.setOnTouchListener(new View.OnTouchListener() {
 
             public boolean onTouch(View arg0, MotionEvent arg1) {

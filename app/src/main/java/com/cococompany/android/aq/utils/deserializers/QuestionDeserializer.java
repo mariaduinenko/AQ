@@ -35,12 +35,20 @@ public class QuestionDeserializer implements JsonDeserializer<Question> {
         if (jsonObject.get("user").isJsonObject()) {
             JsonObject jsonUser = jsonObject.get("user").getAsJsonObject();
             user.setId(jsonUser.get("id").getAsLong());
-            user.setEmail(jsonUser.get("email").getAsString());
-            user.setFirstName(jsonUser.get("firstName").getAsString());
-            user.setLastName(jsonUser.get("lastName").getAsString());
-            user.setMiddleName(jsonUser.get("middleName").getAsString());
-            user.setNickname(jsonUser.get("nickname").getAsString());
-            user.setActive(jsonUser.get("active").getAsBoolean());
+            if (jsonUser.has("email"))
+                user.setEmail(jsonUser.get("email").getAsString());
+            if (jsonUser.has("firstName"))
+                user.setFirstName(jsonUser.get("firstName").getAsString());
+            if (jsonUser.has("lastName"))
+                user.setLastName(jsonUser.get("lastName").getAsString());
+            if (jsonUser.has("middleName"))
+                user.setMiddleName(jsonUser.get("middleName").getAsString());
+            if (jsonUser.has("nickname"))
+                user.setNickname(jsonUser.get("nickname").getAsString());
+            if (jsonUser.has("active"))
+                user.setActive(jsonUser.get("active").getAsBoolean());
+            if (jsonUser.has("avatar"))
+                user.setAvatar(jsonUser.get("avatar").getAsString());
             users.add(user);
         } else {
             user = findUserById(jsonObject.get("user").getAsLong());

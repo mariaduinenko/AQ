@@ -4,11 +4,13 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.cococompany.android.aq.R;
 import com.cococompany.android.aq.models.Category;
@@ -95,12 +97,29 @@ public class WriteQuestionFragment extends Fragment {
                         builder.append(lines[i]);
                     }
                     question.setComment(builder.toString());
+                } else {
+                    question.setComment(" ");
                 }
                 questionServise.createQuestion(question);
 
+                //clear fields
+                bodyOfQuestion.getText().clear();
+                tags.getText().clear();
+                showToast(getContext(), WriteQuestionFragment.this.getView(), "Your question is successfully added!");
+
+                //update feed
+//                FeedFragment feedFragment = (FeedFragment)
             }
         });
         return v;
     }
 
+    public void showToast(Context ctx, View view, String text) {
+        //создаем и отображаем текстовое уведомление
+        Toast toast = Toast.makeText(ctx,
+                text,
+                Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
+    }
 }

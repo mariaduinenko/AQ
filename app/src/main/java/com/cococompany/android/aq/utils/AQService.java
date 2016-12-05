@@ -13,6 +13,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -26,8 +27,15 @@ public interface AQService {
     @POST("/rest/register")
     Call<User> registerUser(@Body User user);
 
+    @POST("/rest/register/profile")
+    Call<User> registerUserProfile(@Body User user);
+
     @POST("/rest/profile")
     Call<User> loginUser(@Body User user);
+
+    @POST("/rest/login/profile")
+    Call<User> loginUserProfile(@Body User user);
+
     //questions and likes
     @GET("/rest/feed/{length}")
     Call<ArrayList<Question>> getQuestions(@Path("length") int length);
@@ -79,6 +87,8 @@ public interface AQService {
     Call<UserUniversityInfo> updateUui(@Path("id") Long id, @Body UserUniversityInfo uui);
     @POST("/rest/useruniversityinfos")
     Call<UserUniversityInfo> createUui(@Body UserUniversityInfo uui);
+    @DELETE("/rest/useruniversityinfos/{id}")
+    Call<UserUniversityInfo> removeUui(@Path("id") Long id);
 
     //specialities
     @GET("/rest/specialities")

@@ -53,6 +53,7 @@ public class RegistrationActivity extends AppCompatActivity {
         hintColor =  name_et.getCurrentHintTextColor();
 
         TextWatcher textWatcher = new TextWatcher() {
+            //надо будет прокомментировать чуть-чуть, ато мне вобще не ясно
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -145,7 +146,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     loginPreferences.setUserLastname(newUser.getLastName());
                     loginPreferences.setUserMiddlename(newUser.getMiddleName());
                     loginPreferences.setUserNickname(newUser.getNickname());
-
+      
                     Set<String> categories = new HashSet<String>();
                     for (Category category: newUser.getCategories()) {
                         categories.add(category.getName());

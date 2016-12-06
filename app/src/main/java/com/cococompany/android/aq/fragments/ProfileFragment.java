@@ -58,7 +58,7 @@ public class ProfileFragment extends Fragment {
     private Long selectedUuiId = -1L;
 
     public static ViewPager viewPager;
-    private CustomUuiSwipeAdapter uuiSwipeAdapter;
+    public static CustomUuiSwipeAdapter uuiSwipeAdapter;
 
     private UserUniversityInfoService uuiService = null;
 
@@ -188,6 +188,7 @@ public class ProfileFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         DialogFragment fragment = new DatePickerFragment();
+                        ((DatePickerFragment) fragment).setEntranceType();
                         fragment.show(getActivity().getFragmentManager(), "Date Picker");
                     }
                 });
@@ -197,6 +198,7 @@ public class ProfileFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         DialogFragment fragment = new DatePickerFragment();
+                        ((DatePickerFragment) fragment).setGraduationType();
                         fragment.show(getActivity().getFragmentManager(), "Date Picker");
                     }
                 });

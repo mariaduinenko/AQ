@@ -1,3 +1,5 @@
 <resources>
-
+    <style name="spinnerItemStyle">
+        <item name="android:textSize">12dp</item>
+    </style>
 </resources>

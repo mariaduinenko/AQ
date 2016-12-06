@@ -20,7 +20,7 @@
                 android:text="University info #"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="50dp"
+                android:layout_marginLeft="25dp"
                 android:layout_marginTop="25dp"
                 />
             <TextView
@@ -68,126 +68,131 @@
                 android:layout_marginTop="20dp" />
 
             <TextView
-            android:layout_width="150dp"
-            android:layout_height="25dp"
-            android:text="@string/entranceDate"
-            android:layout_weight="3"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:id="@+id/lblEntranceDateUui"
-            android:layout_below="@id/titlePrefixProfileUui"
-            android:layout_marginTop="25dp"
-            android:layout_marginLeft="25dp"
-            android:gravity="center_vertical"/>
+                android:layout_width="90dp"
+                android:layout_height="25dp"
+                android:text="@string/entranceDate"
+                android:layout_weight="3"
+                android:textSize="@dimen/txt_small"
+                android:textStyle="bold"
+                android:id="@+id/lblEntranceDateUui"
+                android:layout_below="@id/titlePrefixProfileUui"
+                android:layout_marginTop="25dp"
+                android:layout_marginLeft="10dp"
+                android:gravity="center_vertical"/>
 
             <EditText
-                android:layout_width="match_parent"
+                android:layout_width="80dp"
                 android:layout_height="25dp"
                 android:layout_below="@id/titlePrefixProfileUui"
                 android:layout_marginTop="25dp"
                 android:layout_toRightOf="@id/lblEntranceDateUui"
                 android:layout_marginRight="10dp"
-                android:layout_marginLeft="50dp"
+                android:layout_marginLeft="0dp"
+                android:padding="6dp"
+                android:gravity="center_horizontal"
                 android:id="@+id/etEntranceDate"
+                android:textSize="@dimen/txt_very_small"
                 android:hint="@string/dateOfEntrance">
             </EditText>
 
             <TextView
-                android:layout_width="150dp"
+                android:layout_width="90dp"
                 android:layout_height="25dp"
                 android:text="@string/graduationDate"
                 android:layout_weight="3"
-                android:textSize="14sp"
+                android:textSize="@dimen/txt_small"
                 android:textStyle="bold"
                 android:id="@+id/lblGraduationDateUui"
-                android:layout_below="@id/lblEntranceDateUui"
+                android:layout_below="@id/titlePrefixProfileUui"
+                android:layout_toRightOf="@id/etEntranceDate"
                 android:layout_marginTop="25dp"
-                android:layout_marginLeft="25dp"
+                android:layout_marginLeft="5dp"
                 android:gravity="center_vertical"/>
 
             <EditText
-                android:layout_width="match_parent"
+                android:layout_width="80dp"
                 android:layout_height="25dp"
-                android:layout_below="@id/lblEntranceDateUui"
+                android:layout_below="@id/titlePrefixProfileUui"
                 android:layout_marginTop="25dp"
-                android:layout_toRightOf="@id/lblEntranceDateUui"
-                android:layout_marginRight="10dp"
-                android:layout_marginLeft="50dp"
+                android:layout_toRightOf="@id/lblGraduationDateUui"
+                android:layout_marginLeft="0dp"
+                android:padding="6dp"
+                android:gravity="center_horizontal"
+                android:textSize="@dimen/txt_very_small"
                 android:id="@+id/etGraduationDate"
                 android:hint="@string/dateOfGraduation">
             </EditText>
 
             <TextView
-                android:layout_width="150dp"
+                android:layout_width="90dp"
                 android:layout_height="25dp"
                 android:text="@string/university"
                 android:layout_weight="3"
-                android:textSize="14sp"
+                android:textSize="@dimen/txt_small"
                 android:textStyle="bold"
                 android:id="@+id/lblUniversityUui"
                 android:layout_below="@id/lblGraduationDateUui"
-                android:layout_marginTop="25dp"
-                android:layout_marginLeft="25dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
                 android:gravity="center_vertical" />
 
             <Spinner
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
-                android:layout_marginLeft="50dp"
+                android:layout_marginLeft="25dp"
                 android:layout_marginRight="10dp"
                 android:id="@+id/university_sp"
                 android:layout_below="@id/lblGraduationDateUui"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="10dp"
+                style="@style/spinnerItemStyle"
                 android:layout_toRightOf="@id/lblUniversityUui"
                 />
 
             <TextView
-                android:layout_width="150dp"
+                android:layout_width="90dp"
                 android:layout_height="25dp"
                 android:text="@string/faculty"
-                android:layout_weight="3"
-                android:textSize="14sp"
+                android:textSize="@dimen/txt_small"
                 android:textStyle="bold"
                 android:id="@+id/lblFacultyUui"
                 android:layout_below="@id/lblUniversityUui"
-                android:layout_marginTop="25dp"
-                android:layout_marginLeft="25dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
                 android:gravity="center_vertical"/>
 
             <Spinner
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
-                android:layout_weight="1"
-                android:layout_marginLeft="50dp"
+                android:layout_marginLeft="25dp"
                 android:layout_marginRight="10dp"
                 android:id="@+id/faculty_sp"
                 android:layout_below="@id/university_sp"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="10dp"
                 android:layout_toRightOf="@id/lblFacultyUui"
                 />
 
             <TextView
-                android:layout_width="150dp"
+                android:layout_width="90dp"
                 android:layout_height="25dp"
                 android:text="@string/speciality"
-                android:textSize="14sp"
+                android:textSize="@dimen/txt_small"
                 android:textStyle="bold"
                 android:id="@+id/lblSpecialityUui"
                 android:layout_below="@id/lblFacultyUui"
-                android:layout_marginTop="25dp"
-                android:layout_marginLeft="25dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
                 android:gravity="center_vertical"/>
 
             <Spinner
                 android:layout_width="fill_parent"
                 android:layout_height="25dp"
                 android:layout_weight="1"
-                android:layout_marginLeft="50dp"
+                android:layout_marginLeft="25dp"
                 android:layout_marginRight="10dp"
                 android:id="@+id/speciality_sp"
                 android:layout_toRightOf="@id/lblSpecialityUui"
                 android:layout_below="@id/faculty_sp"
-                android:layout_marginTop="25dp"/>
+                android:layout_marginTop="10dp"/>
 
         </RelativeLayout>
     </ScrollView>

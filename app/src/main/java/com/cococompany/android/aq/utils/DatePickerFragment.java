@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -25,9 +26,10 @@ import java.util.Locale;
  */
 
 public class DatePickerFragment extends DialogFragment
-        implements DatePickerDialog.OnDateSetListener {
+        implements DatePickerDialog.OnDateSetListener, DialogInterface.OnClickListener {
 
-    private View view;
+    private View view = null;
+    private String type = "";
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState){
@@ -36,6 +38,14 @@ public class DatePickerFragment extends DialogFragment
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
+
+        view = ((LinearLayout) ProfileFragment.uuiSwipeAdapter.getView(ProfileFragment.pagePosition));
+
+//        DatePickerDialog.Builder builder = new DatePickerDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_DARK);
+//        return (builder.setTitle("Диалог выбора даты").setView(view)
+//                .setPositiveButton(android.R.string.ok, this)
+//                .setNegativeButton(android.R.string.cancel, null)
+//                .create());
 
         //Create a new DatePickerDialog instance and return it
         /*
@@ -52,9 +62,19 @@ public class DatePickerFragment extends DialogFragment
         //*********** Just uncomment any one below line to apply another Theme ************
 //        return new DatePickerDialog(getActivity(), AlertDialog.THEME_DEVICE_DEFAULT_DARK,this, year, month, day);
         //return new DatePickerDialog(getActivity(), AlertDialog.THEME_DEVICE_DEFAULT_LIGHT, this, year, month, day);
+
         return new DatePickerDialog(getActivity(), AlertDialog.THEME_HOLO_DARK, this, year, month, day);
+
         //return new DatePickerDialog(getActivity(), AlertDialog.THEME_HOLO_LIGHT, this, year, month, day);
         //return new DatePickerDialog(getActivity(), AlertDialog.THEME_TRADITIONAL, this, year, month, day);
+    }
+
+    public void setEntranceType() {
+        this.type = "entr";
+    }
+
+    public void setGraduationType() {
+        this.type = "grad";
     }
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
@@ -64,10 +84,13 @@ public class DatePickerFragment extends DialogFragment
         Calendar c = Calendar.getInstance();
         c.set(year, month, day, 0, 0, 0);
 
-//        EditText etEntr = (EditText) ((LinearLayout) ProfileFragment.viewPager.getChildAt(ProfileFragment.viewPager.getCurrentItem())).findViewById(R.id.etEntranceDate);
-
-//        etEntr.setText(dateFormatter.format(c.getTime()));
-        showToast(view, "EditText text:"+c.getTime().toString());
+        if (type.equals("entr")) {
+            EditText etEntr = (EditText) this.view.findViewById(R.id.etEntranceDate);
+            etEntr.setText(dateFormatter.format(c.getTime()));
+        } else if (type.equals("grad")) {
+            EditText etGrad = (EditText) this.view.findViewById(R.id.etGraduationDate);
+            etGrad.setText(dateFormatter.format(c.getTime()));
+        }
     }
 
     public void showToast(View view, String text) {
@@ -77,5 +100,10 @@ public class DatePickerFragment extends DialogFragment
                 Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
+    }
+
+    @Override
+    public void onClick(DialogInterface dialogInterface, int i) {
+
     }
 }

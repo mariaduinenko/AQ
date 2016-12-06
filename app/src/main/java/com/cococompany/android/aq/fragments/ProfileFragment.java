@@ -23,7 +23,6 @@ import com.cococompany.android.aq.R;
 import com.cococompany.android.aq.adapters.CustomUuiSwipeAdapter;
 import com.cococompany.android.aq.models.User;
 import com.cococompany.android.aq.models.UserUniversityInfo;
-import com.cococompany.android.aq.utils.DatePickerFragment;
 import com.cococompany.android.aq.utils.LoginPreferences;
 import com.cococompany.android.aq.utils.UserService;
 import com.cococompany.android.aq.utils.UserUniversityInfoService;
@@ -67,7 +66,7 @@ public class ProfileFragment extends Fragment {
 
     public static int pagePosition = 0;
 
-    public static EditText etBirthdate;
+    private EditText etBirthdate;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -142,6 +141,7 @@ public class ProfileFragment extends Fragment {
         String userLastname = preferences.getUserLastname();
         String userMiddlename = preferences.getUserMiddlename();
         String userNickname = preferences.getUserNickname();
+        String userBdate = preferences.getUserBirthdate();
 //        Set<String> categories = preferences.getUserCategories();
         finishTime = System.currentTimeMillis();
         System.out.println("%\\_(^_^)_/%" + "load params|execution time:" + (finishTime - startTime));
@@ -150,9 +150,8 @@ public class ProfileFragment extends Fragment {
         EditText etNickname = (EditText) view.findViewById(R.id.nickname);
         EditText etEmail = (EditText) view.findViewById(R.id.email);
         etBirthdate = (EditText) view.findViewById(R.id.birthdate);
-        EditText etPassword = (EditText) view.findViewById(R.id.password);
-        EditText etPasswordConfirm = (EditText) view.findViewById(R.id.passwordConfirm);
         Button btnApply = (Button) view.findViewById(R.id.btn_apply);
+        Button btnChangePassword = (Button) view.findViewById(R.id.btn_change_password);
 
         user = new User(userId);
 
@@ -172,6 +171,7 @@ public class ProfileFragment extends Fragment {
         etName.setText(firstPart + secondPart + thirdPart);
         etNickname.setText(userNickname);
         etEmail.setText(userEmail);
+        etBirthdate.setText(userBdate);
 
         etBirthdate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -270,6 +270,15 @@ public class ProfileFragment extends Fragment {
         etName.addTextChangedListener(new NameTextChangedListener());
         etEmail.addTextChangedListener(new EmailTextChangedListener());
 
+        //change password - open Dialog
+        btnChangePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DialogFragment fragment = new PasswordChangeFragment();
+                fragment.show(getActivity().getFragmentManager(), "Password change");
+            }
+        });
+
         //Saving user profile
         btnApply.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -284,6 +293,8 @@ public class ProfileFragment extends Fragment {
                 user.setLastName(preferences.getUserLastname());
                 user.setMiddleName(preferences.getUserMiddlename());
                 user.setNickname(preferences.getUserNickname());
+
+                user.setBirthdate(etBirthdate.getText().toString());
 
                 userService.lightUpdate(user);
 

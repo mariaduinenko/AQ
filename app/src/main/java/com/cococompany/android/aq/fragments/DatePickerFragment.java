@@ -1,4 +1,4 @@
-package com.cococompany.android.aq.utils;
+package com.cococompany.android.aq.fragments;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.cococompany.android.aq.R;
@@ -40,7 +41,7 @@ public class DatePickerFragment extends DialogFragment
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
 
-        view = ((LinearLayout) ProfileFragment.uuiSwipeAdapter.getView(ProfileFragment.pagePosition));
+        view = ((RelativeLayout) ProfileFragment.uuiSwipeAdapter.getView(ProfileFragment.pagePosition));
 
 //        DatePickerDialog.Builder builder = new DatePickerDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_DARK);
 //        return (builder.setTitle("Диалог выбора даты").setView(view)
@@ -110,11 +111,11 @@ public class DatePickerFragment extends DialogFragment
                 e.printStackTrace();
             }
         } else if (type.equals("bdate")) {
-            EditText etBdate = (EditText) this.view.findViewById(R.id.birthdate);
+            View parent = ((RelativeLayout)this.view.getParent().getParent()).findViewById(R.id.birthdate);
+            EditText etBdate = (EditText) parent.findViewById(R.id.birthdate);
             etBdate.setText(dateFormatter.format(c.getTime()));
             try {
                 Date date = dateFormatter.parse(etBdate.getText().toString());
-                ProfileFragment.etBirthdate.setText(dateFormatter.format(date));
                 showToast(view, "Date:" + date.toString());
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -124,7 +125,7 @@ public class DatePickerFragment extends DialogFragment
 
     public void showToast(View view, String text) {
         //создаем и отображаем текстовое уведомление
-        Toast toast = Toast.makeText(getContext(),
+        Toast toast = Toast.makeText(view.getContext(),
                 text,
                 Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.CENTER, 0, 0);

@@ -76,15 +76,16 @@
                 android:layout_marginTop="25dp"
                 android:layout_marginRight="25dp"
                 android:layout_below="@id/selectableRoundedImageView"
+                android:inputType="textEmailAddress"
                 />
 
             <TextView
                 android:layout_width="100dp"
                 android:layout_height="30dp"
-                android:text="@string/password"
+                android:text="@string/birtdate"
                 android:textSize="@dimen/txt_small"
                 android:textStyle="bold"
-                android:id="@+id/tvPassword"
+                android:id="@+id/tvBirthdate"
                 android:layout_below="@id/tvEmail"
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="10dp"
@@ -95,63 +96,35 @@
                 android:layout_height="30dp"
                 android:textSize="@dimen/txt_small"
                 android:padding="8dp"
-                android:id="@+id/password"
-                android:layout_toRightOf="@id/tvPassword"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="25dp"
-                android:layout_marginTop="10dp"
-                android:layout_below="@id/email"
-                />
-
-            <TextView
-                android:layout_width="100dp"
-                android:layout_height="30dp"
-                android:text="@string/passwordConfirmation"
-                android:textSize="@dimen/txt_small"
-                android:textStyle="bold"
-                android:id="@+id/tvPasswordConfirm"
-                android:layout_below="@id/tvPassword"
-                android:layout_marginLeft="25dp"
-                android:layout_marginTop="10dp"
-                android:gravity="center_vertical"/>
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:textSize="@dimen/txt_small"
-                android:padding="8dp"
-                android:id="@+id/passwordConfirm"
-                android:layout_toRightOf="@id/tvPasswordConfirm"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="25dp"
-                android:layout_marginTop="10dp"
-                android:layout_below="@id/password"
-                />
-
-            <TextView
-                android:layout_width="100dp"
-                android:layout_height="30dp"
-                android:text="@string/birtdate"
-                android:textSize="@dimen/txt_small"
-                android:textStyle="bold"
-                android:id="@+id/tvBirthdate"
-                android:layout_below="@id/tvPasswordConfirm"
-                android:layout_marginLeft="25dp"
-                android:layout_marginTop="10dp"
-                android:gravity="center_vertical"/>
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:textSize="@dimen/txt_small"
-                android:padding="8dp"
                 android:id="@+id/birthdate"
-                android:layout_toRightOf="@id/tvPasswordConfirm"
+                android:layout_toRightOf="@id/tvBirthdate"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="25dp"
                 android:layout_marginTop="10dp"
-                android:layout_below="@id/passwordConfirm"
+                android:layout_below="@id/tvEmail"
+                android:inputType="date"
                 />
+
+            <Button
+                android:text="@string/change_password"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/txt_small"
+                android:background="@color/green"
+                android:layout_width="150dp"
+                android:layout_height="30dp"
+                android:id="@+id/btn_change_password"
+                android:layout_below="@id/birthdate"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"/>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/uui_view_pager"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginBottom="10dp"
+                android:layout_below="@id/btn_change_password">
+            </android.support.v4.view.ViewPager>
 
             <Button
                 android:text="@string/apply"
@@ -161,18 +134,10 @@
                 android:layout_width="70dp"
                 android:layout_height="30dp"
                 android:id="@+id/btn_apply"
-                android:layout_below="@id/tvBirthdate"
+                android:layout_below="@id/uui_view_pager"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="10dp"/>
-
-            <android.support.v4.view.ViewPager
-                android:id="@+id/uui_view_pager"
-                android:layout_width="wrap_content"
-                android:layout_height="200dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_below="@id/btn_apply">
-            </android.support.v4.view.ViewPager>
+                android:layout_marginBottom="25dp"/>
 
         </RelativeLayout>
     </ScrollView>

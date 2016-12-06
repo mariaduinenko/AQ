@@ -237,7 +237,8 @@ public class QuestionService {
                 e.printStackTrace();
             }
 
-            result = response.body();
+            if (response != null)
+                result = response.body();
 
             return result;
         }

@@ -40,8 +40,11 @@ public class FeedDeserializer implements JsonDeserializer<ArrayList<Question>> {
             Question question = new Question();
             JsonObject jsonObject = feedArray.get(i).getAsJsonObject();
 
-            question.setCreationTime(jsonObject.get("creationTime").getAsString());
-            String modificationTime = jsonObject.get("modificationTime").getAsString();
+            if (jsonObject.has("creationTime"))
+                question.setCreationTime(jsonObject.get("creationTime").getAsString());
+            String modificationTime = null;
+            if (jsonObject.has("creationTime"))
+                modificationTime = jsonObject.get("modificationTime").getAsString();
             question.setId(jsonObject.get("id").getAsLong());
             question.setTitle(jsonObject.get("title").getAsString());
             if (jsonObject.has("comment"))

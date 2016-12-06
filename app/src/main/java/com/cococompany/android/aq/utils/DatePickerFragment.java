@@ -78,10 +78,14 @@ public class DatePickerFragment extends DialogFragment
         this.type = "grad";
     }
 
+    public void setBirthdateType() {
+        this.type = "bdate";
+    }
+
     public void onDateSet(DatePicker view, int year, int month, int day) {
         // Do something with the date chosen by the user
 
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         Calendar c = Calendar.getInstance();
         c.set(year, month, day, 0, 0, 0);
 
@@ -91,7 +95,7 @@ public class DatePickerFragment extends DialogFragment
             try {
                 Date date = dateFormatter.parse(etEntr.getText().toString());
                 ProfileFragment.userUniversityInfos.get(ProfileFragment.pagePosition).setEntranceDate(dateFormatter.format(date));
-                showToast(view, "Date parsed." + date.toString());
+                showToast(view, "Date:" + date.toString());
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -101,7 +105,17 @@ public class DatePickerFragment extends DialogFragment
             try {
                 Date date = dateFormatter.parse(etGrad.getText().toString());
                 ProfileFragment.userUniversityInfos.get(ProfileFragment.pagePosition).setGraduationDate(dateFormatter.format(date));
-                showToast(view, "Date parsed." + date.toString());
+                showToast(view, "Date:" + date.toString());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        } else if (type.equals("bdate")) {
+            EditText etBdate = (EditText) this.view.findViewById(R.id.birthdate);
+            etBdate.setText(dateFormatter.format(c.getTime()));
+            try {
+                Date date = dateFormatter.parse(etBdate.getText().toString());
+                ProfileFragment.etBirthdate.setText(dateFormatter.format(date));
+                showToast(view, "Date:" + date.toString());
             } catch (ParseException e) {
                 e.printStackTrace();
             }

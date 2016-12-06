@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.cococompany.android.aq.R;
@@ -65,6 +66,8 @@ public class ProfileFragment extends Fragment {
     public static User user = null;
 
     public static int pagePosition = 0;
+
+    public static EditText etBirthdate;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -146,6 +149,9 @@ public class ProfileFragment extends Fragment {
         EditText etName = (EditText) view.findViewById(R.id.name);
         EditText etNickname = (EditText) view.findViewById(R.id.nickname);
         EditText etEmail = (EditText) view.findViewById(R.id.email);
+        etBirthdate = (EditText) view.findViewById(R.id.birthdate);
+        EditText etPassword = (EditText) view.findViewById(R.id.password);
+        EditText etPasswordConfirm = (EditText) view.findViewById(R.id.passwordConfirm);
         Button btnApply = (Button) view.findViewById(R.id.btn_apply);
 
         user = new User(userId);
@@ -167,6 +173,15 @@ public class ProfileFragment extends Fragment {
         etNickname.setText(userNickname);
         etEmail.setText(userEmail);
 
+        etBirthdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DialogFragment fragment = new DatePickerFragment();
+                ((DatePickerFragment) fragment).setBirthdateType();
+                fragment.show(getActivity().getFragmentManager(), "Date Picker");
+            }
+        });
+
         final int uuisCount = (preferences.getUserUniversityInfos() != null)? preferences.getUserUniversityInfos().size() : 0;
         if (uuisCount > 0) {
             startTime = System.currentTimeMillis();
@@ -180,7 +195,7 @@ public class ProfileFragment extends Fragment {
                 final int pos = i;
 
                 LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final LinearLayout item_view = (LinearLayout) layoutInflater.inflate(R.layout.profile_uui_swipe_layout, null);
+                final RelativeLayout item_view = (RelativeLayout) layoutInflater.inflate(R.layout.profile_uui_swipe_layout, null);
                 uuiSwipeAdapter.addView(item_view, i);
 
                 EditText etEntranceDate = (EditText) item_view.findViewById(R.id.etEntranceDate);
@@ -192,6 +207,10 @@ public class ProfileFragment extends Fragment {
                         fragment.show(getActivity().getFragmentManager(), "Date Picker");
                     }
                 });
+                String entranceDate = userUniversityInfos.get(i).getEntranceDate();
+                if (entranceDate != null && !entranceDate.isEmpty()) {
+                    etEntranceDate.setText(entranceDate);
+                }
 
                 EditText etGraduationDate = (EditText) item_view.findViewById(R.id.etGraduationDate);
                 etGraduationDate.setOnClickListener(new View.OnClickListener() {
@@ -202,6 +221,10 @@ public class ProfileFragment extends Fragment {
                         fragment.show(getActivity().getFragmentManager(), "Date Picker");
                     }
                 });
+                String graduationDate = userUniversityInfos.get(i).getGraduationDate();
+                if (graduationDate != null && !graduationDate.isEmpty()) {
+                    etGraduationDate.setText(graduationDate);
+                }
 
                 registerForContextMenu(item_view);
                 Button btnAddUui = (Button) item_view.findViewById(R.id.btnAddUui);
@@ -266,7 +289,6 @@ public class ProfileFragment extends Fragment {
 
                 for (int i = 0; i < userUniversityInfos.size(); i++) {
                     userUniversityInfos.get(i).setUser(user);
-//                    userUniversityInfos.get(i).setEntranceDate();
                     userUniversityInfos.set(i, uuiService.updateUui(userUniversityInfos.get(i)));
                 }
 

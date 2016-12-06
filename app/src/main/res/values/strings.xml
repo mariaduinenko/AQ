@@ -26,6 +26,9 @@
     <string name="apply">Apply</string>
     <string name="add">Add</string>
     <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="passwordConfirmation">Password confirmation</string>
+    <string name="birtdate">Birthdate</string>
     <string name="university">University</string>
     <string name="faculty">Faculty</string>
     <string name="speciality">Speciality</string>

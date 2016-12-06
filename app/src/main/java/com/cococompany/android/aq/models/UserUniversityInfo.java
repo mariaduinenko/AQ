@@ -101,7 +101,7 @@ public class UserUniversityInfo {
      * @return
      * The entranceDate
      */
-    public Object getEntranceDate() {
+    public String getEntranceDate() {
         return entranceDate;
     }
 
@@ -119,7 +119,7 @@ public class UserUniversityInfo {
      * @return
      * The graduationDate
      */
-    public Object getGraduationDate() {
+    public String getGraduationDate() {
         return graduationDate;
     }
 

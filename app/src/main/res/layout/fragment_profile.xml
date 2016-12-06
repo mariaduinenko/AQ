@@ -53,25 +53,104 @@
                 android:layout_marginLeft="25dp"/>
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="100dp"
+                android:layout_height="30dp"
                 android:text="@string/email"
-                android:textSize="14sp"
+                android:textSize="@dimen/txt_small"
                 android:textStyle="bold"
-                android:id="@+id/textView"
+                android:id="@+id/tvEmail"
                 android:layout_below="@id/selectableRoundedImageView"
                 android:layout_marginLeft="25dp"
-                android:layout_marginTop="25dp"/>
+                android:layout_marginTop="25dp"
+                android:gravity="center_vertical"/>
 
             <EditText
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="30dp"
                 android:text="email@mail.ru"
-                android:textSize="14sp"
+                android:textSize="@dimen/txt_small"
+                android:padding="8dp"
                 android:id="@+id/email"
-                android:layout_toRightOf="@id/selectableRoundedImageView"
-                android:layout_marginLeft="25dp"
+                android:layout_toRightOf="@id/tvEmail"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginRight="25dp"
                 android:layout_below="@id/selectableRoundedImageView"
+                />
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:text="@string/password"
+                android:textSize="@dimen/txt_small"
+                android:textStyle="bold"
+                android:id="@+id/tvPassword"
+                android:layout_below="@id/tvEmail"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:textSize="@dimen/txt_small"
+                android:padding="8dp"
+                android:id="@+id/password"
+                android:layout_toRightOf="@id/tvPassword"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="25dp"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/email"
+                />
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:text="@string/passwordConfirmation"
+                android:textSize="@dimen/txt_small"
+                android:textStyle="bold"
+                android:id="@+id/tvPasswordConfirm"
+                android:layout_below="@id/tvPassword"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:textSize="@dimen/txt_small"
+                android:padding="8dp"
+                android:id="@+id/passwordConfirm"
+                android:layout_toRightOf="@id/tvPasswordConfirm"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="25dp"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/password"
+                />
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:text="@string/birtdate"
+                android:textSize="@dimen/txt_small"
+                android:textStyle="bold"
+                android:id="@+id/tvBirthdate"
+                android:layout_below="@id/tvPasswordConfirm"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:textSize="@dimen/txt_small"
+                android:padding="8dp"
+                android:id="@+id/birthdate"
+                android:layout_toRightOf="@id/tvPasswordConfirm"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="25dp"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/passwordConfirm"
                 />
 
             <Button
@@ -79,22 +158,25 @@
                 android:textColor="@color/text_white"
                 android:textSize="@dimen/txt_small"
                 android:background="@color/green"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="70dp"
+                android:layout_height="30dp"
                 android:id="@+id/btn_apply"
-                android:layout_below="@id/textView"
+                android:layout_below="@id/tvBirthdate"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="25dp"/>
+                android:layout_marginTop="10dp"/>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/uui_view_pager"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_below="@id/btn_apply">
+            </android.support.v4.view.ViewPager>
 
         </RelativeLayout>
     </ScrollView>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/uui_view_pager"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp">
-    </android.support.v4.view.ViewPager>
+
 
 </LinearLayout>

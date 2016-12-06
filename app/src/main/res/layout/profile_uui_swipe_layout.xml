@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/titlePrefixProfileUui"
@@ -19,7 +12,7 @@
                 android:textSize="@dimen/txt_medium"
                 android:text="University info #"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="20dp"
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="25dp"
                 />
@@ -29,7 +22,7 @@
                 android:textSize="@dimen/txt_medium"
                 android:text="1"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="20dp"
                 android:layout_toRightOf="@id/titlePrefixProfileUui"
                 android:layout_marginTop="25dp"
                 android:layout_marginLeft="25dp"
@@ -40,7 +33,7 @@
                 android:textSize="@dimen/txt_medium"
                 android:text=" of "
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="20dp"
                 android:layout_toRightOf="@id/titleContentProfileUui"
                 android:layout_marginTop="25dp"
                 android:layout_marginLeft="25dp"
@@ -51,7 +44,7 @@
                 android:textSize="@dimen/txt_medium"
                 android:text="10"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="20dp"
                 android:layout_toRightOf="@id/titlePostfixProfileUui"
                 android:layout_marginTop="25dp"
                 android:layout_marginLeft="25dp"
@@ -193,7 +186,5 @@
                 android:layout_below="@id/faculty_sp"
                 android:layout_marginTop="10dp"/>
 
-        </RelativeLayout>
-    </ScrollView>
 
-</LinearLayout>
+</RelativeLayout>

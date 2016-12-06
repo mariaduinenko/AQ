@@ -1,20 +1,14 @@
 package com.cococompany.android.aq.adapters;
 
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.LinearLayoutCompat;
-import android.text.InputType;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -31,14 +25,9 @@ import com.cococompany.android.aq.utils.SpecialityService;
 import com.cococompany.android.aq.utils.UniversityService;
 import com.cococompany.android.aq.utils.UserUniversityInfoService;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-
-import static com.cococompany.android.aq.R.string.speciality;
 
 /**
  * Created by alexandrmyagkiy on 26.11.16.
@@ -61,7 +50,6 @@ public class CustomUuiSwipeAdapter extends PagerAdapter {
     private CustomSpecialitySpinnerAdapter specialityAdapter = null;
 
     private Context ctx;
-    private LayoutInflater layoutInflater;
 
     private UserUniversityInfoService uuiService = null;
     private SpecialityService specialityService = null;
@@ -74,41 +62,11 @@ public class CustomUuiSwipeAdapter extends PagerAdapter {
 
     List<TextView> titlePosition = new ArrayList<>(ProfileFragment.userUniversityInfos.size());
     List<TextView> titleTotal = new ArrayList<>(ProfileFragment.userUniversityInfos.size());
-    Button btnAddUui = null;
 
     private ProfileFragment profileFragment;
 
     private long startTime = 0L,
             finishTime = 0L;
-
-//    public CustomUuiSwipeAdapter(Context ctx, ProfileFragment profileFragment) {
-//        this.ctx = ctx;
-//
-//        this.profileFragment = profileFragment;
-//
-//        startTime = System.currentTimeMillis();
-//        uuiService = new UserUniversityInfoService(ctx);
-//        specialityService = new SpecialityService(ctx);
-//        facultyService = new FacultyService(ctx);
-//        universityService = new UniversityService(ctx);
-//
-//        //configure initial Ids
-//        for (int i = 0; i < ProfileFragment.userUniversityInfos.length; i++) {
-//            initialUniversityId[i] = -1L;
-//            initialSpecialityId[i] = -1L;
-//            initialFacultyId[i] = -1L;
-//        }
-//
-//        //fulfilling datas
-//        for (int i = 0; i < universitiesData.length; i++)
-//            universitiesData[i] = new ArrayList<University>();
-//        for (int i = 0; i < facultiesData.length; i++)
-//            facultiesData[i] = new ArrayList<Faculty>();
-//        for (int i = 0; i < specialitiesData.length; i++)
-//            specialitiesData[i] = new ArrayList<Speciality>();
-//        finishTime = System.currentTimeMillis();
-//        System.out.println("%\\_(^_^)_/%" + "load services|execution time:" + (finishTime - startTime));
-//    }
 
     public CustomUuiSwipeAdapter(Context ctx) {
         this.ctx = ctx;
@@ -197,7 +155,6 @@ public class CustomUuiSwipeAdapter extends PagerAdapter {
     {
         return views.get(position);
     }
-
     //Main code part
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
@@ -472,7 +429,6 @@ public class CustomUuiSwipeAdapter extends PagerAdapter {
     }
 
     private void fillData(final int position) {
-
         if (position == spUniversities.size()) {
             titlePosition.add((TextView) views.get(position).findViewById(R.id.titleContentProfileUui));
             titleTotal.add((TextView) views.get(position).findViewById(R.id.titleEndProfileUui));

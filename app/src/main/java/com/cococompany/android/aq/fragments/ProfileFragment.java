@@ -266,6 +266,7 @@ public class ProfileFragment extends Fragment {
 
                 for (int i = 0; i < userUniversityInfos.size(); i++) {
                     userUniversityInfos.get(i).setUser(user);
+//                    userUniversityInfos.get(i).setEntranceDate();
                     userUniversityInfos.set(i, uuiService.updateUui(userUniversityInfos.get(i)));
                 }
 

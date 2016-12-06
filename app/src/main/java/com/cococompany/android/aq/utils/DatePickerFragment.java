@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.cococompany.android.aq.R;
 import com.cococompany.android.aq.fragments.ProfileFragment;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -80,16 +81,30 @@ public class DatePickerFragment extends DialogFragment
     public void onDateSet(DatePicker view, int year, int month, int day) {
         // Do something with the date chosen by the user
 
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
         Calendar c = Calendar.getInstance();
         c.set(year, month, day, 0, 0, 0);
 
         if (type.equals("entr")) {
             EditText etEntr = (EditText) this.view.findViewById(R.id.etEntranceDate);
             etEntr.setText(dateFormatter.format(c.getTime()));
+            try {
+                Date date = dateFormatter.parse(etEntr.getText().toString());
+                ProfileFragment.userUniversityInfos.get(ProfileFragment.pagePosition).setEntranceDate(dateFormatter.format(date));
+                showToast(view, "Date parsed." + date.toString());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         } else if (type.equals("grad")) {
             EditText etGrad = (EditText) this.view.findViewById(R.id.etGraduationDate);
             etGrad.setText(dateFormatter.format(c.getTime()));
+            try {
+                Date date = dateFormatter.parse(etGrad.getText().toString());
+                ProfileFragment.userUniversityInfos.get(ProfileFragment.pagePosition).setGraduationDate(dateFormatter.format(date));
+                showToast(view, "Date parsed." + date.toString());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -144,7 +144,6 @@
                 android:id="@+id/university_sp"
                 android:layout_below="@id/lblGraduationDateUui"
                 android:layout_marginTop="10dp"
-                style="@style/spinnerItemStyle"
                 android:layout_toRightOf="@id/lblUniversityUui"
                 />
 

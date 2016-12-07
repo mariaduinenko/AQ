@@ -86,7 +86,7 @@ public class WriteQuestionFragment extends Fragment {
                 String[] lines = bodyOfQuestion.getText().toString().split(separator);
                 Question question = new Question();
                 User user = new User();
-                user.setId(loginPreferences.getUserId());
+                user.setId(loginPreferences.getUser().getId());
                 List<Category> categories = new ArrayList<Category>();
                 question.setUser(user);
                 question.setCategories(categories);

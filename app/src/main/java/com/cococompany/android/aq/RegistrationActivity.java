@@ -137,23 +137,26 @@ public class RegistrationActivity extends AppCompatActivity {
                     newUser = registrationService.registerProfile(newUser);
 
                     LoginPreferences loginPreferences = new LoginPreferences(RegistrationActivity.this);
-                    loginPreferences.setUserId(newUser.getId());
-                    loginPreferences.setUserPassword(password_et.getText().toString());
-                    loginPreferences.setUserAvatar(newUser.getAvatar());
-                    loginPreferences.setUserBirtdate(newUser.getBirthdate());
-                    loginPreferences.setUserEmail(newUser.getEmail());
-                    loginPreferences.setUserFirstname(newUser.getFirstName());
-                    loginPreferences.setUserLastname(newUser.getLastName());
-                    loginPreferences.setUserMiddlename(newUser.getMiddleName());
-                    loginPreferences.setUserNickname(newUser.getNickname());
-      
-                    Set<String> categories = new HashSet<String>();
-                    for (Category category: newUser.getCategories()) {
-                        categories.add(category.getName());
-                    }
-                    loginPreferences.setUserCategories(categories);
-
-                    loginPreferences.setUserUniversityInfos(newUser.getUuis());
+                    newUser.setPassword(password_et.getText().toString());
+                    newUser.setPassword(confirm_password_et.getText().toString());
+                    loginPreferences.setUser(newUser);
+//                    loginPreferences.setUserId(newUser.getId());
+//                    loginPreferences.setUserPassword(password_et.getText().toString());
+//                    loginPreferences.setUserAvatar(newUser.getAvatar());
+//                    loginPreferences.setUserBirtdate(newUser.getBirthdate());
+//                    loginPreferences.setUserEmail(newUser.getEmail());
+//                    loginPreferences.setUserFirstname(newUser.getFirstName());
+//                    loginPreferences.setUserLastname(newUser.getLastName());
+//                    loginPreferences.setUserMiddlename(newUser.getMiddleName());
+//                    loginPreferences.setUserNickname(newUser.getNickname());
+//
+//                    Set<String> categories = new HashSet<String>();
+//                    for (Category category: newUser.getCategories()) {
+//                        categories.add(category.getName());
+//                    }
+//                    loginPreferences.setUserCategories(categories);
+//
+//                    loginPreferences.setUserUniversityInfos(newUser.getUuis());
 
                     Intent intent = new Intent(RegistrationActivity.this, ContentActivity.class);
                     startActivity(intent);

@@ -55,9 +55,6 @@ public interface AQService {
     @GET("/rest/questions/liking/{id}")
     Call<Question> getQuestionLikingById(@Path("id") Long id);
 
-    @PUT("/rest/questions/like/{userId}/{questionId}")
-    Call<Void> putLikeOnQuestion(@Path("userId") Long userId, @Path("questionId") Long questionId);
-
     @GET("/rest/universities/users/{userId}")
     Call<List<University>> getUniversitiesByUserId(@Path("userId") Long userId);
 

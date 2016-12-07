@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.menu.ShowableListMenu;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
@@ -94,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (UIutils.isValidEmail(email_edit.getText().toString())){
+                    long b = System.currentTimeMillis();
                     User user = null;
                     user = registrationService.loginProfile(email_edit.getText().toString(),password_edit.getText().toString());
 
@@ -101,28 +103,30 @@ public class MainActivity extends AppCompatActivity {
                         Intent intent = new Intent(MainActivity.this, ContentActivity.class);
 
                         LoginPreferences preferences = new LoginPreferences(MainActivity.this);
-                        preferences.setUserId(user.getId());
-                        preferences.setUserPassword(password_edit.getText().toString());
-                        preferences.setUserAvatar(user.getAvatar());
-                        preferences.setUserBirtdate(user.getBirthdate());
-                        preferences.setUserEmail(user.getEmail());
-                        preferences.setUserFirstname(user.getFirstName());
-                        preferences.setUserLastname(user.getLastName());
-                        preferences.setUserMiddlename(user.getMiddleName());
-                        preferences.setUserNickname(user.getNickname());
+//                        preferences.setUserId(user.getId());
+//                        preferences.setUserPassword(password_edit.getText().toString());
+//                        preferences.setUserAvatar(user.getAvatar());
+//                        preferences.setUserBirtdate(user.getBirthdate());
+//                        preferences.setUserEmail(user.getEmail());
+//                        preferences.setUserFirstname(user.getFirstName());
+//                        preferences.setUserLastname(user.getLastName());
+//                        preferences.setUserMiddlename(user.getMiddleName());
+//                        preferences.setUserNickname(user.getNickname());
+//
+//                        Set<String> categories = new HashSet<String>();
+//                        for (Category category: user.getCategories()) {
+//                            categories.add(category.getName());
+//                        }
+//                        preferences.setUserCategories(categories);
+//
+////                        List<UserUniversityInfo> uuis = uuiService.getUserUniversityInfosByUserId(user.getId());
+//                        preferences.setUserUniversityInfos(user.getUuis());
+                        user.setPassword(password_edit.getText().toString());
+                        preferences.setUser(user);
 
-                        Set<String> categories = new HashSet<String>();
-                        for (Category category: user.getCategories()) {
-                            categories.add(category.getName());
-                        }
-                        preferences.setUserCategories(categories);
-
-//                        List<UserUniversityInfo> uuis = uuiService.getUserUniversityInfosByUserId(user.getId());
-                        preferences.setUserUniversityInfos(user.getUuis());
-
-                        System.out.println("Preferences successfully saved: id="+preferences.getUserId()+"; pass="+preferences.getUserPassword() + "; email="+preferences.getUserEmail() + "; bdate="+preferences.getUserBirthdate() + "; fname="+preferences.getUserFirstname() + "; lname="+preferences.getUserLastname() + "; mname="+preferences.getUserMiddlename() + "; nick="+preferences.getUserNickname() + "; avatar="+preferences.getUserAvatar() + "; categories="+preferences.getUserCategories());
-                        System.out.println("Also saved preference - uui list=" + preferences.getUserUniversityInfos());
+                        System.out.println("Preferences successfully saved: id="+preferences.getUser().getId()+"; pass="+preferences.getUser().getPassword() + "; email="+preferences.getUser().getEmail() + "; bdate="+preferences.getUser().getBirthdate() + "; fname="+preferences.getUser().getFirstName() + "; lname="+preferences.getUser().getLastName() + "; mname="+preferences.getUser().getMiddleName() + "; nick="+preferences.getUser().getNickname() + "; avatar="+preferences.getUser().getAvatar() + "; categories="+preferences.getUser().getCategories());
                         startActivity(intent);
+                        Toast.makeText(MainActivity.this, ""+(System.currentTimeMillis()-b), Toast.LENGTH_SHORT).show();
                     }
                     else{
                         Toast.makeText(MainActivity.this,"User doesn't exist",Toast.LENGTH_SHORT).show();

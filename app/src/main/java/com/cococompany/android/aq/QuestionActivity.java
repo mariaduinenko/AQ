@@ -41,6 +41,9 @@ public class QuestionActivity extends AppCompatActivity {
     private TextView count_of_likes;
     private LinearLayout answer_container;
     private LoginPreferences loginPreferences;
+
+    private boolean isMeLikeOwner = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,26 +60,29 @@ public class QuestionActivity extends AppCompatActivity {
         count_of_likes = (TextView) findViewById(R.id.question_count_of_likes);
         like = (ImageView) findViewById(R.id.like);
 
+        isMeLikeOwner = isMyLike();
 
-        if (isMyLike())
+        if (isMeLikeOwner)
             like.setImageResource(R.drawable.own_like);
         else
             like.setImageResource(R.drawable.like);
         like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println(loginPreferences.getUserId());
-                if (!isMyLike()){
+                System.out.println(loginPreferences.getUser().getId());
+                if (!isMeLikeOwner){
                     like.setImageResource(R.drawable.own_like);
                     count_of_likes.setText(Integer.toString(Integer.valueOf(count_of_likes.getText().toString())+1));
-                    questionService.putLikeOnQuestion(loginPreferences.getUserId(), current_question.getId());
-                    current_question = questionService.getQuestionLikingById(question_id);
+                    questionService.putLikeOnQuestion(loginPreferences.getUser().getId(), current_question.getId());
+                    isMeLikeOwner = true;
+//                    current_question = questionService.getQuestionLikingById(question_id);
                 }
                 else{
                     like.setImageResource(R.drawable.like);
                     count_of_likes.setText(Integer.toString(Integer.valueOf(count_of_likes.getText().toString())-1));
-                    questionService.putLikeOnQuestion(loginPreferences.getUserId(), current_question.getId());
-                    current_question = questionService.getQuestionLikingById(question_id);
+                    questionService.putLikeOnQuestion(loginPreferences.getUser().getId(), current_question.getId());
+                    isMeLikeOwner = false;
+//                    current_question = questionService.getQuestionLikingById(question_id);
                 }
             }
         });
@@ -119,7 +125,7 @@ public class QuestionActivity extends AppCompatActivity {
         int count = 0;
 
         for (int i = 0; i < current_question.getLikes().size(); i++) {
-            if (current_question.getLikes().get(i).getUser() != null && current_question.getLikes().get(i).getUser().getId().equals(loginPreferences.getUserId())) {
+            if (current_question.getLikes().get(i).getUser() != null && current_question.getLikes().get(i).getUser().getId().equals(loginPreferences.getUser().getId())) {
                 return true;
             }
         }

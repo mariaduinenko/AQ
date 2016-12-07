@@ -66,7 +66,7 @@ public class QuestionDeserializer implements JsonDeserializer<Question> {
                 Like like = new Like();
                 if (jsonLike.has("creationTime")) {
                     like.setCreationTime(jsonLike.get("creationTime").getAsString());
-                } else break;
+                }
 
                 if (jsonLike.has("id") && jsonLike.get("id").isJsonObject()) {
                     jsonLike = jsonLike.getAsJsonObject("id");

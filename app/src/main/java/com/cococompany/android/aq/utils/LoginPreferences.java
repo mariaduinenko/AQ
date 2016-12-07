@@ -6,6 +6,7 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.cococompany.android.aq.models.University;
+import com.cococompany.android.aq.models.User;
 import com.cococompany.android.aq.models.UserUniversityInfo;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -25,139 +26,155 @@ public class LoginPreferences {
     private SharedPreferences sharedPreferences;
 
     private final static String LOGIN_PREFERENCES = "acc";
-    private final static String USER_ID = "user_id";
-    private final static String USER_PASSWORD = "user_pass";
-    private final static String USER_EMAIL = "user_email";
-    private final static String USER_FIRSTNAME = "user_firstname";
-    private final static String USER_LASTNAME = "user_lastname";
-    private final static String USER_MIDDLENAME = "user_middlename";
-    private final static String USER_NICKNAME = "user_nickname";
-    private final static String USER_AVATAR = "user_avatar";
-    private final static String USER_BIRTHDATE = "user_birthdate";
-    private final static String USER_CATEGORIES = "user_categories";
-    private final static String USER_UUIS = "user_uuis";
+//    private final static String USER_ID = "user_id";
+//    private final static String USER_PASSWORD = "user_pass";
+//    private final static String USER_EMAIL = "user_email";
+//    private final static String USER_FIRSTNAME = "user_firstname";
+//    private final static String USER_LASTNAME = "user_lastname";
+//    private final static String USER_MIDDLENAME = "user_middlename";
+//    private final static String USER_NICKNAME = "user_nickname";
+//    private final static String USER_AVATAR = "user_avatar";
+//    private final static String USER_BIRTHDATE = "user_birthdate";
+//    private final static String USER_CATEGORIES = "user_categories";
+//    private final static String USER_UUIS = "user_uuis";
+    private final static String USER = "user";
 
     public LoginPreferences(Context context){
-        sharedPreferences = context.getSharedPreferences(LOGIN_PREFERENCES,Context.MODE_PRIVATE);
+        sharedPreferences = context.getSharedPreferences(LOGIN_PREFERENCES, Context.MODE_PRIVATE);
     }
 
     public void clear(){
         sharedPreferences.edit().clear().commit();
     }
 
-    public void setUserId(Long id){
-        sharedPreferences.edit().putLong(USER_ID,id).commit();
+//    public void setUserId(Long id){
+//        sharedPreferences.edit().putLong(USER_ID,id).commit();
+//    }
+//
+//    public void setUserPassword(String password){
+//        byte[] encodeValue = Base64.encode(password.getBytes(), Base64.DEFAULT);
+//        sharedPreferences.edit().putString(USER_PASSWORD,new String(encodeValue)).commit();
+//    }
+//
+//    public Long getUserId() {
+//        return Long.valueOf(sharedPreferences.getAll().get(USER_ID).toString());
+//    }
+//
+//    public String getUserPassword() {
+//        String userPass = "";
+//
+//        userPass = sharedPreferences.getAll().get(USER_PASSWORD).toString();
+//
+//        userPass = new String(Base64.decode(userPass.getBytes(), Base64.DEFAULT));
+//
+//        return userPass;
+//    }
+//
+//    public void setUserEmail(String email) {
+//        sharedPreferences.edit().putString(USER_EMAIL, email).commit();;
+//    }
+//
+//    public String getUserEmail() {
+//        Object email = sharedPreferences.getAll().get(USER_EMAIL);
+//        return (email != null)? email.toString() : "";
+//    }
+//
+//    public void setUserFirstname(String firstname) {
+//        sharedPreferences.edit().putString(USER_FIRSTNAME, firstname).commit();;
+//    }
+//
+//    public String getUserFirstname() {
+//        Object firstname = sharedPreferences.getAll().get(USER_FIRSTNAME);
+//        return (firstname != null)? firstname.toString() : "";
+//    }
+//
+//    public void setUserLastname(String lastname) {
+//        sharedPreferences.edit().putString(USER_LASTNAME, lastname).commit();;
+//    }
+//
+//    public String getUserLastname() {
+//        Object lastname = sharedPreferences.getAll().get(USER_LASTNAME);
+//        return (lastname != null)? lastname.toString() : "";
+//    }
+//
+//    public void setUserMiddlename(String middlename) {
+//        sharedPreferences.edit().putString(USER_MIDDLENAME, middlename).commit();;
+//    }
+//
+//    public String getUserMiddlename() {
+//        Object middlename = sharedPreferences.getAll().get(USER_MIDDLENAME);
+//        return (middlename != null)? middlename.toString() : "";
+//    }
+//
+//    public void setUserNickname(String nickname) {
+//        sharedPreferences.edit().putString(USER_NICKNAME, nickname).commit();;
+//    }
+//
+//    public String getUserNickname() {
+//        Object nickname = sharedPreferences.getAll().get(USER_NICKNAME);
+//        return (nickname != null)? nickname.toString() : "";
+//    }
+//
+//    public void setUserAvatar(String avatar) {
+//        sharedPreferences.edit().putString(USER_AVATAR, avatar).commit();;
+//    }
+//
+//    public String getUserAvatar() {
+//        Object avatar = sharedPreferences.getAll().get(USER_AVATAR);
+//        return (avatar != null)? avatar.toString() : "";
+//    }
+//
+//    public void setUserBirtdate(String birtdate) {
+//        sharedPreferences.edit().putString(USER_BIRTHDATE, birtdate).commit();;
+//    }
+//
+//    public String getUserBirthdate() {
+//        Object birthdate = sharedPreferences.getAll().get(USER_BIRTHDATE);
+//        return (birthdate != null)? birthdate.toString() : "";
+//    }
+//
+//    public void setUserCategories(Set<String> categories) {
+//        sharedPreferences.edit().putStringSet(USER_CATEGORIES, categories).commit();;
+//    }
+//
+//    public Set<String> getUserCategories() {
+//        Object categories = sharedPreferences.getAll().get(USER_CATEGORIES);
+//        return (categories != null)? new HashSet<>(Arrays.asList(categories.toString())) : new HashSet<String>();
+//    }
+//
+//    public void setUserUniversityInfos(List<UserUniversityInfo> uuis) {
+//        SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
+//        Gson gson = new Gson();
+//        String json = gson.toJson(uuis);
+//        prefsEditor.putString(USER_UUIS, json);
+//        prefsEditor.commit();
+//    }
+//
+//    public List<UserUniversityInfo> getUserUniversityInfos() {
+//        Gson gson = new Gson();
+//        String json = sharedPreferences.getString(USER_UUIS, "");
+////        List<University> universities = gson.fromJson(json, new TypeToken<List<University>>() {}.getType());
+//        UserUniversityInfo[] uuis = gson.fromJson(json, UserUniversityInfo[].class);
+//
+//        List<UserUniversityInfo> us = new ArrayList<>();
+//        if (uuis != null)
+//            us = Arrays.asList(uuis);
+//
+//        return us;
+//    }
+
+    public User getUser() {
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString(USER, "");
+        User user = gson.fromJson(json, User.class);
+        return user;
     }
 
-    public void setUserPassword(String password){
-        byte[] encodeValue = Base64.encode(password.getBytes(), Base64.DEFAULT);
-        sharedPreferences.edit().putString(USER_PASSWORD,new String(encodeValue)).commit();
-    }
-
-    public Long getUserId() {
-        return Long.valueOf(sharedPreferences.getAll().get(USER_ID).toString());
-    }
-
-    public String getUserPassword() {
-        String userPass = "";
-
-        userPass = sharedPreferences.getAll().get(USER_PASSWORD).toString();
-
-        userPass = new String(Base64.decode(userPass.getBytes(), Base64.DEFAULT));
-
-        return userPass;
-    }
-
-    public void setUserEmail(String email) {
-        sharedPreferences.edit().putString(USER_EMAIL, email).commit();;
-    }
-
-    public String getUserEmail() {
-        Object email = sharedPreferences.getAll().get(USER_EMAIL);
-        return (email != null)? email.toString() : "";
-    }
-
-    public void setUserFirstname(String firstname) {
-        sharedPreferences.edit().putString(USER_FIRSTNAME, firstname).commit();;
-    }
-
-    public String getUserFirstname() {
-        Object firstname = sharedPreferences.getAll().get(USER_FIRSTNAME);
-        return (firstname != null)? firstname.toString() : "";
-    }
-
-    public void setUserLastname(String lastname) {
-        sharedPreferences.edit().putString(USER_LASTNAME, lastname).commit();;
-    }
-
-    public String getUserLastname() {
-        Object lastname = sharedPreferences.getAll().get(USER_LASTNAME);
-        return (lastname != null)? lastname.toString() : "";
-    }
-
-    public void setUserMiddlename(String middlename) {
-        sharedPreferences.edit().putString(USER_MIDDLENAME, middlename).commit();;
-    }
-
-    public String getUserMiddlename() {
-        Object middlename = sharedPreferences.getAll().get(USER_MIDDLENAME);
-        return (middlename != null)? middlename.toString() : "";
-    }
-
-    public void setUserNickname(String nickname) {
-        sharedPreferences.edit().putString(USER_NICKNAME, nickname).commit();;
-    }
-
-    public String getUserNickname() {
-        Object nickname = sharedPreferences.getAll().get(USER_NICKNAME);
-        return (nickname != null)? nickname.toString() : "";
-    }
-
-    public void setUserAvatar(String avatar) {
-        sharedPreferences.edit().putString(USER_AVATAR, avatar).commit();;
-    }
-
-    public String getUserAvatar() {
-        Object avatar = sharedPreferences.getAll().get(USER_AVATAR);
-        return (avatar != null)? avatar.toString() : "";
-    }
-
-    public void setUserBirtdate(String birtdate) {
-        sharedPreferences.edit().putString(USER_BIRTHDATE, birtdate).commit();;
-    }
-
-    public String getUserBirthdate() {
-        Object birthdate = sharedPreferences.getAll().get(USER_BIRTHDATE);
-        return (birthdate != null)? birthdate.toString() : "";
-    }
-
-    public void setUserCategories(Set<String> categories) {
-        sharedPreferences.edit().putStringSet(USER_CATEGORIES, categories).commit();;
-    }
-
-    public Set<String> getUserCategories() {
-        Object categories = sharedPreferences.getAll().get(USER_CATEGORIES);
-        return (categories != null)? new HashSet<>(Arrays.asList(categories.toString())) : new HashSet<String>();
-    }
-
-    public void setUserUniversityInfos(List<UserUniversityInfo> uuis) {
+    public void setUser(User user) {
         SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
         Gson gson = new Gson();
-        String json = gson.toJson(uuis);
-        prefsEditor.putString(USER_UUIS, json);
+        String json = gson.toJson(user);
+        prefsEditor.putString(USER, json);
         prefsEditor.commit();
-    }
-
-    public List<UserUniversityInfo> getUserUniversityInfos() {
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString(USER_UUIS, "");
-//        List<University> universities = gson.fromJson(json, new TypeToken<List<University>>() {}.getType());
-        UserUniversityInfo[] uuis = gson.fromJson(json, UserUniversityInfo[].class);
-
-        List<UserUniversityInfo> us = new ArrayList<>();
-        if (uuis != null)
-            us = Arrays.asList(uuis);
-
-        return us;
     }
 }

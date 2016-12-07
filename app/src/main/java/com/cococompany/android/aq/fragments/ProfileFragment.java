@@ -132,16 +132,16 @@ public class ProfileFragment extends Fragment {
         startTime = System.currentTimeMillis();
         //receiving preferences
         preferences = new LoginPreferences(getContext());
-        final Long userId = preferences.getUserId();
+        final Long userId = preferences.getUser().getId();
 //        String userPass = preferences.getUserPassword();
 //        String userAvatar = preferences.getUserAvatar();
 //        String userBirthdate = preferences.getUserBirthdate();
-        String userEmail = preferences.getUserEmail();
-        String userFirstname = preferences.getUserFirstname();
-        String userLastname = preferences.getUserLastname();
-        String userMiddlename = preferences.getUserMiddlename();
-        String userNickname = preferences.getUserNickname();
-        String userBdate = preferences.getUserBirthdate();
+        String userEmail = preferences.getUser().getEmail();
+        String userFirstname = preferences.getUser().getFirstName();
+        String userLastname = preferences.getUser().getLastName();
+        String userMiddlename = preferences.getUser().getMiddleName();
+        String userNickname = preferences.getUser().getNickname();
+        String userBdate = preferences.getUser().getBirthdate();
 //        Set<String> categories = preferences.getUserCategories();
         finishTime = System.currentTimeMillis();
         System.out.println("%\\_(^_^)_/%" + "load params|execution time:" + (finishTime - startTime));
@@ -182,10 +182,10 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        final int uuisCount = (preferences.getUserUniversityInfos() != null)? preferences.getUserUniversityInfos().size() : 0;
+        final int uuisCount = (preferences.getUser().getUuis() != null)? preferences.getUser().getUuis().size() : 0;
         if (uuisCount > 0) {
             startTime = System.currentTimeMillis();
-            userUniversityInfos = new ArrayList<>(preferences.getUserUniversityInfos());
+            userUniversityInfos = new ArrayList<>(preferences.getUser().getUuis());
 
             uuiSwipeAdapter = new CustomUuiSwipeAdapter(getContext());
 //            uuiSwipeAdapter = new CustomUuiSwipeAdapter(getContext(), this);
@@ -288,11 +288,11 @@ public class ProfileFragment extends Fragment {
 
                 User user = new User();
                 user.setId(userId);
-                user.setEmail(preferences.getUserEmail());
-                user.setFirstName(preferences.getUserFirstname());
-                user.setLastName(preferences.getUserLastname());
-                user.setMiddleName(preferences.getUserMiddlename());
-                user.setNickname(preferences.getUserNickname());
+                user.setEmail(preferences.getUser().getEmail());
+                user.setFirstName(preferences.getUser().getFirstName());
+                user.setLastName(preferences.getUser().getLastName());
+                user.setMiddleName(preferences.getUser().getMiddleName());
+                user.setNickname(preferences.getUser().getNickname());
 
                 user.setBirthdate(etBirthdate.getText().toString());
 
@@ -304,8 +304,8 @@ public class ProfileFragment extends Fragment {
                 }
 
                 finishTime = System.currentTimeMillis();
-                String s = "Saved prefs:\nName:"+preferences.getUserLastname()+" "+preferences.getUserFirstname()+" "+preferences.getUserMiddlename()+"\nNickname:"+preferences.getUserNickname()+
-                        "\nEmail:"+preferences.getUserEmail();
+                String s = "Saved prefs:\nName:"+preferences.getUser().getLastName()+" "+preferences.getUser().getFirstName()+" "+preferences.getUser().getMiddleName()+"\nNickname:"+preferences.getUser().getNickname()+
+                        "\nEmail:"+preferences.getUser().getEmail();
                 showToast(view, s);
             }
         });
@@ -346,7 +346,9 @@ public class ProfileFragment extends Fragment {
         @Override
         public void afterTextChanged(Editable editable) {
             EditText etNickname = (EditText) getView().findViewById(R.id.nickname);
-            preferences.setUserNickname(etNickname.getText().toString());
+            User u = preferences.getUser();
+            u.setNickname(etNickname.getText().toString());
+            preferences.setUser(u);
         }
     }
 
@@ -360,15 +362,24 @@ public class ProfileFragment extends Fragment {
             EditText etName = (EditText) getView().findViewById(R.id.name);
             String[] nameParts = etName.getText().toString().split(" ");
             switch (nameParts.length) {
-                case 1:
-                    preferences.setUserLastname(nameParts[0]);
+                case 1: {
+                    User u = preferences.getUser();
+                    u.setLastName(nameParts[0]);
+                    preferences.setUser(u);
                     break;
-                case 2:
-                    preferences.setUserFirstname(nameParts[1]);
+                }
+                case 2: {
+                    User u = preferences.getUser();
+                    u.setFirstName(nameParts[1]);
+                    preferences.setUser(u);
                     break;
-                case 3:
-                    preferences.setUserMiddlename(nameParts[2]);
+                }
+                case 3: {
+                    User u = preferences.getUser();
+                    u.setMiddleName(nameParts[2]);
+                    preferences.setUser(u);
                     break;
+                }
                 default:
                     break;
             }
@@ -383,7 +394,9 @@ public class ProfileFragment extends Fragment {
         @Override
         public void afterTextChanged(Editable editable) {
             EditText etEmail = (EditText) getView().findViewById(R.id.email);
-            preferences.setUserEmail(etEmail.getText().toString());
+            User u = preferences.getUser();
+            u.setEmail(etEmail.getText().toString());
+            preferences.setUser(u);
         }
     }
 

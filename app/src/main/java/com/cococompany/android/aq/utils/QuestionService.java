@@ -2,6 +2,7 @@ package com.cococompany.android.aq.utils;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.cococompany.android.aq.ContentActivity;
 import com.cococompany.android.aq.QuestionActivity;
@@ -18,6 +19,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.internal.Internal;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -33,6 +39,8 @@ public class QuestionService {
 
     private Retrofit retrofit;
     private AQService aqService;
+
+    private final String projectBaseUrl = "https://pure-mesa-13823.herokuapp.com";
 
     public AQService getAqService() {
         return aqService;
@@ -184,19 +192,26 @@ public class QuestionService {
         return  result;
     }
 
-    public boolean putLikeOnQuestion(long userId, long questionId){
-        boolean result = false;
-        QuestionService.PutLikeTask putLikeTask = new PutLikeTask();
-        putLikeTask.execute(userId, questionId);
-        try {
-            result =  putLikeTask.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+    public void putLikeOnQuestion(long userId, long questionId){
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        RequestBody body = RequestBody.create(JSON, "");
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(projectBaseUrl + "/rest/questions/like/"+userId+"/"+questionId+"")
+                .put(body)
+                .build();
 
-        return  result;
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(okhttp3.Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
+                Log.d("Response", response.toString());
+            }
+        });
     }
 
     class QuestionsTask extends AsyncTask<Void,Void,ArrayList<Question>>{
@@ -367,23 +382,5 @@ public class QuestionService {
         }
     }
 
-    class PutLikeTask extends AsyncTask<Long,Void,Boolean>{
-        @Override
-        protected Boolean doInBackground(Long... id) {
-            Boolean result = null;
-            Call<Void> call = getAqService().putLikeOnQuestion(id[0], id[1]);
-            Response<Void> response = null;
-
-            try {
-                response = call.execute();
-                result =  call.isExecuted();
-                if (response.isSuccessful()){
-
-                }
-                else { System.out.println("Like/Dislike setting unsuccessfull. Response invalid"); }
-            } catch (IOException e) {e.printStackTrace();}
-            return result;
-        }
-    }
 }
 

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -33,6 +34,7 @@ public class FeedFragment extends Fragment {
     private String mParam2;
     private RecyclerView feedRecyclerView;
     private FeedAdapter feedAdapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private ArrayList<Question> questions;
     private QuestionService questionService;
     //private OnFragmentInteractionListener mListener;
@@ -77,6 +79,7 @@ public class FeedFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_feed, container, false);
         feedRecyclerView = (RecyclerView) v.findViewById(R.id.feed);
         feedRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipeRefreshLayout);
         feedAdapter = new FeedAdapter(questions, getActivity(), feedRecyclerView);
         feedRecyclerView.setAdapter(feedAdapter);
         feedAdapter.setmRecyclerView(feedRecyclerView);
@@ -115,6 +118,15 @@ public class FeedFragment extends Fragment {
 
             }
 
+        });
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                questions = questionService.getQuestionsInternal();
+                feedAdapter.setQuestions(questions);
+                feedAdapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
+            }
         });
 
         return v;

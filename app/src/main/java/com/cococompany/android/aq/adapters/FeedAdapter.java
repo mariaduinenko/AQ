@@ -30,7 +30,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private OnLoadMoreListener mOnLoadMoreListener;
     private boolean isLoading;
     private int visibleThreshold = 5;
-    private int lastVisibleItem, totalItemCount;
+    private int lastVisibleItem, totalItemCount,firstFullVisibleItem;
     private RecyclerView mRecyclerView;
 
     @Override
@@ -56,6 +56,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     super.onScrolled(recyclerView, dx, dy);
                     totalItemCount = recyclerView.getLayoutManager().getItemCount();
                     lastVisibleItem = ((LinearLayoutManager)recyclerView.getLayoutManager()).findLastVisibleItemPosition();
+                    firstFullVisibleItem = ((LinearLayoutManager)recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
                     Log.e("haint",totalItemCount+" <=> "+lastVisibleItem);
                     if (!isLoading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
 

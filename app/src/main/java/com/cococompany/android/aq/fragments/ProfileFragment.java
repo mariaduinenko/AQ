@@ -1,40 +1,35 @@
 package com.cococompany.android.aq.fragments;
 
+import android.app.DialogFragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.cococompany.android.aq.R;
-import com.cococompany.android.aq.adapters.CustomFacultySpinnerAdapter;
-import com.cococompany.android.aq.adapters.CustomSpecialitySpinnerAdapter;
-import com.cococompany.android.aq.adapters.CustomUniversitySpinnerAdapter;
 import com.cococompany.android.aq.adapters.CustomUuiSwipeAdapter;
-import com.cococompany.android.aq.models.Faculty;
-import com.cococompany.android.aq.models.Speciality;
-import com.cococompany.android.aq.models.University;
 import com.cococompany.android.aq.models.User;
 import com.cococompany.android.aq.models.UserUniversityInfo;
-import com.cococompany.android.aq.utils.FacultyService;
 import com.cococompany.android.aq.utils.LoginPreferences;
-import com.cococompany.android.aq.utils.UniversityService;
 import com.cococompany.android.aq.utils.UserService;
 import com.cococompany.android.aq.utils.UserUniversityInfoService;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class ProfileFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -49,28 +44,29 @@ public class ProfileFragment extends Fragment {
     private String mParam2;
 
     private long startTime = 0L,
-
             finishTime = 0L;
-
-
 
     //    private Long selectedUniversityId = -1L;
 
+    private SimpleDateFormat dateFormatter;
 
-    public static UserUniversityInfo[] userUniversityInfos = null;
+    public static List<UserUniversityInfo> userUniversityInfos = new ArrayList<>();
+//    public static UserUniversityInfo[] userUniversityInfos = null;
 
 //    private Long selectedUniversityId = -1L;
 
     private Long selectedUuiId = -1L;
 
-    private ViewPager viewPager;
-    private CustomUuiSwipeAdapter uuiSwipeAdapter;
+    public static ViewPager viewPager;
+    public static CustomUuiSwipeAdapter uuiSwipeAdapter;
 
     private UserUniversityInfoService uuiService = null;
 
     public static User user = null;
 
     public static int pagePosition = 0;
+
+    private EditText etBirthdate;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -119,7 +115,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onPageSelected(int position) {
                 pagePosition = position;
-                selectedUuiId = (userUniversityInfos[pagePosition] != null)? userUniversityInfos[pagePosition].getId() : -1L;
+                selectedUuiId = (userUniversityInfos.get(pagePosition) != null)? userUniversityInfos.get(pagePosition).getId() : -1L;
             }
 
             @Override
@@ -145,6 +141,7 @@ public class ProfileFragment extends Fragment {
         String userLastname = preferences.getUserLastname();
         String userMiddlename = preferences.getUserMiddlename();
         String userNickname = preferences.getUserNickname();
+        String userBdate = preferences.getUserBirthdate();
 //        Set<String> categories = preferences.getUserCategories();
         finishTime = System.currentTimeMillis();
         System.out.println("%\\_(^_^)_/%" + "load params|execution time:" + (finishTime - startTime));
@@ -152,7 +149,9 @@ public class ProfileFragment extends Fragment {
         EditText etName = (EditText) view.findViewById(R.id.name);
         EditText etNickname = (EditText) view.findViewById(R.id.nickname);
         EditText etEmail = (EditText) view.findViewById(R.id.email);
+        etBirthdate = (EditText) view.findViewById(R.id.birthdate);
         Button btnApply = (Button) view.findViewById(R.id.btn_apply);
+        Button btnChangePassword = (Button) view.findViewById(R.id.btn_change_password);
 
         user = new User(userId);
 
@@ -172,26 +171,96 @@ public class ProfileFragment extends Fragment {
         etName.setText(firstPart + secondPart + thirdPart);
         etNickname.setText(userNickname);
         etEmail.setText(userEmail);
+        etBirthdate.setText(userBdate);
 
-        int uuisCount = (preferences.getUserUniversityInfos() != null)? preferences.getUserUniversityInfos().size() : 0;
+        etBirthdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DialogFragment fragment = new DatePickerFragment();
+                ((DatePickerFragment) fragment).setBirthdateType();
+                fragment.show(getActivity().getFragmentManager(), "Date Picker");
+            }
+        });
+
+        final int uuisCount = (preferences.getUserUniversityInfos() != null)? preferences.getUserUniversityInfos().size() : 0;
         if (uuisCount > 0) {
             startTime = System.currentTimeMillis();
-            List<UserUniversityInfo> uuiList = preferences.getUserUniversityInfos();
-
-            userUniversityInfos = new UserUniversityInfo[uuiList.size()];
-            uuiList.toArray(userUniversityInfos);
+            userUniversityInfos = new ArrayList<>(preferences.getUserUniversityInfos());
 
             uuiSwipeAdapter = new CustomUuiSwipeAdapter(getContext());
+//            uuiSwipeAdapter = new CustomUuiSwipeAdapter(getContext(), this);
             viewPager.setAdapter(uuiSwipeAdapter);
+
+            for (int i = 0; i < userUniversityInfos.size(); i++) {
+                final int pos = i;
+
+                LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                final RelativeLayout item_view = (RelativeLayout) layoutInflater.inflate(R.layout.profile_uui_swipe_layout, null);
+                uuiSwipeAdapter.addView(item_view, i);
+
+                EditText etEntranceDate = (EditText) item_view.findViewById(R.id.etEntranceDate);
+                etEntranceDate.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        DialogFragment fragment = new DatePickerFragment();
+                        ((DatePickerFragment) fragment).setEntranceType();
+                        fragment.show(getActivity().getFragmentManager(), "Date Picker");
+                    }
+                });
+                String entranceDate = userUniversityInfos.get(i).getEntranceDate();
+                if (entranceDate != null && !entranceDate.isEmpty()) {
+                    etEntranceDate.setText(entranceDate);
+                }
+
+                EditText etGraduationDate = (EditText) item_view.findViewById(R.id.etGraduationDate);
+                etGraduationDate.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        DialogFragment fragment = new DatePickerFragment();
+                        ((DatePickerFragment) fragment).setGraduationType();
+                        fragment.show(getActivity().getFragmentManager(), "Date Picker");
+                    }
+                });
+                String graduationDate = userUniversityInfos.get(i).getGraduationDate();
+                if (graduationDate != null && !graduationDate.isEmpty()) {
+                    etGraduationDate.setText(graduationDate);
+                }
+
+                registerForContextMenu(item_view);
+                Button btnAddUui = (Button) item_view.findViewById(R.id.btnAddUui);
+                btnAddUui.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        UserUniversityInfo uui = new UserUniversityInfo();
+                        uui.setUser(user);
+                        uui = uuiService.createUui(uui);
+                        userUniversityInfos.add(uui);
+
+                        LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        LinearLayout item_view = (LinearLayout) layoutInflater.inflate(R.layout.profile_uui_swipe_layout, null);
+
+                        uuiSwipeAdapter.addView(item_view, userUniversityInfos.size()-1);
+                        registerForContextMenu(item_view);
+                        Button btnAddUui = (Button) item_view.findViewById(R.id.btnAddUui);
+                        btnAddUui.setOnClickListener(this);
+                        uuiSwipeAdapter.changeTotalIcon();
+                        uuiSwipeAdapter.notifyDataSetChanged();
+                        viewPager.setCurrentItem(userUniversityInfos.size()-1);
+                    }
+                });
+
+                uuiSwipeAdapter.notifyDataSetChanged();
+            }
             finishTime = System.currentTimeMillis();
         }else {
             startTime = System.currentTimeMillis();
-            userUniversityInfos = new UserUniversityInfo[1];
+            userUniversityInfos = new ArrayList<>();
             UserUniversityInfo uui = new UserUniversityInfo();
             uui.setUser(new User(userId));
-            userUniversityInfos[0] = uui;
+            userUniversityInfos.add(uuiService.createUui(uui));
 
             uuiSwipeAdapter = new CustomUuiSwipeAdapter(getContext());
+//            uuiSwipeAdapter = new CustomUuiSwipeAdapter(getContext(), this);
             viewPager.setAdapter(uuiSwipeAdapter);
             finishTime = System.currentTimeMillis();
         }
@@ -200,6 +269,15 @@ public class ProfileFragment extends Fragment {
         etNickname.addTextChangedListener(new NicknameTextChangedListener());
         etName.addTextChangedListener(new NameTextChangedListener());
         etEmail.addTextChangedListener(new EmailTextChangedListener());
+
+        //change password - open Dialog
+        btnChangePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DialogFragment fragment = new PasswordChangeFragment();
+                fragment.show(getActivity().getFragmentManager(), "Password change");
+            }
+        });
 
         //Saving user profile
         btnApply.setOnClickListener(new View.OnClickListener() {
@@ -216,10 +294,13 @@ public class ProfileFragment extends Fragment {
                 user.setMiddleName(preferences.getUserMiddlename());
                 user.setNickname(preferences.getUserNickname());
 
+                user.setBirthdate(etBirthdate.getText().toString());
+
                 userService.lightUpdate(user);
 
-                for (int i = 0; i < userUniversityInfos.length; i++) {
-                    userUniversityInfos[i] = uuiService.updateUui(userUniversityInfos[i]);
+                for (int i = 0; i < userUniversityInfos.size(); i++) {
+                    userUniversityInfos.get(i).setUser(user);
+                    userUniversityInfos.set(i, uuiService.updateUui(userUniversityInfos.get(i)));
                 }
 
                 finishTime = System.currentTimeMillis();
@@ -229,9 +310,32 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-
         // Inflate the layout for this fragment
         return view;
+    }
+
+    public void addView(View newPage)
+    {
+        int pageIndex = uuiSwipeAdapter.addView (newPage);
+        viewPager.setCurrentItem(pageIndex, true);
+    }
+
+    public void removeView(View defunctPage)
+    {
+        int pageIndex = uuiSwipeAdapter.removeView(viewPager, defunctPage);
+        if (pageIndex == uuiSwipeAdapter.getCount())
+            pageIndex--;
+        viewPager.setCurrentItem(pageIndex);
+    }
+
+    public View getCurrentPage()
+    {
+        return uuiSwipeAdapter.getView(viewPager.getCurrentItem());
+    }
+
+    public void setCurrentPage(View pageToShow)
+    {
+        viewPager.setCurrentItem(uuiSwipeAdapter.getItemPosition (pageToShow), true);
     }
 
     public class NicknameTextChangedListener implements TextWatcher {
@@ -281,6 +385,30 @@ public class ProfileFragment extends Fragment {
             EditText etEmail = (EditText) getView().findViewById(R.id.email);
             preferences.setUserEmail(etEmail.getText().toString());
         }
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        menu.setHeaderTitle("Context Menu");
+        menu.add(0, v.getId(), 0, "Remove University Info");
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        if (item.getTitle() == "Remove University Info") {
+            uuiService.removeUui(userUniversityInfos.get(pagePosition).getId());
+            //remove ui components too
+            uuiSwipeAdapter.removeView(viewPager, pagePosition);
+            userUniversityInfos.remove(pagePosition);
+            uuiSwipeAdapter.changeTotalIcon();
+//            Toast.makeText(getContext(), "Remove University Info invoked. Current page = " + pagePosition, Toast.LENGTH_SHORT).show();
+            uuiSwipeAdapter.notifyDataSetChanged();
+        } else {
+            return false;
+        }
+        return true;
     }
 
     public void showToast(View view, String text) {

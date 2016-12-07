@@ -118,4 +118,12 @@ public class Faculty {
         this.university = university;
     }
 
+    @Override
+    public String toString() {
+        return "Faculty{" +
+                "id=" + id +
+                ", creationTime='" + creationTime + '\'' +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

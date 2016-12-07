@@ -112,6 +112,25 @@ public class UserUniversityInfoService {
         return result;
     }
 
+    public UserUniversityInfo removeUui(Long id) {
+        UserUniversityInfo result = null;
+
+        UuiRemoveTask uuiCreateTask = new UuiRemoveTask();
+        uuiCreateTask.execute(id);
+        try {
+            result = uuiCreateTask.get();
+        }
+
+        catch(InterruptedException e) {
+            e.printStackTrace();
+        }
+        catch(ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
     class UUIByUserIdTask extends AsyncTask<Long,Void,List<UserUniversityInfo>>{
 
         @Override
@@ -179,6 +198,25 @@ public class UserUniversityInfoService {
                 System.out.println("After calling uui create: body="+result);
                 if(response.isSuccessful())
                     System.out.println("Result of uui creating is successfull: "+result.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+    }
+
+    class UuiRemoveTask extends AsyncTask<Long, Void, UserUniversityInfo>{
+        @Override
+        protected UserUniversityInfo doInBackground(Long... ids) {
+            UserUniversityInfo result = null;
+            final Call<UserUniversityInfo> call = aqService.removeUui(ids[0]);
+            System.out.println("After calling remove: uui="+ids[0]);
+            try {
+                Response<UserUniversityInfo> response = call.execute();
+                result = response.body();
+                System.out.println("After calling uui remove: body="+result);
+                if(response.isSuccessful())
+                    System.out.println("Result of uui removing is successfull: "+result.toString());
             } catch (IOException e) {
                 e.printStackTrace();
             }

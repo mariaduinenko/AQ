@@ -3,6 +3,7 @@ package com.cococompany.android.aq.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,10 +18,10 @@ public class UserUniversityInfo {
     private Long id;
     @SerializedName("entranceDate")
     @Expose
-    private Object entranceDate;
+    private String entranceDate;
     @SerializedName("graduationDate")
     @Expose
-    private Object graduationDate;
+    private String graduationDate;
     @SerializedName("speciality")
     @Expose
     private Speciality speciality;
@@ -37,13 +38,13 @@ public class UserUniversityInfo {
     public UserUniversityInfo() {
     }
 
-    public UserUniversityInfo(Long id, Object entranceDate, Object graduationDate) {
+    public UserUniversityInfo(Long id, String entranceDate, String graduationDate) {
         this.id = id;
         this.entranceDate = entranceDate;
         this.graduationDate = graduationDate;
     }
 
-    public UserUniversityInfo(Long id, Object entranceDate, Object graduationDate, Speciality speciality, Faculty faculty, University university) {
+    public UserUniversityInfo(Long id, String entranceDate, String graduationDate, Speciality speciality, Faculty faculty, University university) {
         this.id = id;
         this.entranceDate = entranceDate;
         this.graduationDate = graduationDate;
@@ -52,21 +53,21 @@ public class UserUniversityInfo {
         this.university = university;
     }
 
-    public UserUniversityInfo(Long id, Object entranceDate, Object graduationDate, Speciality speciality) {
+    public UserUniversityInfo(Long id, String entranceDate, String graduationDate, Speciality speciality) {
         this.id = id;
         this.entranceDate = entranceDate;
         this.graduationDate = graduationDate;
         this.speciality = speciality;
     }
 
-    public UserUniversityInfo(Long id, Object entranceDate, Faculty faculty, Object graduationDate) {
+    public UserUniversityInfo(Long id, String entranceDate, Faculty faculty, String graduationDate) {
         this.id = id;
         this.entranceDate = entranceDate;
         this.faculty = faculty;
         this.graduationDate = graduationDate;
     }
 
-    public UserUniversityInfo(Long id, Object entranceDate, Object graduationDate, University university) {
+    public UserUniversityInfo(Long id, String entranceDate, String graduationDate, University university) {
         this.id = id;
         this.entranceDate = entranceDate;
         this.graduationDate = graduationDate;
@@ -100,7 +101,7 @@ public class UserUniversityInfo {
      * @return
      * The entranceDate
      */
-    public Object getEntranceDate() {
+    public String getEntranceDate() {
         return entranceDate;
     }
 
@@ -109,7 +110,7 @@ public class UserUniversityInfo {
      * @param entranceDate
      * The entranceDate
      */
-    public void setEntranceDate(Object entranceDate) {
+    public void setEntranceDate(String entranceDate) {
         this.entranceDate = entranceDate;
     }
 
@@ -118,7 +119,7 @@ public class UserUniversityInfo {
      * @return
      * The graduationDate
      */
-    public Object getGraduationDate() {
+    public String getGraduationDate() {
         return graduationDate;
     }
 
@@ -127,7 +128,7 @@ public class UserUniversityInfo {
      * @param graduationDate
      * The graduationDate
      */
-    public void setGraduationDate(Object graduationDate) {
+    public void setGraduationDate(String graduationDate) {
         this.graduationDate = graduationDate;
     }
 
@@ -161,5 +162,17 @@ public class UserUniversityInfo {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Override
+    public String toString() {
+        return "UserUniversityInfo{" +
+                "id=" + id +
+                ", entranceDate=" + entranceDate +
+                ", graduationDate=" + graduationDate +
+                ", speciality=" + speciality +
+                ", faculty=" + faculty +
+                ", university=" + university +
+                '}';
     }
 }

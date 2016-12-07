@@ -1,45 +1,43 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/bg_color"
     android:orientation="vertical"
     tools:context="com.cococompany.android.aq.fragments.ProfileFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TableRow
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:paddingLeft="25dp">
+        android:layout_height="wrap_content">
 
-        <com.joooonho.SelectableRoundedImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            app:sriv_left_bottom_corner_radius="37dp"
-            app:sriv_left_top_corner_radius="37dp"
-            app:sriv_right_bottom_corner_radius="37dp"
-            app:sriv_right_top_corner_radius="37dp"
-            app:sriv_border_width="1dp"
-            app:sriv_border_color="@color/image_border_color"
-            android:src="@drawable/test_face"
-            android:id="@+id/selectableRoundedImageView" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="80dp"
-            android:orientation="vertical"
-            android:layout_marginLeft="30dp"
-            android:gravity="center_vertical"
-            >
+            <com.joooonho.SelectableRoundedImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="25dp"
+                app:sriv_left_top_corner_radius="37dp"
+                app:sriv_right_bottom_corner_radius="37dp"
+                app:sriv_right_top_corner_radius="37dp"
+                app:sriv_border_width="1dp"
+                app:sriv_border_color="@color/image_border_color"
+                android:src="@drawable/test_face"
+                android:id="@+id/selectableRoundedImageView" />
+
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:id="@+id/name"
                 android:text="Albert Nickson"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:layout_toRightOf="@id/selectableRoundedImageView"
+                android:layout_marginTop="25dp"
+                android:layout_marginLeft="25dp"/>
 
             <EditText
                 android:layout_width="wrap_content"
@@ -49,86 +47,101 @@
                 android:id="@+id/nickname"
                 android:text="@string/test_nickname"
                 android:hint="@string/enter_nickname"
-                android:textStyle="bold"/>
-        </LinearLayout>
-    </TableRow>
+                android:textStyle="bold"
+                android:layout_below="@id/name"
+                android:layout_toRightOf="@id/selectableRoundedImageView"
+                android:layout_marginLeft="25dp"/>
 
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="20dp"
-        android:paddingTop="10dp">
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:text="@string/email"
+                android:textSize="@dimen/txt_small"
+                android:textStyle="bold"
+                android:id="@+id/tvEmail"
+                android:layout_below="@id/selectableRoundedImageView"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="25dp"
+                android:gravity="center_vertical"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/email"
-            android:layout_weight="3"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:id="@+id/textView" />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:text="email@mail.ru"
+                android:textSize="@dimen/txt_small"
+                android:padding="8dp"
+                android:id="@+id/email"
+                android:layout_toRightOf="@id/tvEmail"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginRight="25dp"
+                android:layout_below="@id/selectableRoundedImageView"
+                android:inputType="textEmailAddress"
+                />
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="email@mail.ru"
-            android:textSize="14sp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:id="@+id/email"/>
-    </TableRow>
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:text="@string/birtdate"
+                android:textSize="@dimen/txt_small"
+                android:textStyle="bold"
+                android:id="@+id/tvBirthdate"
+                android:layout_below="@id/tvEmail"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"/>
 
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:textSize="@dimen/txt_small"
+                android:padding="8dp"
+                android:id="@+id/birthdate"
+                android:layout_toRightOf="@id/tvBirthdate"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="25dp"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/tvEmail"
+                android:inputType="date"
+                />
 
-        <Button
-            android:text="@string/apply"
-            android:textColor="@color/text_white"
-            android:textSize="@dimen/txt_small"
-            android:background="@color/green"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btn_apply"/>
-    </TableRow>
+            <Button
+                android:text="@string/change_password"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/txt_small"
+                android:background="@color/green"
+                android:layout_width="150dp"
+                android:layout_height="30dp"
+                android:id="@+id/btn_change_password"
+                android:layout_below="@id/birthdate"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"/>
 
-    <!--<TableRow-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content">-->
-        <!--<Button-->
-            <!--android:text="@string/add"-->
-            <!--android:textColor="@color/text_white"-->
-            <!--android:background="@color/green"-->
-            <!--android:layout_marginLeft="10dp"-->
-            <!--android:layout_marginRight="10dp"-->
-            <!--android:id="@+id/btn_add"/>-->
-    <!--</TableRow>-->
+            <android.support.v4.view.ViewPager
+                android:id="@+id/uui_view_pager"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginBottom="10dp"
+                android:layout_below="@id/btn_change_password">
+            </android.support.v4.view.ViewPager>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/uui_view_pager"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp">
+            <Button
+                android:text="@string/apply"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/txt_small"
+                android:background="@color/green"
+                android:layout_width="70dp"
+                android:layout_height="30dp"
+                android:id="@+id/btn_apply"
+                android:layout_below="@id/uui_view_pager"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="25dp"/>
 
-    </android.support.v4.view.ViewPager>
+        </RelativeLayout>
+    </ScrollView>
 
-    <!--<TableRow-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:gravity="bottom"-->
-        <!--android:paddingBottom="20dp">-->
 
-        <!--<View-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="1dp"-->
-            <!--android:background="@color/divider_color"-->
-            <!--android:layout_marginLeft="20dp"-->
-            <!--android:layout_marginRight="20dp"-->
-            <!--android:layout_marginTop="20dp"/>-->
-
-    <!--</TableRow>-->
 
 </LinearLayout>

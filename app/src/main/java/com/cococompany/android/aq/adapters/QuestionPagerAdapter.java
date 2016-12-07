@@ -13,7 +13,7 @@ import com.cococompany.android.aq.fragments.WriteQuestionFragment;
 /**
  * Created by Valentin on 03.11.2016.
  */
-public class QuestionPagerAdapter extends FragmentPagerAdapter{
+public class QuestionPagerAdapter extends FragmentPagerAdapter {
     String string1 = "1";
     String string2 = "2";
     public QuestionPagerAdapter(FragmentManager fm) {

@@ -13,6 +13,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -26,24 +27,36 @@ public interface AQService {
     @POST("/rest/register")
     Call<User> registerUser(@Body User user);
 
+    @POST("/rest/register/profile")
+    Call<User> registerUserProfile(@Body User user);
+
     @POST("/rest/profile")
     Call<User> loginUser(@Body User user);
+
+    @POST("/rest/login/profile")
+    Call<User> loginUserProfile(@Body User user);
+
     //questions and likes
     @GET("/rest/feed/{length}")
     Call<ArrayList<Question>> getQuestions(@Path("length") int length);
+    @GET("/rest/feed/internal/{length}")
+    Call<ArrayList<Question>> getQuestionsInternal(@Path("length") int length);
     @GET("/rest/feed/{id}/{length}")
     Call<ArrayList<Question>> getNextQuestionsInFeed(@Path("id") long id,@Path("length") int length);
+    @GET("/rest/feed/internal/{id}/{length}")
+    Call<ArrayList<Question>> getNextQuestionsInFeedInternal(@Path("id") long id,@Path("length") int length);
     @POST("/rest/questions")
     Call<Question> createQuestion(@Body Question question);
 
     @GET("/rest/questions/{id}")
     Call<Question> getQuestionById(@Path("id") Long id);
+    @GET("/rest/questions/internal/{id}")
+    Call<Question> getQuestionInternalById(@Path("id") Long id);
+    @GET("/rest/questions/liking/{id}")
+    Call<Question> getQuestionLikingById(@Path("id") Long id);
 
     @PUT("/rest/questions/like/{userId}/{questionId}")
-    Call<Like> putLikeOnQuestion(@Path("userId") Long userId, @Path("questionId") Long questionId);
-
-    @PUT("/rest/questions/dislike/{userId}/{questionId}")
-    Call<Like> disLikeOnQuestion(@Path("userId") Long userId, @Path("questionId") Long questionId);
+    Call<Void> putLikeOnQuestion(@Path("userId") Long userId, @Path("questionId") Long questionId);
 
     @GET("/rest/universities/users/{userId}")
     Call<List<University>> getUniversitiesByUserId(@Path("userId") Long userId);
@@ -73,6 +86,8 @@ public interface AQService {
     Call<UserUniversityInfo> updateUui(@Path("id") Long id, @Body UserUniversityInfo uui);
     @POST("/rest/useruniversityinfos")
     Call<UserUniversityInfo> createUui(@Body UserUniversityInfo uui);
+    @DELETE("/rest/useruniversityinfos/{id}")
+    Call<UserUniversityInfo> removeUui(@Path("id") Long id);
 
     //specialities
     @GET("/rest/specialities")

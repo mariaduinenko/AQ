@@ -49,14 +49,15 @@ public class QuestionActivity extends AppCompatActivity {
         question_id = getIntent().getLongExtra("question_id", -1);
         final QuestionService questionService = new QuestionService(this);
         loginPreferences = new LoginPreferences(this);
-        current_question = questionService.getQuestionById(question_id);
+        current_question = questionService.getQuestionLikingById(question_id);
         name_of_asker = (TextView) findViewById(R.id.name_of_asker_view);
         question_date = (TextView) findViewById(R.id.question_date);
         title_of_question = (TextView) findViewById(R.id.question_title);
         comment_of_question = (TextView) findViewById(R.id.question_commnet);
         count_of_likes = (TextView) findViewById(R.id.question_count_of_likes);
         like = (ImageView) findViewById(R.id.like);
-        /*
+
+
         if (isMyLike())
             like.setImageResource(R.drawable.own_like);
         else
@@ -66,21 +67,20 @@ public class QuestionActivity extends AppCompatActivity {
             public void onClick(View view) {
                 System.out.println(loginPreferences.getUserId());
                 if (!isMyLike()){
-                    if (questionService.putLikeOnQuestion(loginPreferences.getUserId(),current_question.getId())){
-                        like.setImageResource(R.drawable.own_like);
-                        count_of_likes.setText(Integer.toString(Integer.valueOf(count_of_likes.getText().toString())+1));
-                        current_question = questionService.getQuestionById(question_id);
-                    }
+                    like.setImageResource(R.drawable.own_like);
+                    count_of_likes.setText(Integer.toString(Integer.valueOf(count_of_likes.getText().toString())+1));
+                    questionService.putLikeOnQuestion(loginPreferences.getUserId(), current_question.getId());
+                    current_question = questionService.getQuestionLikingById(question_id);
                 }
                 else{
-                    if (questionService.disLikeOnQuestion(loginPreferences.getUserId(),current_question.getId())){
-                        like.setImageResource(R.drawable.like);
-                        count_of_likes.setText(Integer.toString(Integer.valueOf(count_of_likes.getText().toString())-1));
-                        current_question = questionService.getQuestionById(question_id);
-                    }
+                    like.setImageResource(R.drawable.like);
+                    count_of_likes.setText(Integer.toString(Integer.valueOf(count_of_likes.getText().toString())-1));
+                    questionService.putLikeOnQuestion(loginPreferences.getUserId(), current_question.getId());
+                    current_question = questionService.getQuestionLikingById(question_id);
                 }
             }
-        });*/
+        });
+
         answer_container = (LinearLayout) findViewById(R.id.answers_container);
         name_of_asker.setText(current_question.getUser().getFirstName() + " " + current_question.getUser().getLastName());
         question_date.setText(current_question.getCreationTime());
@@ -115,15 +115,22 @@ public class QuestionActivity extends AppCompatActivity {
     }
 
     public boolean isMyLike(){
-        boolean result = false;
+//        boolean result = false;
         int count = 0;
-        while((count<current_question.getLikes().size()||!result)&&current_question.getLikes().size()>0){
-            if (current_question.getLikes().get(count).getUser().getId()==loginPreferences.getUserId())
-                result=true;
-            count++;
+
+        for (int i = 0; i < current_question.getLikes().size(); i++) {
+            if (current_question.getLikes().get(i).getUser() != null && current_question.getLikes().get(i).getUser().getId().equals(loginPreferences.getUserId())) {
+                return true;
+            }
         }
 
-        return result;
+//        while((count<current_question.getLikes().size() || !result) && current_question.getLikes().size() > 0){
+//            if (current_question.getLikes().get(count).getUser().getId() == loginPreferences.getUserId())
+//                result=true;
+//            count++;
+//        }
+
+        return false;
     }
 
 

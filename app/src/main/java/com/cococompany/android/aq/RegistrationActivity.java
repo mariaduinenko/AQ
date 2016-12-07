@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.cococompany.android.aq.models.Category;
 import com.cococompany.android.aq.models.User;
 import com.cococompany.android.aq.utils.AQService;
 import com.cococompany.android.aq.utils.LoginPreferences;
@@ -22,6 +23,8 @@ import com.cococompany.android.aq.utils.UIutils;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.HashSet;
+import java.util.Set;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -50,6 +53,7 @@ public class RegistrationActivity extends AppCompatActivity {
         hintColor =  name_et.getCurrentHintTextColor();
 
         TextWatcher textWatcher = new TextWatcher() {
+            //надо будет прокомментировать чуть-чуть, ато мне вобще не ясно
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -123,17 +127,35 @@ public class RegistrationActivity extends AppCompatActivity {
                     newUser.setEmail(email_et.getText().toString());
                     newUser.setPassword(password_et.getText().toString());
                     newUser.setNickname(nickname_et.getText().toString());
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-                    String currentDateandTime = sdf.format(new java.util.Date());
-                    newUser.setCreationTime(currentDateandTime);
+//                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+//                    String currentDateandTime = sdf.format(new java.util.Date());
+//                    newUser.setCreationTime(currentDateandTime);
                     newUser.setPasswordConfirm(confirm_password_et.getText().toString());
-                    newUser.setBirthdate(currentDateandTime);
+//                    newUser.setBirthdate(currentDateandTime);
                     newUser.setAvatar("https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQPJM4YvjzSCCDoQdLrpE1OP4CjT6kr8P-HMy8FfTjfhMgLpjPE03WXtw");
-                    System.out.println(newUser.toString());
-                    registrationService.register(newUser);
+//                    System.out.println(newUser.toString());
+                    newUser = registrationService.registerProfile(newUser);
+
                     LoginPreferences loginPreferences = new LoginPreferences(RegistrationActivity.this);
                     loginPreferences.setUserId(newUser.getId());
-                    Intent intent=  new Intent(RegistrationActivity.this, ContentActivity.class);
+                    loginPreferences.setUserPassword(password_et.getText().toString());
+                    loginPreferences.setUserAvatar(newUser.getAvatar());
+                    loginPreferences.setUserBirtdate(newUser.getBirthdate());
+                    loginPreferences.setUserEmail(newUser.getEmail());
+                    loginPreferences.setUserFirstname(newUser.getFirstName());
+                    loginPreferences.setUserLastname(newUser.getLastName());
+                    loginPreferences.setUserMiddlename(newUser.getMiddleName());
+                    loginPreferences.setUserNickname(newUser.getNickname());
+      
+                    Set<String> categories = new HashSet<String>();
+                    for (Category category: newUser.getCategories()) {
+                        categories.add(category.getName());
+                    }
+                    loginPreferences.setUserCategories(categories);
+
+                    loginPreferences.setUserUniversityInfos(newUser.getUuis());
+
+                    Intent intent = new Intent(RegistrationActivity.this, ContentActivity.class);
                     startActivity(intent);
                 }
 

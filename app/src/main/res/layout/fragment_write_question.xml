@@ -16,26 +16,27 @@
         android:textSize="20sp"/>
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
         android:layout_marginTop="30dp"
+        android:background="@drawable/edit_text_selector"
+        android:padding="10dp"
+        android:id="@+id/tags"
+        android:hint="@string/input_title"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/edit_text_selector"
         android:padding="10dp"
         android:gravity="top|left"
         android:hint="@string/question_hint"
         android:id="@+id/question_body"
         />
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/edit_text_selector"
-        android:padding="10dp"
-        android:id="@+id/tags"
-        android:hint="@string/input_tags"/>
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

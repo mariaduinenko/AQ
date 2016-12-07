@@ -124,9 +124,6 @@ public class Speciality {
                 "creationTime='" + creationTime + '\'' +
                 ", id=" + id +
                 ", name='" + name + '\'' +
-
-                ", faculty=" + faculty +
-
                 '}';
     }
 }

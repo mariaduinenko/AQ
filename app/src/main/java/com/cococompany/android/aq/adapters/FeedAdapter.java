@@ -25,6 +25,7 @@ import java.util.ArrayList;
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;
+    private final int VIEW_TYPE_NEW_QUESTIONS = 2;
     private ArrayList<Question> questions;
     private Activity activity;
     private OnLoadMoreListener mOnLoadMoreListener;
@@ -32,10 +33,18 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private int visibleThreshold = 5;
     private int lastVisibleItem, totalItemCount,firstFullVisibleItem;
     private RecyclerView mRecyclerView;
+    private int testCount;
 
     @Override
     public int getItemViewType(int position) {
-        return questions.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
+        if (questions.get(position) == null){
+            if (position==0)
+                return VIEW_TYPE_NEW_QUESTIONS;
+            else
+            return VIEW_TYPE_LOADING;
+        }
+        else
+            return VIEW_TYPE_ITEM;
     }
 
     public void setmRecyclerView(RecyclerView mRecyclerView) {
@@ -49,6 +58,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public FeedAdapter(ArrayList<Question> questions, Activity activity,RecyclerView mRecyclerView) {
         this.questions = questions;
         this.activity = activity;
+            testCount = 0;
             this.mRecyclerView = mRecyclerView;
             this.mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
@@ -69,6 +79,15 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             });
     }
 
+
+    public int getTestCount() {
+        return testCount;
+    }
+
+    public void setTestCount(int testCount) {
+        this.testCount = testCount;
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == VIEW_TYPE_ITEM) {
@@ -77,6 +96,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         } else if (viewType == VIEW_TYPE_LOADING) {
             View view = LayoutInflater.from(this.activity).inflate(R.layout.loadind_item, parent, false);
             return new LoadingViewHolder(view);
+        }else if (viewType == VIEW_TYPE_NEW_QUESTIONS){
+            View view = LayoutInflater.from(this.activity).inflate(R.layout.new_questions_item, parent, false);
+            return new NewQuestionsViewHolder(view);
         }
         return null;
 
@@ -85,24 +107,35 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof QuestionHolder) {
-            ((TextView) holder.itemView.findViewById(R.id.question_owner)).setText(questions.get(position).getUser().getFirstName()+" "+questions.get(position).getUser().getLastName());
-            ((TextView) holder.itemView.findViewById(R.id.question_date)).setText(questions.get(position).getCreationTime());
-            ((TextView) holder.itemView.findViewById(R.id.question_title)).setText(questions.get(position).getTitle());
-            ((TextView) holder.itemView.findViewById(R.id.comment_count)).setText(Integer.toString(questions.get(position).getAnswers().size()));
-            ((TextView) holder.itemView.findViewById(R.id.count_likes)).setText(Integer.toString(questions.get(position).getLikes().size()));
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(activity, QuestionActivity.class);
+                ((TextView) holder.itemView.findViewById(R.id.question_owner)).setText(questions.get(position).getUser().getFirstName() + " " + questions.get(position).getUser().getLastName());
+                ((TextView) holder.itemView.findViewById(R.id.question_date)).setText(questions.get(position).getCreationTime());
+                ((TextView) holder.itemView.findViewById(R.id.question_title)).setText(questions.get(position).getTitle());
+                ((TextView) holder.itemView.findViewById(R.id.comment_count)).setText(Integer.toString(questions.get(position).getAnswers().size()));
+                ((TextView) holder.itemView.findViewById(R.id.count_likes)).setText(Integer.toString(questions.get(position).getLikes().size()));
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(activity, QuestionActivity.class);
 
-                    intent.putExtra("question_id",questions.get(position).getId());
-                    System.out.println("position "+position+" id  "+questions.get(position).getId());
-                    activity.startActivity(intent);
-                }
-            });
+                        intent.putExtra("question_id", questions.get(position).getId());
+                        System.out.println("position " + position + " id  " + questions.get(position).getId());
+                        activity.startActivity(intent);
+                    }
+                });
         } else if (holder instanceof LoadingViewHolder) {
             LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
             loadingViewHolder.progressBar.setIndeterminate(true);
+        } else if (holder instanceof NewQuestionsViewHolder){
+            NewQuestionsViewHolder newQuestionsViewHolder = (NewQuestionsViewHolder) holder;
+            newQuestionsViewHolder.countOfNewQuestions.setText("You have "+Integer.toString(testCount)+" new questions");
+            newQuestionsViewHolder.countOfNewQuestions.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    questions.remove(0);
+                    notifyDataSetChanged();
+                    testCount = 0;
+                }
+            });
         }
     }
 
@@ -133,6 +166,15 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public LoadingViewHolder(View itemView) {
             super(itemView);
             progressBar = (ProgressBar) itemView.findViewById(R.id.progressBar);
+        }
+    }
+
+    public static class NewQuestionsViewHolder extends RecyclerView.ViewHolder{
+        public TextView countOfNewQuestions;
+
+        public NewQuestionsViewHolder(View itemView) {
+            super(itemView);
+            countOfNewQuestions = (TextView) itemView.findViewById(R.id.countOfNewQuestions);
         }
     }
 }

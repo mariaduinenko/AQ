@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -16,7 +17,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TabHost;
+import android.widget.Toast;
 
 import com.cococompany.android.aq.R;
 import com.cococompany.android.aq.adapters.CategoryListItemAdapter;
@@ -27,6 +30,10 @@ import com.cococompany.android.aq.models.User;
 import com.cococompany.android.aq.utils.CategoryService;
 import com.cococompany.android.aq.utils.UserService;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -34,6 +41,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Logger;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by alexandrmyagkiy on 06.12.16.
@@ -43,8 +57,15 @@ public class CategoriesChooseFragment extends DialogFragment {
 
     private static final String projectBaseUrl = "https://pure-mesa-13823.herokuapp.com";
 
+    private ArrayList<ImageItem> data;
+    private GridViewAdapter gridAdapter;
+    private ProgressBar progressBar;
+
+    private String CATEGORIES_URL = projectBaseUrl + "/rest/categories";
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        long initialTime = System.currentTimeMillis();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
         View view = layoutInflater.inflate(R.layout.activity_dialog_categories, null);
@@ -64,16 +85,14 @@ public class CategoriesChooseFragment extends DialogFragment {
         spec.setIndicator("Users");
         host.addTab(spec);
 
+        data = new ArrayList<>();
+
+        progressBar = (ProgressBar) view.findViewById(R.id.categories_progress_bar);
+
         //Додавання gridView до першої вкладки
         GridView gridView = (GridView) view.findViewById(R.id.categories_grid_view);
-        GridViewAdapter gridAdapter = null;
-        try {
-            gridAdapter = new GridViewAdapter(getContext(), R.layout.category_grid_item, getRealData());
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        gridAdapter = null;
+        gridAdapter = new GridViewAdapter(getContext(), R.layout.category_grid_item, data);
         gridView.setAdapter(gridAdapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -98,51 +117,9 @@ public class CategoriesChooseFragment extends DialogFragment {
         ListView lvMain = (ListView) view.findViewById(R.id.categories_list);
         lvMain.setAdapter(listItemAdapter);
 
-//        TabLayout tabLayout = (TabLayout) view.findViewById(R.id.categories_tab_layout);
-//        tabLayout.addTab(tabLayout.newTab().setText("Tab 1"));
-//        tabLayout.addTab(tabLayout.newTab().setText("Tab 2"));
-//        tabLayout.addTab(tabLayout.newTab().setText("Tab 3"));
-//        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-
-//        TabHost tabs = (TabHost) view.findViewById(R.id.categories_tab_host);
-//        TabHost.TabSpec tabPage1 = tabs.newTabSpec("one");
-////        Intent intent = new Intent(getActivity(), CategoriesTab1Fragment.class);
-////        tabPage1.setContent(intent);
-////        tabPage1.setContent(R.id.categories_choose_category);
-//        tabPage1.setIndicator("Tab 1");
-//
-//        TabHost.TabSpec tabPage2 = tabs.newTabSpec("two");
-////        tabPage2.setContent(R.id.categories_choose_user);
-//        tabPage2.setIndicator("Tab 2");
-//
-//        tabs.addTab(tabPage1);
-//        tabs.addTab(tabPage2);
-
-//        ViewPager viewPager = (ViewPager) view.findViewById(R.id.categories_pager);
-//        CategoriesTabsPagerAdapter pagerAdapter = new CategoriesTabsPagerAdapter(getFragmentManager(), tabLayout.getTabCount());
-//        viewPager.setAdapter(pagerAdapter);
-
-//        ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.categories_pager); //view.findViewById(R.id.categories_pager);
-//        CategoriesTabsPagerAdapter adapter = new CategoriesTabsPagerAdapter(getActivity().getSupportFragmentManager().findFragmentByTag("Categories choose").getFragmentManager(), tabLayout.getTabCount());
-//        CategoriesTabsPagerAdapter adapter = new CategoriesTabsPagerAdapter(this, tabLayout.getTabCount());
-//        viewPager.setAdapter(adapter);
-//        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-//        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-//            @Override
-//            public void onTabSelected(TabLayout.Tab tab) {
-//                viewPager.setCurrentItem(tab.getPosition());
-//            }
-//
-//            @Override
-//            public void onTabUnselected(TabLayout.Tab tab) {
-//
-//            }
-//
-//            @Override
-//            public void onTabReselected(TabLayout.Tab tab) {
-//
-//            }
-//        });
+        //Start download
+        new AsyncHttpTask().execute(CATEGORIES_URL);
+        progressBar.setVisibility(View.VISIBLE);
 
         builder.setView(view)
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -157,49 +134,146 @@ public class CategoriesChooseFragment extends DialogFragment {
 
                     }
                 });
+        long finishTime = System.currentTimeMillis();
+        Log.d(this.getClass().getName(), "Whole execution time:" + (finishTime-initialTime));
         return builder.create();
     }
 
-    // Підготовка випадкових тестових даних для gridview
-    private ArrayList<ImageItem> getData() {
-        final ArrayList<ImageItem> imageItems = new ArrayList<>();
-        TypedArray imgs = getResources().obtainTypedArray(R.array.image_ids);
-        for (int i = 0; i < imgs.length(); i++) {
-            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), imgs.getResourceId(i, -1));
-            imageItems.add(new ImageItem(bitmap, "Image#" + i));
+    //Downloading data asynchronously
+    public class AsyncHttpTask extends AsyncTask<String, Void, Integer> {
+
+        @Override
+        protected Integer doInBackground(String... params) {
+            Integer result = 0;
+            try {
+                // Create Apache HttpClient
+                OkHttpClient client = new OkHttpClient();
+
+                Request request = new Request.Builder()
+                        .url(params[0])
+                        .build();
+
+                Response httpResponse = null;
+
+                try {
+                    httpResponse = client.newCall(request).execute();
+                    int statusCode = httpResponse.code();
+
+                    // 200 represents HTTP OK
+                    if (statusCode == 200) {
+                        System.out.println("IN AsyncTask. code==200");
+                        String response = httpResponse.body().string();
+                        parseResult(response);
+                        result = 1; // Successful
+                    } else {
+                        result = 0; //"Failed
+                    }
+
+//                    String jsonData = response.body().string();
+//                    JSONArray array = new JSONArray(jsonData);
+//                    ArrayList<Category> categories = new ArrayList<>();
+//
+//                    for (int i = 0; i < array.length(); i++) {
+//                        JSONObject jsonObject = array.getJSONObject(i);
+//                        Category category = new Category();
+//                        category.setId(jsonObject.getLong("id"));
+//                        if (jsonObject.has("name"))
+//                            category.setName(jsonObject.getString("name"));
+//                        if (jsonObject.has("image"))
+//                            category.setImage(jsonObject.getString("image"));
+//                        categories.add(category);
+//                    }
+//
+//                    return categories;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            } catch (Exception e) {
+                Log.d(TAG, e.getLocalizedMessage());
+            }
+
+            return result;
         }
-        return imageItems;
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            // Download complete. Lets update UI
+
+            if (result == 1) {
+                System.out.println("IN POST EXECUTE. RESULT==1");
+                gridAdapter.setGridData(data);
+            } else {
+                Toast.makeText(getActivity(), "Failed to fetch data!", Toast.LENGTH_SHORT).show();
+            }
+
+            //Hide progressbar
+            progressBar.setVisibility(View.GONE);
+        }
+    }
+
+    private void parseResult(String result) {
+        try {
+            JSONArray array = new JSONArray(result);
+            ArrayList<Category> categories = new ArrayList<>();
+
+            ImageItem item;
+            for (int i = 0; i < array.length(); i++) {
+                item = new ImageItem();
+
+                JSONObject jsonObject = array.getJSONObject(i);
+                Category category = new Category();
+                category.setId(jsonObject.getLong("id"));
+                if (jsonObject.has("name")) {
+                    category.setName(jsonObject.getString("name"));
+                    item.setTitle(category.getName());
+                }
+                if (jsonObject.has("image")) {
+                    category.setImage(jsonObject.getString("image"));
+                    item.setImageUrl(projectBaseUrl + "/" + category.getImage());
+                }
+                categories.add(category);
+                data.add(item);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     // Підготовка реальних даних для gridview
     private ArrayList<ImageItem> getRealData() throws ExecutionException, InterruptedException {
+        long initialTime = System.currentTimeMillis();
         List<Category> categories = new CategoryService().getCategories();
 
         final ArrayList<ImageItem> imageItems = new ArrayList<>();
         TypedArray imgs = getResources().obtainTypedArray(R.array.category_images);
-        Bitmap defaultBitmap = BitmapFactory.decodeResource(getResources(), imgs.getResourceId(0, -1));
 
         for (int i = 0; i < categories.size(); i++) {
             String imageUrl = categories.get(i).getImage();
             if (imageUrl != null && !imageUrl.isEmpty()) {
                 DownloadImageTask imageTask = new DownloadImageTask();
-                Bitmap bitmap = imageTask.execute(projectBaseUrl + "/" + imageUrl).get();
-                imageItems.add(new ImageItem(bitmap, categories.get(i).getName()));
+                imageItems.add(new ImageItem(categories.get(i).getName(), projectBaseUrl + "/" + categories.get(i).getImage()));
             } else {
-                imageItems.add(new ImageItem(defaultBitmap, categories.get(i).getName()));
+                imageItems.add(new ImageItem(categories.get(i).getName(), projectBaseUrl + "/4.jpeg"));
             }
         }
+        long finishTime = System.currentTimeMillis();
+        Log.d("getRealData()", "Whole execution time:" + (finishTime-initialTime));
         return imageItems;
     }
 
     //Підготовка реальних даних для ListView
     private ArrayList<User> fillUsersData() {
+        long initialTime = System.currentTimeMillis();
         ArrayList<User> users = new UserService().getActiveUsers();
+        long finishTime = System.currentTimeMillis();
+        Log.d("fillUsersData()", "Whole execution time:" + (finishTime-initialTime));
         return users;
     }
 
     //Для отримання зображення за його URL
     public static Bitmap getBitmapFromURL(String src) {
+        long initialTime = System.currentTimeMillis();
         try {
             URL url = new URL(projectBaseUrl + "/" + src);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -207,6 +281,8 @@ public class CategoriesChooseFragment extends DialogFragment {
             connection.connect();
             InputStream input = connection.getInputStream();
             Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            long finishTime = System.currentTimeMillis();
+            Log.d("getBitmapFromURL()", "Whole execution time:" + (finishTime-initialTime));
             return myBitmap;
         } catch (IOException e) {
             // Log exception
@@ -216,6 +292,7 @@ public class CategoriesChooseFragment extends DialogFragment {
 
     class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         protected Bitmap doInBackground(String... urls) {
+            long initialTime = System.currentTimeMillis();
             String urldisplay = urls[0];
             Bitmap mIcon11 = null;
             try {
@@ -225,6 +302,8 @@ public class CategoriesChooseFragment extends DialogFragment {
                 Log.e("Error", e.getMessage());
                 e.printStackTrace();
             }
+            long finishTime = System.currentTimeMillis();
+            Log.d("DownloadImageTask", "Whole execution time:" + (finishTime-initialTime));
             return mIcon11;
         }
     }

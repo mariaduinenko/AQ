@@ -18,11 +18,15 @@ public class Category {
 
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private Long id;
 
     @SerializedName("name")
     @Expose
     private String name;
+
+    @SerializedName("image")
+    @Expose
+    private String image;
 
     @SerializedName("users")
     @Expose
@@ -40,11 +44,11 @@ public class Category {
         this.creationTime = creationTime;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -54,6 +58,14 @@ public class Category {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public Set<User> getUsers() {
@@ -77,6 +89,7 @@ public class Category {
         return "Category{" +
                 "creationTime='" + creationTime + '\'' +
                 ", id=" + id +
+                ", image='" + image + '\'' +
                 ", name='" + name + '\'' +
                 '}';
     }

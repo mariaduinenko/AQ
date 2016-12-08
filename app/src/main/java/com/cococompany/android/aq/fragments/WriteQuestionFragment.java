@@ -1,7 +1,6 @@
 package com.cococompany.android.aq.fragments;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
@@ -13,15 +12,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.cococompany.android.aq.R;
-import com.cococompany.android.aq.models.Category;
-import com.cococompany.android.aq.models.Question;
-import com.cococompany.android.aq.models.User;
 import com.cococompany.android.aq.utils.LoginPreferences;
 import com.cococompany.android.aq.utils.QuestionService;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 public class WriteQuestionFragment extends Fragment {
@@ -74,7 +66,7 @@ public class WriteQuestionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        // Застосовуємо макет до поточного фрагмента
         View v = inflater.inflate(R.layout.fragment_write_question, container, false);
         bodyOfQuestion = (EditText) v.findViewById(R.id.question_body);
         tags = (EditText) v.findViewById(R.id.tags);
@@ -82,30 +74,33 @@ public class WriteQuestionFragment extends Fragment {
         ask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String separator = "\n";
-                String[] lines = bodyOfQuestion.getText().toString().split(separator);
-                Question question = new Question();
-                User user = new User();
-                user.setId(loginPreferences.getUser().getId());
-                List<Category> categories = new ArrayList<Category>();
-                question.setUser(user);
-                question.setCategories(categories);
-                question.setTitle(lines[0]);
-                if (lines.length>1){
-                    StringBuilder builder = new StringBuilder();
-                    for (int i = 1; i < lines.length; i++) {
-                        builder.append(lines[i]);
-                    }
-                    question.setComment(builder.toString());
-                } else {
-                    question.setComment(" ");
-                }
-                questionServise.createQuestion(question);
+                CategoriesChooseFragment fragment = new CategoriesChooseFragment();
+                fragment.show(getActivity().getSupportFragmentManager(), "Categories choose");
 
-                //clear fields
-                bodyOfQuestion.getText().clear();
-                tags.getText().clear();
-                showToast(getContext(), WriteQuestionFragment.this.getView(), "Your question is successfully added!");
+//                String separator = "\n";
+//                String[] lines = bodyOfQuestion.getText().toString().split(separator);
+//                Question question = new Question();
+//                User user = new User();
+//                user.setId(loginPreferences.getUser().getId());
+//                List<Category> categories = new ArrayList<Category>();
+//                question.setUser(user);
+//                question.setCategories(categories);
+//                question.setTitle(lines[0]);
+//                if (lines.length>1){
+//                    StringBuilder builder = new StringBuilder();
+//                    for (int i = 1; i < lines.length; i++) {
+//                        builder.append(lines[i]);
+//                    }
+//                    question.setComment(builder.toString());
+//                } else {
+//                    question.setComment(" ");
+//                }
+//                questionServise.createQuestion(question);
+//
+//                //clear fields
+//                bodyOfQuestion.getText().clear();
+//                tags.getText().clear();
+//                showToast(getContext(), WriteQuestionFragment.this.getView(), "Your question is successfully added!");
 
                 //update feed
 //                FeedFragment feedFragment = (FeedFragment)

@@ -47,4 +47,29 @@
     <string name="test_date">20.10.16 19:30</string>
     <string name="test_title_of_question">Когда включат горячую воду в общежитии?</string>
     <string name="test_body_of_question">Это не возможно! 2 месяца нет воды. Соседи воняют. Бла Бла Бла. Текст. Текст. Текст. Текст. Текст.Текст.Текст.</string>
+
+    <string-array name="image_ids">
+        <item>@drawable/image_1</item>
+        <item>@drawable/image_2</item>
+        <item>@drawable/image_3</item>
+        <item>@drawable/image_4</item>
+        <item>@drawable/image_5</item>
+        <item>@drawable/image_6</item>
+        <item>@drawable/image_7</item>
+        <item>@drawable/image_8</item>
+        <item>@drawable/image_9</item>
+        <item>@drawable/image_1</item>
+        <item>@drawable/image_2</item>
+        <item>@drawable/image_3</item>
+        <item>@drawable/image_4</item>
+        <item>@drawable/image_5</item>
+        <item>@drawable/image_6</item>
+        <item>@drawable/image_7</item>
+        <item>@drawable/image_8</item>
+        <item>@drawable/image_9</item>
+    </string-array>
+
+    <string-array name="category_images">
+        <item>@drawable/image_1</item>
+    </string-array>
 </resources>

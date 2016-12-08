@@ -103,30 +103,12 @@ public class MainActivity extends AppCompatActivity {
                         Intent intent = new Intent(MainActivity.this, ContentActivity.class);
 
                         LoginPreferences preferences = new LoginPreferences(MainActivity.this);
-//                        preferences.setUserId(user.getId());
-//                        preferences.setUserPassword(password_edit.getText().toString());
-//                        preferences.setUserAvatar(user.getAvatar());
-//                        preferences.setUserBirtdate(user.getBirthdate());
-//                        preferences.setUserEmail(user.getEmail());
-//                        preferences.setUserFirstname(user.getFirstName());
-//                        preferences.setUserLastname(user.getLastName());
-//                        preferences.setUserMiddlename(user.getMiddleName());
-//                        preferences.setUserNickname(user.getNickname());
-//
-//                        Set<String> categories = new HashSet<String>();
-//                        for (Category category: user.getCategories()) {
-//                            categories.add(category.getName());
-//                        }
-//                        preferences.setUserCategories(categories);
-//
-////                        List<UserUniversityInfo> uuis = uuiService.getUserUniversityInfosByUserId(user.getId());
-//                        preferences.setUserUniversityInfos(user.getUuis());
                         user.setPassword(password_edit.getText().toString());
                         preferences.setUser(user);
 
                         System.out.println("Preferences successfully saved: id="+preferences.getUser().getId()+"; pass="+preferences.getUser().getPassword() + "; email="+preferences.getUser().getEmail() + "; bdate="+preferences.getUser().getBirthdate() + "; fname="+preferences.getUser().getFirstName() + "; lname="+preferences.getUser().getLastName() + "; mname="+preferences.getUser().getMiddleName() + "; nick="+preferences.getUser().getNickname() + "; avatar="+preferences.getUser().getAvatar() + "; categories="+preferences.getUser().getCategories());
                         startActivity(intent);
-                        Toast.makeText(MainActivity.this, ""+(System.currentTimeMillis()-b), Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(MainActivity.this, ""+(System.currentTimeMillis()-b), Toast.LENGTH_SHORT).show();
                     }
                     else{
                         Toast.makeText(MainActivity.this,"User doesn't exist",Toast.LENGTH_SHORT).show();

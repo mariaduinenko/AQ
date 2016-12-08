@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.cococompany.android.aq.R;
 import com.cococompany.android.aq.models.ImageItem;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -25,6 +26,15 @@ public class GridViewAdapter extends ArrayAdapter<ImageItem> {
         this.layoutResourceId = layoutResourceId;
         this.context = context;
         this.data = data;
+    }
+
+    /**
+     * Оновляє дані сітки та перезавантажує її елементи.
+     * @param data
+     */
+    public void setGridData(ArrayList<ImageItem> data) {
+        this.data = data;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -43,10 +53,11 @@ public class GridViewAdapter extends ArrayAdapter<ImageItem> {
             holder = (ViewHolder) row.getTag();
         }
 
-
         ImageItem item = data.get(position);
         holder.imageTitle.setText(item.getTitle());
-        holder.image.setImageBitmap(item.getImage());
+
+        Picasso.with(context).load(item.getImageUrl()).into(holder.image);
+//        holder.image.setImageBitmap(item.getImage());
         return row;
     }
 

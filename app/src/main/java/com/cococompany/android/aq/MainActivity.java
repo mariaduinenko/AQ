@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         remember_user_checkBox = (CheckBox) findViewById(R.id.remember_user);
         log_in_button = (Button) findViewById(R.id.log_in_button);
         sign_in_button =  (Button) findViewById(R.id.sign_in_button);
-        email_edit= (EditText) findViewById(R.id.email_edit);
+        email_edit = (EditText) findViewById(R.id.email_edit);
         email_edit.setText("myagkiyalexandr@hotmail.com");
 //        email_edit.setText("myagkiyalexandr@hotmail.com");
         password_edit = (EditText) findViewById(R.id.password_edit);

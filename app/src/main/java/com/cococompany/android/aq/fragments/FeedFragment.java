@@ -21,6 +21,8 @@ import com.cococompany.android.aq.utils.OnLoadMoreListener;
 import com.cococompany.android.aq.utils.QuestionService;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class FeedFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -37,6 +39,10 @@ public class FeedFragment extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     private ArrayList<Question> questions;
     private QuestionService questionService;
+    private ArrayList<Question> newQustions;
+    private int testCount;
+    private DownloadNewQuestionTask downloadNewQuestionTask;
+    private Timer timer;
     //private OnFragmentInteractionListener mListener;
 
     public FeedFragment() {
@@ -70,12 +76,16 @@ public class FeedFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        downloadNewQuestionTask = new DownloadNewQuestionTask();
+        timer = new Timer();
+        timer.schedule(downloadNewQuestionTask, 2000, 2000);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        Log.e("haint", "Create view");
         View v = inflater.inflate(R.layout.fragment_feed, container, false);
         feedRecyclerView = (RecyclerView) v.findViewById(R.id.feed);
         feedRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -140,6 +150,23 @@ public class FeedFragment extends Fragment {
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
+    }
+
+    class DownloadNewQuestionTask extends TimerTask{
+
+        @Override
+        public void run() {
+            if (feedAdapter.getQuestions().get(0)!=null)
+            feedAdapter.getQuestions().add(0,null);
+            feedAdapter.setTestCount(feedAdapter.getTestCount()+5);
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    feedAdapter.notifyDataSetChanged();
+                }
+            });
+
+        }
     }
 }
 

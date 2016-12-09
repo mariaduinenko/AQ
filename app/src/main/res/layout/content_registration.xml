@@ -17,7 +17,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="15dp"
-        android:hint="@string/enter_name"
+        android:hint="@string/enter_name_hint"
         android:textColor="@color/edit_text_color"
         android:id="@+id/name_edit_text"
         />

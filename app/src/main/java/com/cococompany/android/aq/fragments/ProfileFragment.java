@@ -176,8 +176,10 @@ public class ProfileFragment extends Fragment {
         etBirthdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DialogFragment fragment = new DatePickerFragment();
-                ((DatePickerFragment) fragment).setBirthdateType();
+//                DialogFragment fragment = new DatePickerFragment();
+//                ((DatePickerFragment) fragment).setBirthdateType();
+                DialogFragment fragment = new BirthdatePickerFragment();
+                ((BirthdatePickerFragment) fragment).setActivity(getActivity());
                 fragment.show(getActivity().getFragmentManager(), "Date Picker");
             }
         });
@@ -253,16 +255,15 @@ public class ProfileFragment extends Fragment {
             }
             finishTime = System.currentTimeMillis();
         }else {
-            startTime = System.currentTimeMillis();
-            userUniversityInfos = new ArrayList<>();
-            UserUniversityInfo uui = new UserUniversityInfo();
-            uui.setUser(new User(userId));
-            userUniversityInfos.add(uuiService.createUui(uui));
-
-            uuiSwipeAdapter = new CustomUuiSwipeAdapter(getContext());
-//            uuiSwipeAdapter = new CustomUuiSwipeAdapter(getContext(), this);
-            viewPager.setAdapter(uuiSwipeAdapter);
-            finishTime = System.currentTimeMillis();
+//            startTime = System.currentTimeMillis();
+//            userUniversityInfos = new ArrayList<>();
+//            UserUniversityInfo uui = new UserUniversityInfo();
+//            uui.setUser(new User(userId));
+//            userUniversityInfos.add(uuiService.createUui(uui));
+//
+//            uuiSwipeAdapter = new CustomUuiSwipeAdapter(getContext());
+//            viewPager.setAdapter(uuiSwipeAdapter);
+//            finishTime = System.currentTimeMillis();
         }
 
         //listeners

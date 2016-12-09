@@ -58,10 +58,14 @@ public class CategoriesChooseFragment extends DialogFragment {
     private static final String projectBaseUrl = "https://pure-mesa-13823.herokuapp.com";
 
     private ArrayList<ImageItem> data;
+    private ArrayList<User> users;
     private GridViewAdapter gridAdapter;
     private ProgressBar progressBar;
+    private CategoryListItemAdapter listItemAdapter;
+    private ListView lvMain;
 
     private String CATEGORIES_URL = projectBaseUrl + "/rest/categories";
+    private String USERS_URL = projectBaseUrl + "/rest/users";
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -110,15 +114,17 @@ public class CategoriesChooseFragment extends DialogFragment {
         });
 
         // створюємо адаптер для списку користувачів
-        ArrayList<User> users = fillUsersData();
-        CategoryListItemAdapter listItemAdapter = new CategoryListItemAdapter(getContext(), users);
+        users = new ArrayList<>();
+//        ArrayList<User> users = fillUsersData();
+        listItemAdapter = new CategoryListItemAdapter(getContext(), users);
 
         // настраиваем список
-        ListView lvMain = (ListView) view.findViewById(R.id.categories_list);
+        lvMain = (ListView) view.findViewById(R.id.categories_list);
         lvMain.setAdapter(listItemAdapter);
 
         //Start download
         new AsyncHttpTask().execute(CATEGORIES_URL);
+        new UserListAsyncTask().execute(USERS_URL);
         progressBar.setVisibility(View.VISIBLE);
 
         builder.setView(view)
@@ -212,6 +218,62 @@ public class CategoriesChooseFragment extends DialogFragment {
         }
     }
 
+    public class UserListAsyncTask extends AsyncTask<String, Void, Integer> {
+
+        @Override
+        protected Integer doInBackground(String... params) {
+            Integer result = 0;
+            try {
+                // Create Apache HttpClient
+                OkHttpClient client = new OkHttpClient();
+
+                Request request = new Request.Builder()
+                        .url(params[0])
+                        .build();
+
+                Response httpResponse = null;
+
+                try {
+                    httpResponse = client.newCall(request).execute();
+                    int statusCode = httpResponse.code();
+
+                    // 200 represents HTTP OK
+                    if (statusCode == 200) {
+                        System.out.println("IN UserListAsyncTask. code==200");
+                        String response = httpResponse.body().string();
+                        parseUserListResult(response);
+                        result = 1; // Successful
+                    } else {
+                        result = 0; //"Failed
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            } catch (Exception e) {
+                Log.d(TAG, e.getLocalizedMessage());
+            }
+
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            // Download complete. Lets update UI
+
+            if (result == 1) {
+                System.out.println("IN POST UserListAsyncTask EXECUTE. RESULT==1");
+                listItemAdapter.setObjects(users);
+            } else {
+                Toast.makeText(getActivity(), "Failed to fetch users!", Toast.LENGTH_SHORT).show();
+            }
+
+            //Hide progressbar
+            progressBar.setVisibility(View.GONE);
+        }
+    }
+
     private void parseResult(String result) {
         try {
             JSONArray array = new JSONArray(result);
@@ -230,10 +292,53 @@ public class CategoriesChooseFragment extends DialogFragment {
                 }
                 if (jsonObject.has("image")) {
                     category.setImage(jsonObject.getString("image"));
-                    item.setImageUrl(projectBaseUrl + "/" + category.getImage());
+                    item.setImageUrl(projectBaseUrl + "/rest/images/" + category.getImage().substring(0, category.getImage().indexOf(".")));
+                    Log.d(this.getClass().getName(), projectBaseUrl + "/rest/images/" + category.getImage().substring(0, category.getImage().indexOf(".")));
                 }
                 categories.add(category);
                 data.add(item);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void parseUserListResult(String result) {
+        try {
+            JSONArray array = new JSONArray(result);
+            ArrayList<User> usrs = new ArrayList<>();
+
+            User item;
+            for (int i = 0; i < array.length(); i++) {
+                item = new User();
+
+                JSONObject jsonObject = array.getJSONObject(i);
+                item.setId(jsonObject.getLong("id"));
+                if (jsonObject.has("creationTime")) {
+                    item.setCreationTime(jsonObject.getString("creationTime"));
+                }
+                if (jsonObject.has("email")) {
+                    item.setEmail(jsonObject.getString("email"));
+                }
+                if (jsonObject.has("firstName")) {
+                    item.setFirstName(jsonObject.getString("firstName"));
+                }
+                if (jsonObject.has("lastName")) {
+                    item.setLastName(jsonObject.getString("lastName"));
+                }
+                if (jsonObject.has("middleName")) {
+                    item.setMiddleName(jsonObject.getString("middleName"));
+                }
+                if (jsonObject.has("nickname")) {
+                    item.setNickname(jsonObject.getString("nickname"));
+                }
+                if (jsonObject.has("active")) {
+                    item.setActive(jsonObject.getBoolean("active"));
+                }
+                if (jsonObject.has("birthdate")) {
+                    item.setBirthdate(jsonObject.getString("birthdate"));
+                }
+                users.add(item);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -252,9 +357,9 @@ public class CategoriesChooseFragment extends DialogFragment {
             String imageUrl = categories.get(i).getImage();
             if (imageUrl != null && !imageUrl.isEmpty()) {
                 DownloadImageTask imageTask = new DownloadImageTask();
-                imageItems.add(new ImageItem(categories.get(i).getName(), projectBaseUrl + "/" + categories.get(i).getImage()));
+                imageItems.add(new ImageItem(categories.get(i).getName(), projectBaseUrl + "/rest/images/" + categories.get(i).getImage().substring(0, categories.get(i).getImage().indexOf("."))));
             } else {
-                imageItems.add(new ImageItem(categories.get(i).getName(), projectBaseUrl + "/4.jpeg"));
+                imageItems.add(new ImageItem(categories.get(i).getName(), projectBaseUrl + "/rest/images/4"));
             }
         }
         long finishTime = System.currentTimeMillis();

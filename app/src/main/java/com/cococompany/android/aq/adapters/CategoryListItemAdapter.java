@@ -30,6 +30,11 @@ public class CategoryListItemAdapter extends BaseAdapter {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
+    public void setObjects(ArrayList<User> objects) {
+        this.objects = objects;
+        notifyDataSetChanged();
+    }
+
     // кол-во элементов
     @Override
     public int getCount() {

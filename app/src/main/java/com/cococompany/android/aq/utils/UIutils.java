@@ -13,7 +13,9 @@ import android.view.Menu;
 import android.view.View;
 
 import com.cococompany.android.aq.R;
+import com.cococompany.android.aq.models.Question;
 
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,6 +23,9 @@ import java.util.regex.Pattern;
  * Created by Valentin on 30.10.2016.
  */
 public class UIutils {
+
+    private static ArrayList<Question> foundQuestions;
+
     public static void  setToolbar(int id, AppCompatActivity activity){
         Toolbar toolbar = (Toolbar) activity.findViewById(id);
         activity.setSupportActionBar(toolbar);
@@ -32,11 +37,28 @@ public class UIutils {
         toolbar.setLogo(logo);
     }
 
-    public static void setSearchBar(int id, Menu menu, Activity activity){
-        SearchManager searchManager =(SearchManager) activity.getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =(SearchView) menu.findItem(id).getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(activity.getComponentName()));
+    public static void setSearchBar(int id, Menu menu, Activity activity) {
+        final QuestionService questionService = new QuestionService(activity);
 
+        SearchManager searchManager = (SearchManager) activity.getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(id).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(activity.getComponentName()));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                foundQuestions = new ArrayList<Question>();
+                foundQuestions = questionService.getQuestionsByTitle(query);
+
+                if (foundQuestions != null && foundQuestions.size() > 0)
+                    return true;
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
     }
 
     public static void setToolbarWithBackButton(int id, final AppCompatActivity activity){

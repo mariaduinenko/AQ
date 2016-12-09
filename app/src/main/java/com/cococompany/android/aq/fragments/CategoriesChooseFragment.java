@@ -19,7 +19,6 @@ import android.widget.TabHost;
 import android.widget.Toast;
 
 import com.cococompany.android.aq.R;
-import com.cococompany.android.aq.adapters.CategoryListItemAdapter;
 import com.cococompany.android.aq.adapters.CategoriesGridViewAdapter;
 import com.cococompany.android.aq.adapters.UsersGridViewAdapter;
 import com.cococompany.android.aq.models.Category;
@@ -56,7 +55,6 @@ public class CategoriesChooseFragment extends DialogFragment {
     private UsersGridViewAdapter usersGridViewAdapter;
     private ProgressBar categoriesProgressBar;
     private ProgressBar usersProgressBar;
-    private CategoryListItemAdapter listItemAdapter;
     private ListView lvMain;
 
     private String CATEGORIES_URL = projectBaseUrl + "/rest/categories";
@@ -154,15 +152,6 @@ public class CategoriesChooseFragment extends DialogFragment {
 
             }
         });
-
-//        // створюємо адаптер для списку користувачів
-//        users = new ArrayList<>();
-////        ArrayList<User> users = fillUsersData();
-//        listItemAdapter = new CategoryListItemAdapter(getContext(), users);
-//
-//        // настраиваем список
-//        lvMain = (ListView) view.findViewById(R.id.categories_list);
-//        lvMain.setAdapter(listItemAdapter);
 
         //Start download
         new AsyncHttpTask().execute(CATEGORIES_URL);
@@ -310,62 +299,6 @@ public class CategoriesChooseFragment extends DialogFragment {
             if (result == 1) {
                 System.out.println("IN POST USERS EXECUTE. RESULT==1");
                 usersGridViewAdapter.setGridData(users);
-            } else {
-                Toast.makeText(getActivity(), "Failed to fetch users!", Toast.LENGTH_SHORT).show();
-            }
-
-            //Hide progressbar
-            categoriesProgressBar.setVisibility(View.GONE);
-        }
-    }
-
-    public class UserListAsyncTask extends AsyncTask<String, Void, Integer> {
-
-        @Override
-        protected Integer doInBackground(String... params) {
-            Integer result = 0;
-            try {
-                // Create Apache HttpClient
-                OkHttpClient client = new OkHttpClient();
-
-                Request request = new Request.Builder()
-                        .url(params[0])
-                        .build();
-
-                Response httpResponse = null;
-
-                try {
-                    httpResponse = client.newCall(request).execute();
-                    int statusCode = httpResponse.code();
-
-                    // 200 represents HTTP OK
-                    if (statusCode == 200) {
-                        System.out.println("IN UserListAsyncTask. code==200");
-                        String response = httpResponse.body().string();
-                        parseUserListResult(response);
-                        result = 1; // Successful
-                    } else {
-                        result = 0; //"Failed
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            } catch (Exception e) {
-                Log.d(TAG, e.getLocalizedMessage());
-            }
-
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(Integer result) {
-            // Download complete. Lets update UI
-
-            if (result == 1) {
-                System.out.println("IN POST UserListAsyncTask EXECUTE. RESULT==1");
-                listItemAdapter.setObjects(users);
             } else {
                 Toast.makeText(getActivity(), "Failed to fetch users!", Toast.LENGTH_SHORT).show();
             }

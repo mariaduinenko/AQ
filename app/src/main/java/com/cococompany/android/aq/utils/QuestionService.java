@@ -7,6 +7,7 @@ import android.util.Log;
 import com.cococompany.android.aq.ContentActivity;
 import com.cococompany.android.aq.QuestionActivity;
 import com.cococompany.android.aq.R;
+import com.cococompany.android.aq.models.Answer;
 import com.cococompany.android.aq.models.Like;
 import com.cococompany.android.aq.models.Question;
 import com.cococompany.android.aq.models.User;
@@ -14,6 +15,10 @@ import com.cococompany.android.aq.utils.deserializers.FeedDeserializer;
 import com.cococompany.android.aq.utils.deserializers.QuestionDeserializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -212,6 +217,132 @@ public class QuestionService {
                 Log.d("Response", response.toString());
             }
         });
+    }
+
+    public ArrayList<Question> getQuestionsByTitle(String query) {
+        ArrayList<Question> result = null;
+        QuestionsByTitleTask questionsByTitleTask = new QuestionsByTitleTask();
+        questionsByTitleTask.execute(query);
+        try {
+            result =  questionsByTitleTask.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    class QuestionsByTitleTask extends AsyncTask<String, Void, ArrayList<Question>> {
+        private ArrayList<User> users = new ArrayList<>();
+
+        @Override
+        protected ArrayList<Question> doInBackground(String... queries) {
+            OkHttpClient client = new OkHttpClient();
+
+            Request request = new Request.Builder()
+                    .url(projectBaseUrl + "/rest/questions/s/internal?title="+queries[0])
+                    .build();
+
+            okhttp3.Response response = null;
+
+            try {
+                response = client.newCall(request).execute();
+                String jsonData = response.body().string();
+                JSONArray array = new JSONArray(jsonData);
+                ArrayList<Question> questions = new ArrayList<>();
+
+                for (int i = 0; i < array.length(); i++) {
+                    JSONObject jsonObject = array.getJSONObject(i);
+                    Question question = new Question();
+                    question.setId(jsonObject.getLong("id"));
+                    if (jsonObject.has("creationTime"))
+                        question.setCreationTime(jsonObject.getString("creationTime"));
+                    if (jsonObject.has("title"))
+                        question.setTitle(jsonObject.getString("title"));
+                    if (jsonObject.has("comment"))
+                        question.setComment(jsonObject.getString("comment"));
+                    User user = new User();
+                    if (jsonObject.has("user")) {
+                        if (jsonObject.get("user") instanceof JSONObject) {
+                            JSONObject jsonUser = (JSONObject) jsonObject.get("user");
+                            user.setId(jsonUser.getLong("id"));
+                            if (jsonUser.has("email"))
+                                user.setEmail(jsonUser.getString("email"));
+                            if (jsonUser.has("firstName"))
+                                user.setFirstName(jsonUser.getString("firstName"));
+                            if (jsonUser.has("lastName"))
+                                user.setLastName(jsonUser.getString("lastName"));
+                            if (jsonUser.has("middleName"))
+                                user.setMiddleName(jsonUser.getString("middleName"));
+                            if (jsonUser.has("nickname"))
+                                user.setNickname(jsonUser.getString("nickname"));
+                            if (jsonUser.has("active"))
+                                user.setActive(jsonUser.getBoolean("active"));
+                            users.add(user);
+                        }
+                    } else {
+                        user = findUserById(jsonObject.getLong("user"));
+                    }
+
+                    question.setUser(user);
+
+                    ArrayList<Like> likes = null;
+                    if (jsonObject.has("likes")) {
+                        if (jsonObject.get("likes") instanceof JSONArray) {
+                            JSONArray jsonLikes = (JSONArray) jsonObject.get("likes");
+                            likes = new ArrayList<>();
+                            for (int j = 0; j < jsonLikes.length(); j++) {
+                                JSONObject jsonLike = jsonLikes.getJSONObject(j);
+                                Like like = new Like();
+                                if (jsonLike.has("creationTime"))
+                                    like.setCreationTime(jsonLike.getString("creationTime"));
+                                likes.add(like);
+                            }
+                        }
+                    }
+
+                    if (likes != null && likes.size() > 0)
+                        question.setLikes(likes);
+
+                    ArrayList<Answer> answers = null;
+                    if (jsonObject.has("answers")) {
+                        if (jsonObject.get("answers") instanceof JSONArray) {
+                            JSONArray jsonAnswers = (JSONArray) jsonObject.get("answers");
+                            answers = new ArrayList<>();
+                            for (int j = 0; j < jsonAnswers.length(); j++) {
+                                JSONObject jsonAnswer = jsonAnswers.getJSONObject(j);
+                                Answer answer = new Answer();
+                                if (jsonAnswer.has("id"))
+                                    answer.setId(jsonAnswer.getLong("id"));
+                                answers.add(answer);
+                            }
+                        }
+                    }
+
+                    if (answers != null && answers.size() > 0)
+                        question.setAnswers(answers);
+
+                    questions.add(question);
+                }
+
+                return questions;
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        private User findUserById(Long id) {
+            for (User sUser: users) {
+                if (id.equals(sUser.getId()))
+                    return sUser;
+            }
+            return null;
+        }
     }
 
     class QuestionsTask extends AsyncTask<Void,Void,ArrayList<Question>>{

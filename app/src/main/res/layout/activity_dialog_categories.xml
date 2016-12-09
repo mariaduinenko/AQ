@@ -62,11 +62,6 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <!--<ListView-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="match_parent"-->
-                        <!--android:id="@+id/categories_list">-->
-                    <!--</ListView>-->
                     <GridView
                         android:id="@+id/users_grid_view"
                         android:layout_width="match_parent"
@@ -93,23 +88,5 @@
             </FrameLayout>
         </LinearLayout>
     </TabHost>
-
-    <!--<android.support.design.widget.TabLayout-->
-        <!--android:id="@+id/categories_tab_layout"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:background="?attr/colorPrimary"-->
-        <!--android:elevation="6dp"-->
-        <!--android:minHeight="?attr/actionBarSize"-->
-        <!--android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>-->
-
-    <!--<include layout="@layout/category_tab_content_fragment"/>-->
-
-    <!--<android.support.v4.view.ViewPager-->
-        <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
-        <!--android:id="@+id/categories_pager"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="fill_parent"-->
-        <!--android:layout_below="@id/categories_tab_layout"/>-->
 
 </LinearLayout>

@@ -57,7 +57,7 @@ public class CategoriesChooseFragment extends DialogFragment {
 
     private static final String projectBaseUrl = "https://pure-mesa-13823.herokuapp.com";
 
-    private ArrayList<ImageItem> data;
+    private ArrayList<Category> data;
     private ArrayList<User> users;
     private GridViewAdapter gridAdapter;
     private ProgressBar progressBar;
@@ -66,6 +66,8 @@ public class CategoriesChooseFragment extends DialogFragment {
 
     private String CATEGORIES_URL = projectBaseUrl + "/rest/categories";
     private String USERS_URL = projectBaseUrl + "/rest/users";
+
+    private ArrayList<Category> selectedCategories;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -90,26 +92,33 @@ public class CategoriesChooseFragment extends DialogFragment {
         host.addTab(spec);
 
         data = new ArrayList<>();
+        selectedCategories = new ArrayList<>();
 
         progressBar = (ProgressBar) view.findViewById(R.id.categories_progress_bar);
 
         //Додавання gridView до першої вкладки
-        GridView gridView = (GridView) view.findViewById(R.id.categories_grid_view);
+        final GridView gridView = (GridView) view.findViewById(R.id.categories_grid_view);
         gridAdapter = null;
         gridAdapter = new GridViewAdapter(getContext(), R.layout.category_grid_item, data);
         gridView.setAdapter(gridAdapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-//                ImageItem item = (ImageItem) parent.getItemAtPosition(position);
-//
-//                //Create intent
-//                Intent intent = new Intent(getActivity(), DetailsActivity.class);
-//                intent.putExtra("title", item.getTitle());
-//                intent.putExtra("image", item.getImage());
-//
-//                //Start details activity
-//                startActivity(intent);
+
+                int selectedIndex = gridAdapter.selectedPositions.indexOf(position);
+                if (selectedIndex > -1) {
+                    gridAdapter.removeSelected(selectedIndex, v);
+                    selectedCategories.remove((ImageItem) parent.getItemAtPosition(position));
+                } else {
+                    for (Category i : selectedCategories) {
+                        if (!data.get(position).getId().equals(i.getId()))
+                            selectedCategories.remove(i);
+                    }
+                    gridAdapter.removeOther(position, v);
+                    gridAdapter.addSelected(position, v);
+                    selectedCategories.add((Category) parent.getItemAtPosition(position));
+                }
+
             }
         });
 
@@ -137,7 +146,7 @@ public class CategoriesChooseFragment extends DialogFragment {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-
+                        Toast.makeText(getActivity(),"Choosed categories: " + selectedCategories,Toast.LENGTH_LONG).show();
                     }
                 });
         long finishTime = System.currentTimeMillis();
@@ -277,25 +286,19 @@ public class CategoriesChooseFragment extends DialogFragment {
     private void parseResult(String result) {
         try {
             JSONArray array = new JSONArray(result);
-            ArrayList<Category> categories = new ArrayList<>();
-
-            ImageItem item;
+            Category item;
             for (int i = 0; i < array.length(); i++) {
-                item = new ImageItem();
+                item = new Category();
 
                 JSONObject jsonObject = array.getJSONObject(i);
-                Category category = new Category();
-                category.setId(jsonObject.getLong("id"));
+                if (jsonObject.has("id"))
+                    item.setId(jsonObject.getLong("id"));
                 if (jsonObject.has("name")) {
-                    category.setName(jsonObject.getString("name"));
-                    item.setTitle(category.getName());
+                    item.setName(jsonObject.getString("name"));
                 }
                 if (jsonObject.has("image")) {
-                    category.setImage(jsonObject.getString("image"));
-                    item.setImageUrl(projectBaseUrl + "/rest/images/" + category.getImage().substring(0, category.getImage().indexOf(".")));
-                    Log.d(this.getClass().getName(), projectBaseUrl + "/rest/images/" + category.getImage().substring(0, category.getImage().indexOf(".")));
+                    item.setImage(projectBaseUrl + "/rest/images/" + jsonObject.getString("image"));
                 }
-                categories.add(category);
                 data.add(item);
             }
         } catch (JSONException e) {
@@ -343,28 +346,6 @@ public class CategoriesChooseFragment extends DialogFragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    // Підготовка реальних даних для gridview
-    private ArrayList<ImageItem> getRealData() throws ExecutionException, InterruptedException {
-        long initialTime = System.currentTimeMillis();
-        List<Category> categories = new CategoryService().getCategories();
-
-        final ArrayList<ImageItem> imageItems = new ArrayList<>();
-        TypedArray imgs = getResources().obtainTypedArray(R.array.category_images);
-
-        for (int i = 0; i < categories.size(); i++) {
-            String imageUrl = categories.get(i).getImage();
-            if (imageUrl != null && !imageUrl.isEmpty()) {
-                DownloadImageTask imageTask = new DownloadImageTask();
-                imageItems.add(new ImageItem(categories.get(i).getName(), projectBaseUrl + "/rest/images/" + categories.get(i).getImage().substring(0, categories.get(i).getImage().indexOf("."))));
-            } else {
-                imageItems.add(new ImageItem(categories.get(i).getName(), projectBaseUrl + "/rest/images/4"));
-            }
-        }
-        long finishTime = System.currentTimeMillis();
-        Log.d("getRealData()", "Whole execution time:" + (finishTime-initialTime));
-        return imageItems;
     }
 
     //Підготовка реальних даних для ListView

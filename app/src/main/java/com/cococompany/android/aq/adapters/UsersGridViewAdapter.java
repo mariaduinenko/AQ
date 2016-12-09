@@ -3,15 +3,10 @@ package com.cococompany.android.aq.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.support.annotation.IntegerRes;
 import android.support.annotation.Nullable;
-import android.support.v4.content.IntentCompat;
-import android.support.v4.content.res.ResourcesCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -19,22 +14,22 @@ import android.widget.TextView;
 
 import com.cococompany.android.aq.R;
 import com.cococompany.android.aq.models.Category;
-import com.cococompany.android.aq.models.ImageItem;
+import com.cococompany.android.aq.models.User;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GridViewAdapter extends ArrayAdapter<Category> {
+public class UsersGridViewAdapter extends ArrayAdapter<User> {
 
     private Context context;
     private int layoutResourceId;
-    private ArrayList<Category> data = new ArrayList<Category>();
+    private ArrayList<User> data = new ArrayList<User>();
     public List<Integer> selectedPositions;
     private ViewHolder holder;
     private LayoutInflater inflater;
 
-    public GridViewAdapter(Context context, int layoutResourceId, ArrayList<Category> data) {
+    public UsersGridViewAdapter(Context context, int layoutResourceId, ArrayList<User> data) {
         super(context, layoutResourceId, data);
         this.layoutResourceId = layoutResourceId;
         this.context = context;
@@ -48,7 +43,7 @@ public class GridViewAdapter extends ArrayAdapter<Category> {
      * Оновляє дані сітки та перезавантажує її елементи.
      * @param data
      */
-    public void setGridData(ArrayList<Category> data) {
+    public void setGridData(ArrayList<User> data) {
         this.data = data;
         notifyDataSetChanged();
     }
@@ -61,18 +56,18 @@ public class GridViewAdapter extends ArrayAdapter<Category> {
 
             row = inflater.inflate(layoutResourceId, parent, false);
             holder = new ViewHolder();
-            holder.imageTitle = (TextView) row.findViewById(R.id.category_item_text);
-            holder.image = (ImageView) row.findViewById(R.id.category_item_image);
+            holder.imageTitle = (TextView) row.findViewById(R.id.cg_user_item_text);
+            holder.image = (ImageView) row.findViewById(R.id.cg_user_item_image);
             row.setTag(holder);
             row.setSelected(selectedPositions.contains(position));
         } else {
             holder = (ViewHolder) row.getTag();
         }
 
-        Category item = data.get(position);
-        holder.imageTitle.setText(item.getName());
+        User item = data.get(position);
+        holder.imageTitle.setText(item.getLastName() + " " + item.getFirstName() + " " + item.getMiddleName());
 
-        Picasso.with(context).load(item.getImage()).into(holder.image);
+        Picasso.with(context).load(item.getAvatar()).into(holder.image);
 //        holder.image.setImageBitmap(item.getImage());
         return row;
     }
@@ -89,7 +84,7 @@ public class GridViewAdapter extends ArrayAdapter<Category> {
 
     @Nullable
     @Override
-    public Category getItem(int position) {
+    public User getItem(int position) {
         return data.get(position);
     }
 

@@ -3,11 +3,8 @@ package com.cococompany.android.aq.fragments;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -23,11 +20,10 @@ import android.widget.Toast;
 
 import com.cococompany.android.aq.R;
 import com.cococompany.android.aq.adapters.CategoryListItemAdapter;
-import com.cococompany.android.aq.adapters.GridViewAdapter;
+import com.cococompany.android.aq.adapters.CategoriesGridViewAdapter;
+import com.cococompany.android.aq.adapters.UsersGridViewAdapter;
 import com.cococompany.android.aq.models.Category;
-import com.cococompany.android.aq.models.ImageItem;
 import com.cococompany.android.aq.models.User;
-import com.cococompany.android.aq.utils.CategoryService;
 import com.cococompany.android.aq.utils.UserService;
 
 import org.json.JSONArray;
@@ -39,9 +35,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.logging.Logger;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -59,15 +52,18 @@ public class CategoriesChooseFragment extends DialogFragment {
 
     private ArrayList<Category> data;
     private ArrayList<User> users;
-    private GridViewAdapter gridAdapter;
-    private ProgressBar progressBar;
+    private CategoriesGridViewAdapter categoriesGridViewAdapter;
+    private UsersGridViewAdapter usersGridViewAdapter;
+    private ProgressBar categoriesProgressBar;
+    private ProgressBar usersProgressBar;
     private CategoryListItemAdapter listItemAdapter;
     private ListView lvMain;
 
     private String CATEGORIES_URL = projectBaseUrl + "/rest/categories";
-    private String USERS_URL = projectBaseUrl + "/rest/users";
+    private String USERS_URL = projectBaseUrl + "/rest/users/profile";
 
     private ArrayList<Category> selectedCategories;
+    private ArrayList<User> selectedUsers;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -92,49 +88,88 @@ public class CategoriesChooseFragment extends DialogFragment {
         host.addTab(spec);
 
         data = new ArrayList<>();
+        users = new ArrayList<>();
         selectedCategories = new ArrayList<>();
+        selectedUsers = new ArrayList<>();
 
-        progressBar = (ProgressBar) view.findViewById(R.id.categories_progress_bar);
+        categoriesProgressBar = (ProgressBar) view.findViewById(R.id.categories_progress_bar);
+        usersProgressBar = (ProgressBar) view.findViewById(R.id.users_progress_bar);
 
         //Додавання gridView до першої вкладки
-        final GridView gridView = (GridView) view.findViewById(R.id.categories_grid_view);
-        gridAdapter = null;
-        gridAdapter = new GridViewAdapter(getContext(), R.layout.category_grid_item, data);
-        gridView.setAdapter(gridAdapter);
+        final GridView categoriesGridView = (GridView) view.findViewById(R.id.categories_grid_view);
+        categoriesGridViewAdapter = null;
+        categoriesGridViewAdapter = new CategoriesGridViewAdapter(getContext(), R.layout.category_grid_item, data);
+        categoriesGridView.setAdapter(categoriesGridViewAdapter);
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        categoriesGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 
-                int selectedIndex = gridAdapter.selectedPositions.indexOf(position);
+                int selectedIndex = categoriesGridViewAdapter.selectedPositions.indexOf(position);
                 if (selectedIndex > -1) {
-                    gridAdapter.removeSelected(selectedIndex, v);
-                    selectedCategories.remove((ImageItem) parent.getItemAtPosition(position));
+                    categoriesGridViewAdapter.removeSelected(selectedIndex, v);
+                    selectedCategories.remove((Category) parent.getItemAtPosition(position));
                 } else {
-                    for (Category i : selectedCategories) {
-                        if (!data.get(position).getId().equals(i.getId()))
-                            selectedCategories.remove(i);
+                    if (selectedUsers.size() > 0) {
+                        Toast.makeText(getActivity(),"Unable to select category. Unselect all users first.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        for (Category i : selectedCategories) {
+                            if (!data.get(position).getId().equals(i.getId()))
+                                selectedCategories.remove(i);
+                        }
+                        categoriesGridViewAdapter.removeOther(position, v);
+                        categoriesGridViewAdapter.addSelected(position, v);
+                        selectedCategories.add((Category) parent.getItemAtPosition(position));
                     }
-                    gridAdapter.removeOther(position, v);
-                    gridAdapter.addSelected(position, v);
-                    selectedCategories.add((Category) parent.getItemAtPosition(position));
                 }
 
             }
         });
 
-        // створюємо адаптер для списку користувачів
-        users = new ArrayList<>();
-//        ArrayList<User> users = fillUsersData();
-        listItemAdapter = new CategoryListItemAdapter(getContext(), users);
+        //Додавання gridView до другої вкладки
+        final GridView usersGridView = (GridView) view.findViewById(R.id.users_grid_view);
+        usersGridViewAdapter = null;
+        usersGridViewAdapter = new UsersGridViewAdapter(getContext(), R.layout.user_grid_item, users);
+        usersGridView.setAdapter(usersGridViewAdapter);
 
-        // настраиваем список
-        lvMain = (ListView) view.findViewById(R.id.categories_list);
-        lvMain.setAdapter(listItemAdapter);
+        usersGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+
+                int selectedIndex = usersGridViewAdapter.selectedPositions.indexOf(position);
+                if (selectedIndex > -1) {
+                    usersGridViewAdapter.removeSelected(selectedIndex, v);
+                    selectedUsers.remove((User) parent.getItemAtPosition(position));
+                } else {
+                    if (selectedCategories.size() > 0) {
+                        Toast.makeText(getActivity(),"Unable to select user. Unselect all categories first.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        for (User i : selectedUsers) {
+                            if (!users.get(position).getId().equals(i.getId()))
+                                selectedUsers.remove(i);
+                        }
+                        usersGridViewAdapter.removeOther(position, v);
+                        usersGridViewAdapter.addSelected(position, v);
+                        selectedUsers.add((User) parent.getItemAtPosition(position));
+                    }
+                }
+
+            }
+        });
+
+//        // створюємо адаптер для списку користувачів
+//        users = new ArrayList<>();
+////        ArrayList<User> users = fillUsersData();
+//        listItemAdapter = new CategoryListItemAdapter(getContext(), users);
+//
+//        // настраиваем список
+//        lvMain = (ListView) view.findViewById(R.id.categories_list);
+//        lvMain.setAdapter(listItemAdapter);
 
         //Start download
         new AsyncHttpTask().execute(CATEGORIES_URL);
-        new UserListAsyncTask().execute(USERS_URL);
-        progressBar.setVisibility(View.VISIBLE);
+//        new UserListAsyncTask().execute(USERS_URL);
+        new UserGridAsyncTask().execute(USERS_URL);
+        categoriesProgressBar.setVisibility(View.VISIBLE);
+        usersProgressBar.setVisibility(View.VISIBLE);
 
         builder.setView(view)
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -146,7 +181,7 @@ public class CategoriesChooseFragment extends DialogFragment {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(getActivity(),"Choosed categories: " + selectedCategories,Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(),"Choosed categories: " + selectedCategories + "     Choosed users: " + selectedUsers,Toast.LENGTH_LONG).show();
                     }
                 });
         long finishTime = System.currentTimeMillis();
@@ -217,13 +252,70 @@ public class CategoriesChooseFragment extends DialogFragment {
 
             if (result == 1) {
                 System.out.println("IN POST EXECUTE. RESULT==1");
-                gridAdapter.setGridData(data);
+                categoriesGridViewAdapter.setGridData(data);
             } else {
                 Toast.makeText(getActivity(), "Failed to fetch data!", Toast.LENGTH_SHORT).show();
             }
 
             //Hide progressbar
-            progressBar.setVisibility(View.GONE);
+            categoriesProgressBar.setVisibility(View.GONE);
+        }
+    }
+
+    //Downloading data asynchronously
+    public class UserGridAsyncTask extends AsyncTask<String, Void, Integer> {
+
+        @Override
+        protected Integer doInBackground(String... params) {
+            Integer result = 0;
+            try {
+                // Create Apache HttpClient
+                OkHttpClient client = new OkHttpClient();
+
+                Request request = new Request.Builder()
+                        .url(params[0])
+                        .build();
+
+                Response httpResponse = null;
+
+                try {
+                    httpResponse = client.newCall(request).execute();
+                    int statusCode = httpResponse.code();
+
+                    // 200 represents HTTP OK
+                    if (statusCode == 200) {
+                        System.out.println("IN UsersGridAsyncTask. code==200");
+                        String response = httpResponse.body().string();
+                        parseUsersResult(response);
+                        result = 1; // Successful
+                    } else {
+                        result = 0; //"Failed
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            } catch (Exception e) {
+                Log.d(TAG, e.getLocalizedMessage());
+            }
+
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            // Download complete. Lets update UI
+
+            if (result == 1) {
+                System.out.println("IN POST USERS EXECUTE. RESULT==1");
+                usersGridViewAdapter.setGridData(users);
+            } else {
+                Toast.makeText(getActivity(), "Failed to fetch users!", Toast.LENGTH_SHORT).show();
+            }
+
+            //Hide progressbar
+            categoriesProgressBar.setVisibility(View.GONE);
         }
     }
 
@@ -279,7 +371,7 @@ public class CategoriesChooseFragment extends DialogFragment {
             }
 
             //Hide progressbar
-            progressBar.setVisibility(View.GONE);
+            categoriesProgressBar.setVisibility(View.GONE);
         }
     }
 
@@ -297,7 +389,9 @@ public class CategoriesChooseFragment extends DialogFragment {
                     item.setName(jsonObject.getString("name"));
                 }
                 if (jsonObject.has("image")) {
-                    item.setImage(projectBaseUrl + "/rest/images/" + jsonObject.getString("image"));
+                    item.setImage(projectBaseUrl + "/rest/images/" + jsonObject.getString("image").substring(0, jsonObject.getString("image").indexOf(".")));
+                } else {
+                    item.setImage(projectBaseUrl + "/rest/images/4");
                 }
                 data.add(item);
             }
@@ -340,6 +434,58 @@ public class CategoriesChooseFragment extends DialogFragment {
                 }
                 if (jsonObject.has("birthdate")) {
                     item.setBirthdate(jsonObject.getString("birthdate"));
+                }
+                if (jsonObject.has("avatar")) {
+                    item.setAvatar(projectBaseUrl + "/rest/images/" + jsonObject.getString("avatar").substring(0, jsonObject.getString("avatar").indexOf(".")));
+                } else {
+                    item.setAvatar(projectBaseUrl + "/rest/images/4");
+                }
+                users.add(item);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void parseUsersResult(String result) {
+        try {
+            JSONArray array = new JSONArray(result);
+            ArrayList<User> usrs = new ArrayList<>();
+
+            User item;
+            for (int i = 0; i < array.length(); i++) {
+                item = new User();
+
+                JSONObject jsonObject = array.getJSONObject(i);
+                item.setId(jsonObject.getLong("id"));
+                if (jsonObject.has("creationTime")) {
+                    item.setCreationTime(jsonObject.getString("creationTime"));
+                }
+                if (jsonObject.has("email")) {
+                    item.setEmail(jsonObject.getString("email"));
+                }
+                if (jsonObject.has("firstName")) {
+                    item.setFirstName(jsonObject.getString("firstName"));
+                }
+                if (jsonObject.has("lastName")) {
+                    item.setLastName(jsonObject.getString("lastName"));
+                }
+                if (jsonObject.has("middleName")) {
+                    item.setMiddleName(jsonObject.getString("middleName"));
+                }
+                if (jsonObject.has("nickname")) {
+                    item.setNickname(jsonObject.getString("nickname"));
+                }
+                if (jsonObject.has("active")) {
+                    item.setActive(jsonObject.getBoolean("active"));
+                }
+                if (jsonObject.has("birthdate")) {
+                    item.setBirthdate(jsonObject.getString("birthdate"));
+                }
+                if (jsonObject.has("avatar")) {
+                    item.setAvatar(projectBaseUrl + "/rest/images/" + jsonObject.getString("avatar").substring(0, jsonObject.getString("avatar").indexOf(".")));
+                } else {
+                    item.setAvatar(projectBaseUrl + "/rest/images/4");
                 }
                 users.add(item);
             }

@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.cococompany.android.aq.R;
 import com.cococompany.android.aq.utils.LoginPreferences;
-import com.cococompany.android.aq.utils.QuestionService;
+import com.cococompany.android.aq.services.QuestionService;
 
 
 public class WriteQuestionFragment extends Fragment {

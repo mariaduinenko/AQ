@@ -3,31 +3,17 @@ package com.cococompany.android.aq;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.cococompany.android.aq.models.Category;
 import com.cococompany.android.aq.models.User;
-import com.cococompany.android.aq.utils.AQService;
 import com.cococompany.android.aq.utils.LoginPreferences;
-import com.cococompany.android.aq.utils.RegistrationService;
+import com.cococompany.android.aq.services.RegistrationService;
 import com.cococompany.android.aq.utils.UIutils;
-
-import java.sql.Date;
-import java.text.SimpleDateFormat;
-import java.util.HashSet;
-import java.util.Set;
-
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RegistrationActivity extends AppCompatActivity {
     private Button register_button;

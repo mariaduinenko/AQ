@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.StringDef;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +13,7 @@ import android.view.View;
 
 import com.cococompany.android.aq.R;
 import com.cococompany.android.aq.models.Question;
+import com.cococompany.android.aq.services.QuestionService;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -26,6 +26,7 @@ public class UIutils {
 
     private static ArrayList<Question> foundQuestions;
 
+    //Метод налаштування тулбару
     public static void  setToolbar(int id, AppCompatActivity activity){
         Toolbar toolbar = (Toolbar) activity.findViewById(id);
         activity.setSupportActionBar(toolbar);
@@ -37,6 +38,7 @@ public class UIutils {
         toolbar.setLogo(logo);
     }
 
+    //Метод налаштування поля пошуку
     public static void setSearchBar(int id, Menu menu, Activity activity) {
         final QuestionService questionService = new QuestionService(activity);
 
@@ -61,6 +63,7 @@ public class UIutils {
         });
     }
 
+    //Метод налаштування тулбару кнопкою Назад
     public static void setToolbarWithBackButton(int id, final AppCompatActivity activity){
         final Toolbar toolbar = (Toolbar) activity.findViewById(id);
         activity.setSupportActionBar(toolbar);
@@ -74,6 +77,7 @@ public class UIutils {
         });
     }
 
+    //Метод перевірки валідності e-mail адреси
     public  static boolean isValidEmail(String email){
         email = email.trim();
         Pattern pattern = Patterns.EMAIL_ADDRESS;
@@ -81,6 +85,7 @@ public class UIutils {
         return m.matches();
     }
 
+    //Метод перевірки валідності повного імені користувача
     public static boolean isValidName(String name){
         name = name.trim();
         Pattern p = Pattern.compile("^\\w+\\s\\w+\\s\\w+");

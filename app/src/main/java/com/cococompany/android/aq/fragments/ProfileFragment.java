@@ -24,8 +24,8 @@ import com.cococompany.android.aq.adapters.CustomUuiSwipeAdapter;
 import com.cococompany.android.aq.models.User;
 import com.cococompany.android.aq.models.UserUniversityInfo;
 import com.cococompany.android.aq.utils.LoginPreferences;
-import com.cococompany.android.aq.utils.UserService;
-import com.cococompany.android.aq.utils.UserUniversityInfoService;
+import com.cococompany.android.aq.services.UserService;
+import com.cococompany.android.aq.services.UserUniversityInfoService;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

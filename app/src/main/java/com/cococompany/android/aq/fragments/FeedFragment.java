@@ -1,7 +1,5 @@
 package com.cococompany.android.aq.fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -18,7 +16,7 @@ import com.cococompany.android.aq.R;
 import com.cococompany.android.aq.adapters.FeedAdapter;
 import com.cococompany.android.aq.models.Question;
 import com.cococompany.android.aq.utils.OnLoadMoreListener;
-import com.cococompany.android.aq.utils.QuestionService;
+import com.cococompany.android.aq.services.QuestionService;
 
 import java.util.ArrayList;
 import java.util.Timer;

@@ -4,12 +4,9 @@ import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -21,13 +18,12 @@ import com.cococompany.android.aq.models.Faculty;
 import com.cococompany.android.aq.models.Speciality;
 import com.cococompany.android.aq.models.University;
 import com.cococompany.android.aq.models.UserUniversityInfo;
-import com.cococompany.android.aq.utils.FacultyService;
-import com.cococompany.android.aq.utils.SpecialityService;
-import com.cococompany.android.aq.utils.UniversityService;
-import com.cococompany.android.aq.utils.UserUniversityInfoService;
+import com.cococompany.android.aq.services.FacultyService;
+import com.cococompany.android.aq.services.SpecialityService;
+import com.cococompany.android.aq.services.UniversityService;
+import com.cococompany.android.aq.services.UserUniversityInfoService;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**

@@ -1,4 +1,4 @@
-package com.cococompany.android.aq.utils;
+package com.cococompany.android.aq.services;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -29,7 +29,6 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.internal.Internal;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;

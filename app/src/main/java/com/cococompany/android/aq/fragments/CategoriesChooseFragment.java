@@ -3,8 +3,6 @@ package com.cococompany.android.aq.fragments;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -13,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TabHost;
 import android.widget.Toast;
@@ -23,16 +20,12 @@ import com.cococompany.android.aq.adapters.CategoriesGridViewAdapter;
 import com.cococompany.android.aq.adapters.UsersGridViewAdapter;
 import com.cococompany.android.aq.models.Category;
 import com.cococompany.android.aq.models.User;
-import com.cococompany.android.aq.utils.UserService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 
 import okhttp3.OkHttpClient;
@@ -55,7 +48,6 @@ public class CategoriesChooseFragment extends DialogFragment {
     private UsersGridViewAdapter usersGridViewAdapter;
     private ProgressBar categoriesProgressBar;
     private ProgressBar usersProgressBar;
-    private ListView lvMain;
 
     private String CATEGORIES_URL = projectBaseUrl + "/rest/categories";
     private String USERS_URL = projectBaseUrl + "/rest/users/profile";
@@ -65,6 +57,7 @@ public class CategoriesChooseFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        //Час початку створення діалогового вікна
         long initialTime = System.currentTimeMillis();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
@@ -85,6 +78,7 @@ public class CategoriesChooseFragment extends DialogFragment {
         spec.setIndicator("Users");
         host.addTab(spec);
 
+        //Підготовка початкових даних
         data = new ArrayList<>();
         users = new ArrayList<>();
         selectedCategories = new ArrayList<>();
@@ -119,7 +113,6 @@ public class CategoriesChooseFragment extends DialogFragment {
                         selectedCategories.add((Category) parent.getItemAtPosition(position));
                     }
                 }
-
             }
         });
 
@@ -149,43 +142,45 @@ public class CategoriesChooseFragment extends DialogFragment {
                         selectedUsers.add((User) parent.getItemAtPosition(position));
                     }
                 }
-
             }
         });
 
-        //Start download
-        new AsyncHttpTask().execute(CATEGORIES_URL);
-//        new UserListAsyncTask().execute(USERS_URL);
+        //Завантаження категорій
+        new CategoriesAsyncTask().execute(CATEGORIES_URL);
+        //Завантаження користувачів
         new UserGridAsyncTask().execute(USERS_URL);
+
         categoriesProgressBar.setVisibility(View.VISIBLE);
         usersProgressBar.setVisibility(View.VISIBLE);
 
         builder.setView(view)
+                //Метод відміни вибору
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         CategoriesChooseFragment.this.getDialog().cancel();
                     }
                 })
+                //Метод підтвердження вибору
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Toast.makeText(getActivity(),"Choosed categories: " + selectedCategories + "     Choosed users: " + selectedUsers,Toast.LENGTH_LONG).show();
                     }
                 });
+        //Час завершення створення діалогового вікна
         long finishTime = System.currentTimeMillis();
         Log.d(this.getClass().getName(), "Whole execution time:" + (finishTime-initialTime));
         return builder.create();
     }
 
-    //Downloading data asynchronously
-    public class AsyncHttpTask extends AsyncTask<String, Void, Integer> {
+    //Асинхронне завантаження категорій
+    public class CategoriesAsyncTask extends AsyncTask<String, Void, Integer> {
 
         @Override
         protected Integer doInBackground(String... params) {
             Integer result = 0;
             try {
-                // Create Apache HttpClient
                 OkHttpClient client = new OkHttpClient();
 
                 Request request = new Request.Builder()
@@ -202,7 +197,7 @@ public class CategoriesChooseFragment extends DialogFragment {
                     if (statusCode == 200) {
                         System.out.println("IN AsyncTask. code==200");
                         String response = httpResponse.body().string();
-                        parseResult(response);
+                        parseCategoriesResult(response);
                         result = 1; // Successful
                     } else {
                         result = 0; //"Failed
@@ -251,14 +246,13 @@ public class CategoriesChooseFragment extends DialogFragment {
         }
     }
 
-    //Downloading data asynchronously
+    //Асинхронне завантаження користувачів
     public class UserGridAsyncTask extends AsyncTask<String, Void, Integer> {
 
         @Override
         protected Integer doInBackground(String... params) {
             Integer result = 0;
             try {
-                // Create Apache HttpClient
                 OkHttpClient client = new OkHttpClient();
 
                 Request request = new Request.Builder()
@@ -308,7 +302,8 @@ public class CategoriesChooseFragment extends DialogFragment {
         }
     }
 
-    private void parseResult(String result) {
+    //Парсинг категорій з JSON
+    private void parseCategoriesResult(String result) {
         try {
             JSONArray array = new JSONArray(result);
             Category item;
@@ -333,53 +328,7 @@ public class CategoriesChooseFragment extends DialogFragment {
         }
     }
 
-    private void parseUserListResult(String result) {
-        try {
-            JSONArray array = new JSONArray(result);
-            ArrayList<User> usrs = new ArrayList<>();
-
-            User item;
-            for (int i = 0; i < array.length(); i++) {
-                item = new User();
-
-                JSONObject jsonObject = array.getJSONObject(i);
-                item.setId(jsonObject.getLong("id"));
-                if (jsonObject.has("creationTime")) {
-                    item.setCreationTime(jsonObject.getString("creationTime"));
-                }
-                if (jsonObject.has("email")) {
-                    item.setEmail(jsonObject.getString("email"));
-                }
-                if (jsonObject.has("firstName")) {
-                    item.setFirstName(jsonObject.getString("firstName"));
-                }
-                if (jsonObject.has("lastName")) {
-                    item.setLastName(jsonObject.getString("lastName"));
-                }
-                if (jsonObject.has("middleName")) {
-                    item.setMiddleName(jsonObject.getString("middleName"));
-                }
-                if (jsonObject.has("nickname")) {
-                    item.setNickname(jsonObject.getString("nickname"));
-                }
-                if (jsonObject.has("active")) {
-                    item.setActive(jsonObject.getBoolean("active"));
-                }
-                if (jsonObject.has("birthdate")) {
-                    item.setBirthdate(jsonObject.getString("birthdate"));
-                }
-                if (jsonObject.has("avatar")) {
-                    item.setAvatar(projectBaseUrl + "/rest/images/" + jsonObject.getString("avatar").substring(0, jsonObject.getString("avatar").indexOf(".")));
-                } else {
-                    item.setAvatar(projectBaseUrl + "/rest/images/4");
-                }
-                users.add(item);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
+    //Парсинг користувачів з JSON
     private void parseUsersResult(String result) {
         try {
             JSONArray array = new JSONArray(result);
@@ -427,49 +376,4 @@ public class CategoriesChooseFragment extends DialogFragment {
         }
     }
 
-    //Підготовка реальних даних для ListView
-    private ArrayList<User> fillUsersData() {
-        long initialTime = System.currentTimeMillis();
-        ArrayList<User> users = new UserService().getActiveUsers();
-        long finishTime = System.currentTimeMillis();
-        Log.d("fillUsersData()", "Whole execution time:" + (finishTime-initialTime));
-        return users;
-    }
-
-    //Для отримання зображення за його URL
-    public static Bitmap getBitmapFromURL(String src) {
-        long initialTime = System.currentTimeMillis();
-        try {
-            URL url = new URL(projectBaseUrl + "/" + src);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            long finishTime = System.currentTimeMillis();
-            Log.d("getBitmapFromURL()", "Whole execution time:" + (finishTime-initialTime));
-            return myBitmap;
-        } catch (IOException e) {
-            // Log exception
-            return null;
-        }
-    }
-
-    class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        protected Bitmap doInBackground(String... urls) {
-            long initialTime = System.currentTimeMillis();
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            long finishTime = System.currentTimeMillis();
-            Log.d("DownloadImageTask", "Whole execution time:" + (finishTime-initialTime));
-            return mIcon11;
-        }
-    }
 }

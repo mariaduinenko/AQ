@@ -1,4 +1,4 @@
-package com.cococompany.android.aq.utils;
+package com.cococompany.android.aq.services;
 
 import android.content.Context;
 

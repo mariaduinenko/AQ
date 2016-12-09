@@ -1,4 +1,4 @@
-package com.cococompany.android.aq.utils;
+package com.cococompany.android.aq.services;
 
 import com.cococompany.android.aq.models.Faculty;
 import com.cococompany.android.aq.models.Like;

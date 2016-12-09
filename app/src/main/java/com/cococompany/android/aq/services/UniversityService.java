@@ -1,11 +1,10 @@
-package com.cococompany.android.aq.utils;
+package com.cococompany.android.aq.services;
 
 import android.content.Context;
 import android.os.AsyncTask;
 
 import com.cococompany.android.aq.R;
 import com.cococompany.android.aq.models.University;
-import com.cococompany.android.aq.models.User;
 
 import java.io.IOException;
 import java.util.ArrayList;

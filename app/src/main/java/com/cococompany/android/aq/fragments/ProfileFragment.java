@@ -2,7 +2,10 @@ package com.cococompany.android.aq.fragments;
 
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
@@ -15,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -31,41 +35,38 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.app.Activity.RESULT_OK;
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
+
 public class ProfileFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final int PICK_IMAGE=100;
+    Uri imageUri;
+    ImageView etAvatar;
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
     public static LoginPreferences preferences;
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private long startTime = 0L,
-            finishTime = 0L;
-
-    //    private Long selectedUniversityId = -1L;
-
-    private SimpleDateFormat dateFormatter;
-
     public static List<UserUniversityInfo> userUniversityInfos = new ArrayList<>();
-//    public static UserUniversityInfo[] userUniversityInfos = null;
-
-//    private Long selectedUniversityId = -1L;
-
-    private Long selectedUuiId = -1L;
-
     public static ViewPager viewPager;
     public static CustomUuiSwipeAdapter uuiSwipeAdapter;
 
-    private UserUniversityInfoService uuiService = null;
-
+    //    private Long selectedUniversityId = -1L;
     public static User user = null;
-
     public static int pagePosition = 0;
+//    public static UserUniversityInfo[] userUniversityInfos = null;
 
+    //    private Long selectedUniversityId = -1L;
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+    private long startTime = 0L,
+            finishTime = 0L;
+    private SimpleDateFormat dateFormatter;
+    private Long selectedUuiId = -1L;
+    private UserUniversityInfoService uuiService = null;
     private EditText etBirthdate;
 
     public ProfileFragment() {
@@ -115,7 +116,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onPageSelected(int position) {
                 pagePosition = position;
-                selectedUuiId = (userUniversityInfos.get(pagePosition) != null)? userUniversityInfos.get(pagePosition).getId() : -1L;
+                selectedUuiId = (userUniversityInfos.get(pagePosition) != null) ? userUniversityInfos.get(pagePosition).getId() : -1L;
             }
 
             @Override
@@ -146,6 +147,7 @@ public class ProfileFragment extends Fragment {
         finishTime = System.currentTimeMillis();
         System.out.println("%\\_(^_^)_/%" + "load params|execution time:" + (finishTime - startTime));
 
+        etAvatar=(ImageView) view.findViewById(R.id.selectableRoundedImageView);
         EditText etName = (EditText) view.findViewById(R.id.name);
         EditText etNickname = (EditText) view.findViewById(R.id.nickname);
         EditText etEmail = (EditText) view.findViewById(R.id.email);
@@ -172,6 +174,9 @@ public class ProfileFragment extends Fragment {
         etNickname.setText(userNickname);
         etEmail.setText(userEmail);
         etBirthdate.setText(userBdate);
+        /*
+        написать обработчик и ф-ю загрузки картинки сгалереи
+        */
 
         etBirthdate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -184,7 +189,7 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        final int uuisCount = (preferences.getUser().getUuis() != null)? preferences.getUser().getUuis().size() : 0;
+        final int uuisCount = (preferences.getUser().getUuis() != null) ? preferences.getUser().getUuis().size() : 0;
         if (uuisCount > 0) {
             startTime = System.currentTimeMillis();
             userUniversityInfos = new ArrayList<>(preferences.getUser().getUuis());
@@ -241,20 +246,20 @@ public class ProfileFragment extends Fragment {
                         LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         LinearLayout item_view = (LinearLayout) layoutInflater.inflate(R.layout.profile_uui_swipe_layout, null);
 
-                        uuiSwipeAdapter.addView(item_view, userUniversityInfos.size()-1);
+                        uuiSwipeAdapter.addView(item_view, userUniversityInfos.size() - 1);
                         registerForContextMenu(item_view);
                         Button btnAddUui = (Button) item_view.findViewById(R.id.btnAddUui);
                         btnAddUui.setOnClickListener(this);
                         uuiSwipeAdapter.changeTotalIcon();
                         uuiSwipeAdapter.notifyDataSetChanged();
-                        viewPager.setCurrentItem(userUniversityInfos.size()-1);
+                        viewPager.setCurrentItem(userUniversityInfos.size() - 1);
                     }
                 });
 
                 uuiSwipeAdapter.notifyDataSetChanged();
             }
             finishTime = System.currentTimeMillis();
-        }else {
+        } else {
 //            startTime = System.currentTimeMillis();
 //            userUniversityInfos = new ArrayList<>();
 //            UserUniversityInfo uui = new UserUniversityInfo();
@@ -279,7 +284,14 @@ public class ProfileFragment extends Fragment {
                 fragment.show(getActivity().getFragmentManager(), "Password change");
             }
         });
-
+        //choosing from the gallery
+        etAvatar.setOnLongClickListener(new View.OnLongClickListener(){
+            @Override
+            public boolean onLongClick(View v){
+                openGallery();
+                return false;
+            }
+        });
         //Saving user profile
         btnApply.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -305,8 +317,8 @@ public class ProfileFragment extends Fragment {
                 }
 
                 finishTime = System.currentTimeMillis();
-                String s = "Saved prefs:\nName:"+preferences.getUser().getLastName()+" "+preferences.getUser().getFirstName()+" "+preferences.getUser().getMiddleName()+"\nNickname:"+preferences.getUser().getNickname()+
-                        "\nEmail:"+preferences.getUser().getEmail();
+                String s = "Saved prefs:\nName:" + preferences.getUser().getLastName() + " " + preferences.getUser().getFirstName() + " " + preferences.getUser().getMiddleName() + "\nNickname:" + preferences.getUser().getNickname() +
+                        "\nEmail:" + preferences.getUser().getEmail();
                 showToast(view, s);
             }
         });
@@ -315,90 +327,45 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
-    public void addView(View newPage)
-    {
-        int pageIndex = uuiSwipeAdapter.addView (newPage);
+
+
+
+
+
+    private void openGallery(){
+        Intent gallery=new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+        startActivityForResult(gallery, PICK_IMAGE);
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK && requestCode==PICK_IMAGE){
+            imageUri=data.getData();
+            etAvatar.setImageURI(imageUri);
+        }
+    }
+
+
+
+
+    public void addView(View newPage) {
+        int pageIndex = uuiSwipeAdapter.addView(newPage);
         viewPager.setCurrentItem(pageIndex, true);
     }
 
-    public void removeView(View defunctPage)
-    {
+    public void removeView(View defunctPage) {
         int pageIndex = uuiSwipeAdapter.removeView(viewPager, defunctPage);
         if (pageIndex == uuiSwipeAdapter.getCount())
             pageIndex--;
         viewPager.setCurrentItem(pageIndex);
     }
 
-    public View getCurrentPage()
-    {
+    public View getCurrentPage() {
         return uuiSwipeAdapter.getView(viewPager.getCurrentItem());
     }
 
-    public void setCurrentPage(View pageToShow)
-    {
-        viewPager.setCurrentItem(uuiSwipeAdapter.getItemPosition (pageToShow), true);
-    }
-
-    public class NicknameTextChangedListener implements TextWatcher {
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-        @Override
-        public void afterTextChanged(Editable editable) {
-            EditText etNickname = (EditText) getView().findViewById(R.id.nickname);
-            User u = preferences.getUser();
-            u.setNickname(etNickname.getText().toString());
-            preferences.setUser(u);
-        }
-    }
-
-    public class NameTextChangedListener implements TextWatcher {
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-        @Override
-        public void afterTextChanged(Editable editable) {
-            EditText etName = (EditText) getView().findViewById(R.id.name);
-            String[] nameParts = etName.getText().toString().split(" ");
-            switch (nameParts.length) {
-                case 1: {
-                    User u = preferences.getUser();
-                    u.setLastName(nameParts[0]);
-                    preferences.setUser(u);
-                    break;
-                }
-                case 2: {
-                    User u = preferences.getUser();
-                    u.setFirstName(nameParts[1]);
-                    preferences.setUser(u);
-                    break;
-                }
-                case 3: {
-                    User u = preferences.getUser();
-                    u.setMiddleName(nameParts[2]);
-                    preferences.setUser(u);
-                    break;
-                }
-                default:
-                    break;
-            }
-        }
-    }
-
-    public class EmailTextChangedListener implements TextWatcher {
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-        @Override
-        public void afterTextChanged(Editable editable) {
-            EditText etEmail = (EditText) getView().findViewById(R.id.email);
-            User u = preferences.getUser();
-            u.setEmail(etEmail.getText().toString());
-            preferences.setUser(u);
-        }
+    public void setCurrentPage(View pageToShow) {
+        viewPager.setCurrentItem(uuiSwipeAdapter.getItemPosition(pageToShow), true);
     }
 
     @Override
@@ -432,6 +399,80 @@ public class ProfileFragment extends Fragment {
                 Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
+    }
+
+    public class NicknameTextChangedListener implements TextWatcher {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            EditText etNickname = (EditText) getView().findViewById(R.id.nickname);
+            User u = preferences.getUser();
+            u.setNickname(etNickname.getText().toString());
+            preferences.setUser(u);
+        }
+    }
+
+    public class NameTextChangedListener implements TextWatcher {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            EditText etName = (EditText) getView().findViewById(R.id.name);
+            String[] nameParts = etName.getText().toString().split(" ");
+            switch (nameParts.length) {
+                case 1: {
+                    User u = preferences.getUser();
+                    u.setLastName(nameParts[0]);
+                    preferences.setUser(u);
+                    break;
+                }
+                case 2: {
+                    User u = preferences.getUser();
+                    u.setFirstName(nameParts[1]);
+                    preferences.setUser(u);
+                    break;
+                }
+                case 3: {
+                    User u = preferences.getUser();
+                    u.setMiddleName(nameParts[2]);
+                    preferences.setUser(u);
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+    }
+
+    public class EmailTextChangedListener implements TextWatcher {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            EditText etEmail = (EditText) getView().findViewById(R.id.email);
+            User u = preferences.getUser();
+            u.setEmail(etEmail.getText().toString());
+            preferences.setUser(u);
+        }
     }
 
 }

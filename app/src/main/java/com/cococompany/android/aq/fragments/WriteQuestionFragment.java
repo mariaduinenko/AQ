@@ -12,8 +12,16 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.cococompany.android.aq.R;
+import com.cococompany.android.aq.models.Category;
+import com.cococompany.android.aq.models.Question;
+import com.cococompany.android.aq.models.User;
 import com.cococompany.android.aq.utils.LoginPreferences;
 import com.cococompany.android.aq.services.QuestionService;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static android.R.attr.lines;
 
 
 public class WriteQuestionFragment extends Fragment {
@@ -76,6 +84,15 @@ public class WriteQuestionFragment extends Fragment {
             public void onClick(View view) {
                 CategoriesChooseFragment fragment = new CategoriesChooseFragment();
                 fragment.show(getActivity().getSupportFragmentManager(), "Categories choose");
+
+                //Валідація задаваного питання
+
+                Question question = new Question();
+                question.setUser(loginPreferences.getUser());
+                question.setTitle(tags.getText().toString());
+                question.setComment(bodyOfQuestion.getText().toString());
+
+                ((CategoriesChooseFragment) fragment).setQuestion(question);
 
 //                String separator = "\n";
 //                String[] lines = bodyOfQuestion.getText().toString().split(separator);

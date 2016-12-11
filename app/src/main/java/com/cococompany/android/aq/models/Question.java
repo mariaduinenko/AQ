@@ -21,9 +21,9 @@ public class Question {
     @Expose
     private Long id;
 
-    @SerializedName("categories")
+    @SerializedName("category")
     @Expose
-    private List<Category> categories;
+    private Category category;
 
     @SerializedName("title")
     @Expose
@@ -41,20 +41,6 @@ public class Question {
     @Expose
     private List<Answer> answers = new ArrayList<Answer>();
 
-
-
-    @Override
-    public String toString() {
-        return "Question{" +
-                "creationTime='" + creationTime + '\'' +
-                ", id=" + id +
-                ", title='" + title + '\'' +
-                ", comment='" + comment + '\'' +
-                ", user=" + user +
-                ", answers=" + answers +
-                ", likes=" + likes.toString() +
-                '}';
-    }
 
     @SerializedName("likes")
     @Expose
@@ -116,11 +102,23 @@ public class Question {
         this.likes = likes;
     }
 
-    public List<Category> getCategories() {
-        return categories;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setCategories(List<Category> categories) {
-        this.categories = categories;
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "creationTime='" + creationTime + '\'' +
+                ", id=" + id +
+                ", title='" + title + '\'' +
+                ", comment='" + comment + '\'' +
+                ", category=" + category +
+                ", user=" + user +
+                '}';
     }
 }

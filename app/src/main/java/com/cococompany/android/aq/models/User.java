@@ -212,9 +212,6 @@ public class User {
                 ", lastName='" + lastName + '\'' +
                 ", middleName='" + middleName + '\'' +
                 ", avatar='" + avatar + '\'' +
-                ", uuis=" + uuis +
-                ", roles=" + roles +
-                ", categories=" + categories +
                 '}';
     }
 }

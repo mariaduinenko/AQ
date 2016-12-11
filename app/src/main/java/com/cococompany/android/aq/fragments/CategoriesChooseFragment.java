@@ -2,6 +2,7 @@ package com.cococompany.android.aq.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,7 +20,11 @@ import com.cococompany.android.aq.R;
 import com.cococompany.android.aq.adapters.CategoriesGridViewAdapter;
 import com.cococompany.android.aq.adapters.UsersGridViewAdapter;
 import com.cococompany.android.aq.models.Category;
+import com.cococompany.android.aq.models.Question;
+import com.cococompany.android.aq.models.QuestionWithUsersWrapper;
 import com.cococompany.android.aq.models.User;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,8 +33,10 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static android.content.ContentValues.TAG;
@@ -41,6 +48,8 @@ import static android.content.ContentValues.TAG;
 public class CategoriesChooseFragment extends DialogFragment {
 
     private static final String projectBaseUrl = "https://pure-mesa-13823.herokuapp.com";
+
+    private Context ctx;
 
     private ArrayList<Category> data;
     private ArrayList<User> users;
@@ -54,9 +63,17 @@ public class CategoriesChooseFragment extends DialogFragment {
 
     private ArrayList<Category> selectedCategories;
     private ArrayList<User> selectedUsers;
+    private ArrayList<Long> selectedUserIds;
+
+    private String QUESTION_WITH_CATEGORY_URL = projectBaseUrl + "/rest/questions";
+    private String QUESTION_WITHOUT_CATEGORY_URL = projectBaseUrl + "/rest/questions/users";
+
+    private Question question = null;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        ctx = getContext();
+
         //Час початку створення діалогового вікна
         long initialTime = System.currentTimeMillis();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -133,11 +150,6 @@ public class CategoriesChooseFragment extends DialogFragment {
                     if (selectedCategories.size() > 0) {
                         Toast.makeText(getActivity(),"Unable to select user. Unselect all categories first.", Toast.LENGTH_SHORT).show();
                     } else {
-                        for (User i : selectedUsers) {
-                            if (!users.get(position).getId().equals(i.getId()))
-                                selectedUsers.remove(i);
-                        }
-                        usersGridViewAdapter.removeOther(position, v);
                         usersGridViewAdapter.addSelected(position, v);
                         selectedUsers.add((User) parent.getItemAtPosition(position));
                     }
@@ -165,13 +177,30 @@ public class CategoriesChooseFragment extends DialogFragment {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(getActivity(),"Choosed categories: " + selectedCategories + "     Choosed users: " + selectedUsers,Toast.LENGTH_LONG).show();
+//                        Toast.makeText(getActivity(),"Choosed categories: " + selectedCategories + "     Choosed users: " + selectedUsers,Toast.LENGTH_LONG).show();
+
+                        if (selectedCategories.size() > 0) {
+                            question.setCategory(selectedCategories.get(0));
+                            new CreateQuestionWithCategoryAsyncTask().execute(QUESTION_WITH_CATEGORY_URL);
+                        } else if (selectedUsers.size() > 0) {
+                            selectedUserIds = new ArrayList<Long>();
+                            for (User u: selectedUsers) {
+                                selectedUserIds.add(u.getId());
+                            }
+                            new CreateQuestionWithoutCategoryAsyncTask().execute(QUESTION_WITHOUT_CATEGORY_URL);
+                        } else {
+                            Toast.makeText(getActivity(), "Not category, nor user choosed. Your question wouldn't be visible to anyone!", Toast.LENGTH_LONG).show();
+                        }
                     }
                 });
         //Час завершення створення діалогового вікна
         long finishTime = System.currentTimeMillis();
         Log.d(this.getClass().getName(), "Whole execution time:" + (finishTime-initialTime));
         return builder.create();
+    }
+
+    public void setQuestion(Question question) {
+        this.question = question;
     }
 
     //Асинхронне завантаження категорій
@@ -203,22 +232,6 @@ public class CategoriesChooseFragment extends DialogFragment {
                         result = 0; //"Failed
                     }
 
-//                    String jsonData = response.body().string();
-//                    JSONArray array = new JSONArray(jsonData);
-//                    ArrayList<Category> categories = new ArrayList<>();
-//
-//                    for (int i = 0; i < array.length(); i++) {
-//                        JSONObject jsonObject = array.getJSONObject(i);
-//                        Category category = new Category();
-//                        category.setId(jsonObject.getLong("id"));
-//                        if (jsonObject.has("name"))
-//                            category.setName(jsonObject.getString("name"));
-//                        if (jsonObject.has("image"))
-//                            category.setImage(jsonObject.getString("image"));
-//                        categories.add(category);
-//                    }
-//
-//                    return categories;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -302,6 +315,124 @@ public class CategoriesChooseFragment extends DialogFragment {
         }
     }
 
+    //Асинхронне створення питання з обраною категорією
+    public class CreateQuestionWithCategoryAsyncTask extends AsyncTask<String, Void, Integer> {
+        @Override
+        protected Integer doInBackground(String... params) {
+            Integer result = 0;
+            try {
+                OkHttpClient client = new OkHttpClient();
+
+                Gson gson = new GsonBuilder().create();
+                String jsonQuestion = gson.toJson(question);// obj is your object
+                MediaType MEDIATYPE_JSON = MediaType.parse("application/json; charset=utf-8");
+                RequestBody body = RequestBody.create(MEDIATYPE_JSON, jsonQuestion.toString());
+
+                //{"title":"What is stream?", "comment":"comment", "user":{"id":""+user.getId()+"\"}, \"category\":{\"id\":\""+category.getId()+""}}
+                Request request = new Request.Builder()
+                        .url(params[0])
+                        .post(body)
+                        .build();
+
+                Response httpResponse = null;
+
+                try {
+                    httpResponse = client.newCall(request).execute();
+                    int statusCode = httpResponse.code();
+
+                    // 200 represents HTTP OK
+                    if (statusCode == 200) {
+                        System.out.println("IN CreateQuestionWithCategoryAsyncTask. code==200");
+                        String response = httpResponse.body().string();
+                        result = 1; // Successful
+                    } else {
+                        result = 0; //"Failed
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            } catch (Exception e) {
+                Log.d(TAG, e.getLocalizedMessage());
+            }
+
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            if (result == 1) {
+                Toast.makeText(ctx, "Question with category successfully created!", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(ctx, "Failed to create question with category!", Toast.LENGTH_LONG).show();
+            }
+
+            //Hide progressbar
+            //...
+        }
+    }
+
+    //Асинхронне створення питання без категорії
+    public class CreateQuestionWithoutCategoryAsyncTask extends AsyncTask<String, Void, Integer> {
+        @Override
+        protected Integer doInBackground(String... params) {
+            Integer result = 0;
+            try {
+                OkHttpClient client = new OkHttpClient();
+
+                QuestionWithUsersWrapper wrapper = new QuestionWithUsersWrapper();
+                wrapper.setQuestion(question);
+                wrapper.setUsers(selectedUserIds);
+                //{"question":{"title":"What is stream?", "comment":"comment", "user":{"id":""+user.getId()+"\"}}, \"users\":["+user2.getId()+"]}
+                Gson gson = new GsonBuilder().create();
+                String jsonQuestion = gson.toJson(wrapper);// obj is your object
+                MediaType MEDIATYPE_JSON = MediaType.parse("application/json; charset=utf-8");
+                RequestBody body = RequestBody.create(MEDIATYPE_JSON, jsonQuestion.toString());
+
+                //{"title":"What is stream?", "comment":"comment", "user":{"id":""+user.getId()+"\"}, \"category\":{\"id\":\""+category.getId()+""}}
+                Request request = new Request.Builder()
+                        .url(params[0])
+                        .post(body)
+                        .build();
+
+                Response httpResponse = null;
+
+                try {
+                    httpResponse = client.newCall(request).execute();
+                    int statusCode = httpResponse.code();
+
+                    // 200 represents HTTP OK
+                    if (statusCode == 200) {
+                        System.out.println("IN CreateQuestionWithoutCategoryAsyncTask. code==200");
+                        String response = httpResponse.body().string();
+                        result = 1; // Successful
+                    } else {
+                        result = 0; //"Failed
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            } catch (Exception e) {
+                Log.d(TAG, e.getLocalizedMessage());
+            }
+
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            if (result == 1) {
+                Toast.makeText(ctx, "Question without category successfully created!", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(ctx, "Failed to create question without category!", Toast.LENGTH_LONG).show();
+            }
+
+            //Hide progressbar
+            //...
+        }
+    }
+
     //Парсинг категорій з JSON
     private void parseCategoriesResult(String result) {
         try {
@@ -317,9 +448,9 @@ public class CategoriesChooseFragment extends DialogFragment {
                     item.setName(jsonObject.getString("name"));
                 }
                 if (jsonObject.has("image")) {
-                    item.setImage(projectBaseUrl + "/rest/images/" + jsonObject.getString("image").substring(0, jsonObject.getString("image").indexOf(".")));
+                    item.setImage(jsonObject.getString("image"));
                 } else {
-                    item.setImage(projectBaseUrl + "/rest/images/4");
+                    item.setImage(projectBaseUrl + "/rest/images/4.jpeg");
                 }
                 data.add(item);
             }

@@ -72,7 +72,7 @@ public class CategoriesGridViewAdapter extends ArrayAdapter<Category> {
         Category item = data.get(position);
         holder.imageTitle.setText(item.getName());
 
-        Picasso.with(context).load(item.getImage()).into(holder.image);
+        Picasso.with(context).load(item.getImage().substring(0, item.getImage().lastIndexOf("."))).into(holder.image);
 //        holder.image.setImageBitmap(item.getImage());
         return row;
     }
@@ -95,9 +95,6 @@ public class CategoriesGridViewAdapter extends ArrayAdapter<Category> {
 
     public void addSelected(int position, View v) {
         selectedPositions.add(position);
-//        Drawable drawable = ResourcesCompat.getDrawable(context.getResources(), R.drawable.blue_selection, null);
-//        holder.image.setForeground(drawable);
-//        holder.image.setBackgroundColor(Color.BLUE);
         v.setBackgroundColor(Color.LTGRAY);
         notifyDataSetChanged();
     }

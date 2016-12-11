@@ -65,16 +65,16 @@ public class ContentActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.feed_tab:
-                        viewPager.setCurrentItem(0,false);
+                        viewPager.setCurrentItem(0, false);
                         break;
                     case R.id.write_question_tab:
-                        viewPager.setCurrentItem(1,false);
+                        viewPager.setCurrentItem(1, false);
                         break;
                     case R.id.notifications_tab:
-                        viewPager.setCurrentItem(2,false);
+                        viewPager.setCurrentItem(2, false);
                         break;
                     case R.id.profile_tab:
-                        viewPager.setCurrentItem(3,false);
+                        viewPager.setCurrentItem(3, false);
                         break;
 
                 }
@@ -87,7 +87,7 @@ public class ContentActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        UIutils.setSearchBar(R.id.search, menu,this);
+        UIutils.setSearchBar(R.id.search, menu, this);
         return true;
     }
 

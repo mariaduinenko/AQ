@@ -95,7 +95,7 @@ public class DatePickerFragment extends DialogFragment
             etEntr.setText(dateFormatter.format(c.getTime()));
             try {
                 Date date = dateFormatter.parse(etEntr.getText().toString());
-                ProfileFragment.userUniversityInfos.get(ProfileFragment.pagePosition).setEntranceDate(dateFormatter.format(date));
+                ProfileFragment.me.getUuis().get(ProfileFragment.pagePosition).setEntranceDate(dateFormatter.format(date));
                 showToast(view, "Date:" + date.toString());
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -105,7 +105,7 @@ public class DatePickerFragment extends DialogFragment
             etGrad.setText(dateFormatter.format(c.getTime()));
             try {
                 Date date = dateFormatter.parse(etGrad.getText().toString());
-                ProfileFragment.userUniversityInfos.get(ProfileFragment.pagePosition).setGraduationDate(dateFormatter.format(date));
+                ProfileFragment.me.getUuis().get(ProfileFragment.pagePosition).setGraduationDate(dateFormatter.format(date));
                 showToast(view, "Date:" + date.toString());
             } catch (ParseException e) {
                 e.printStackTrace();

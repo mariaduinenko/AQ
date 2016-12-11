@@ -14,6 +14,7 @@ import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -42,6 +43,7 @@ public class ProfileFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final int PICK_IMAGE=100;
+
     Uri imageUri;
     ImageView etAvatar;
 
@@ -49,28 +51,32 @@ public class ProfileFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     public static LoginPreferences preferences;
-    public static List<UserUniversityInfo> userUniversityInfos = new ArrayList<>();
     public static ViewPager viewPager;
     public static CustomUuiSwipeAdapter uuiSwipeAdapter;
 
-    //    private Long selectedUniversityId = -1L;
-    public static User user = null;
-    public static int pagePosition = 0;
-//    public static UserUniversityInfo[] userUniversityInfos = null;
+    public static User me;
 
-    //    private Long selectedUniversityId = -1L;
+    public static int pagePosition = 0;
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
     private long startTime = 0L,
-            finishTime = 0L;
+                 finishTime = 0L;
+
     private SimpleDateFormat dateFormatter;
-    private Long selectedUuiId = -1L;
     private UserUniversityInfoService uuiService = null;
+    private UserService userService = null;
     private EditText etBirthdate;
 
     public ProfileFragment() {
         // Required empty public constructor
+    }
+
+    private void initServices() {
+        uuiService = new UserUniversityInfoService(getContext());
+        userService = new UserService(getContext());
     }
 
     /**
@@ -98,56 +104,37 @@ public class ProfileFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        startTime = System.currentTimeMillis();
 
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
+        initServices();
+        preferences = new LoginPreferences(getContext());
+
         ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
 
             @Override
             public void onPageSelected(int position) {
                 pagePosition = position;
-                selectedUuiId = (userUniversityInfos.get(pagePosition) != null) ? userUniversityInfos.get(pagePosition).getId() : -1L;
             }
 
             @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
+            public void onPageScrollStateChanged(int state) {}
         };
-
-        uuiService = new UserUniversityInfoService(getContext());
 
         viewPager = (ViewPager) view.findViewById(R.id.uui_view_pager);
         viewPager.addOnPageChangeListener(onPageChangeListener);
 
-        startTime = System.currentTimeMillis();
         //receiving preferences
-        preferences = new LoginPreferences(getContext());
-        final Long userId = preferences.getUser().getId();
-//        String userPass = preferences.getUserPassword();
-//        String userAvatar = preferences.getUserAvatar();
-//        String userBirthdate = preferences.getUserBirthdate();
-        String userEmail = preferences.getUser().getEmail();
-        String userFirstname = preferences.getUser().getFirstName();
-        String userLastname = preferences.getUser().getLastName();
-        String userMiddlename = preferences.getUser().getMiddleName();
-        String userNickname = preferences.getUser().getNickname();
-        String userBdate = preferences.getUser().getBirthdate();
-//        Set<String> categories = preferences.getUserCategories();
-        finishTime = System.currentTimeMillis();
-        System.out.println("%\\_(^_^)_/%" + "load params|execution time:" + (finishTime - startTime));
+        me = preferences.getUser();
 
-        etAvatar=(ImageView) view.findViewById(R.id.selectableRoundedImageView);
+        etAvatar = (ImageView) view.findViewById(R.id.selectableRoundedImageView);
         EditText etName = (EditText) view.findViewById(R.id.name);
         EditText etNickname = (EditText) view.findViewById(R.id.nickname);
         EditText etEmail = (EditText) view.findViewById(R.id.email);
@@ -155,120 +142,129 @@ public class ProfileFragment extends Fragment {
         Button btnApply = (Button) view.findViewById(R.id.btn_apply);
         Button btnChangePassword = (Button) view.findViewById(R.id.btn_change_password);
 
-        user = new User(userId);
-
         /*Setting up user related information
         * */
         String firstPart = "", secondPart = "", thirdPart = "";
-        if (userLastname.length() > 1) {
-            firstPart = userLastname.substring(0, 1).toUpperCase() + userLastname.substring(1) + " ";
+        if (me.getLastName().length() > 1) {
+            firstPart = me.getLastName().substring(0, 1).toUpperCase() + me.getLastName().substring(1) + " ";
         }
-        if (userFirstname.length() > 1) {
-            secondPart = userFirstname.substring(0, 1).toUpperCase() + userFirstname.substring(1) + " ";
+        if (me.getFirstName().length() > 1) {
+            secondPart = me.getFirstName().substring(0, 1).toUpperCase() + me.getFirstName().substring(1) + " ";
         }
-        if (userMiddlename.length() > 1) {
-            thirdPart = userMiddlename.substring(0, 1).toUpperCase() + userMiddlename.substring(1);
+        if (me.getMiddleName().length() > 1) {
+            thirdPart = me.getMiddleName().substring(0, 1).toUpperCase() + me.getMiddleName().substring(1);
         }
 
         etName.setText(firstPart + secondPart + thirdPart);
-        etNickname.setText(userNickname);
-        etEmail.setText(userEmail);
-        etBirthdate.setText(userBdate);
+        etNickname.setText(me.getNickname());
+        etEmail.setText(me.getEmail());
+        etBirthdate.setText(me.getBirthdate());
         /*
-        написать обработчик и ф-ю загрузки картинки сгалереи
+        написать обработчик и ф-ю загрузки картинки с галереи
         */
 
-        etBirthdate.setOnClickListener(new View.OnClickListener() {
+        etBirthdate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onClick(View view) {
-//                DialogFragment fragment = new DatePickerFragment();
-//                ((DatePickerFragment) fragment).setBirthdateType();
-                DialogFragment fragment = new BirthdatePickerFragment();
-                ((BirthdatePickerFragment) fragment).setActivity(getActivity());
-                fragment.show(getActivity().getFragmentManager(), "Date Picker");
+            public void onFocusChange(View view, boolean b) {
+                if (b) {
+                    DialogFragment fragment = new BirthdatePickerFragment();
+                    ((BirthdatePickerFragment) fragment).setActivity(getActivity());
+                    fragment.show(getActivity().getFragmentManager(), "Date Picker");
+                }
             }
         });
 
-        final int uuisCount = (preferences.getUser().getUuis() != null) ? preferences.getUser().getUuis().size() : 0;
-        if (uuisCount > 0) {
-            startTime = System.currentTimeMillis();
-            userUniversityInfos = new ArrayList<>(preferences.getUser().getUuis());
+        uuiSwipeAdapter = new CustomUuiSwipeAdapter(getContext());
+        viewPager.setAdapter(uuiSwipeAdapter);
 
-            uuiSwipeAdapter = new CustomUuiSwipeAdapter(getContext());
-//            uuiSwipeAdapter = new CustomUuiSwipeAdapter(getContext(), this);
-            viewPager.setAdapter(uuiSwipeAdapter);
+        for (int i = 0; i < me.getUuis().size(); i++) {
+            final int pos = i;
 
-            for (int i = 0; i < userUniversityInfos.size(); i++) {
-                final int pos = i;
+            LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            final RelativeLayout item_view = (RelativeLayout) layoutInflater.inflate(R.layout.profile_uui_swipe_layout, null);
+            uuiSwipeAdapter.addView(item_view, i);
 
-                LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final RelativeLayout item_view = (RelativeLayout) layoutInflater.inflate(R.layout.profile_uui_swipe_layout, null);
-                uuiSwipeAdapter.addView(item_view, i);
-
-                EditText etEntranceDate = (EditText) item_view.findViewById(R.id.etEntranceDate);
-                etEntranceDate.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+            EditText etEntranceDate = (EditText) item_view.findViewById(R.id.etEntranceDate);
+            etEntranceDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    if (b) {
                         DialogFragment fragment = new DatePickerFragment();
                         ((DatePickerFragment) fragment).setEntranceType();
                         fragment.show(getActivity().getFragmentManager(), "Date Picker");
                     }
-                });
-                String entranceDate = userUniversityInfos.get(i).getEntranceDate();
-                if (entranceDate != null && !entranceDate.isEmpty()) {
-                    etEntranceDate.setText(entranceDate);
                 }
+            });
+            String entranceDate = me.getUuis().get(i).getEntranceDate();
+            if (entranceDate != null && !entranceDate.isEmpty()) {
+                etEntranceDate.setText(entranceDate);
+            }
 
-                EditText etGraduationDate = (EditText) item_view.findViewById(R.id.etGraduationDate);
-                etGraduationDate.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+            EditText etGraduationDate = (EditText) item_view.findViewById(R.id.etGraduationDate);
+            etGraduationDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    if (b) {
                         DialogFragment fragment = new DatePickerFragment();
                         ((DatePickerFragment) fragment).setGraduationType();
                         fragment.show(getActivity().getFragmentManager(), "Date Picker");
                     }
-                });
-                String graduationDate = userUniversityInfos.get(i).getGraduationDate();
-                if (graduationDate != null && !graduationDate.isEmpty()) {
-                    etGraduationDate.setText(graduationDate);
                 }
-
-                registerForContextMenu(item_view);
-                Button btnAddUui = (Button) item_view.findViewById(R.id.btnAddUui);
-                btnAddUui.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        UserUniversityInfo uui = new UserUniversityInfo();
-                        uui.setUser(user);
-                        uui = uuiService.createUui(uui);
-                        userUniversityInfos.add(uui);
-
-                        LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        LinearLayout item_view = (LinearLayout) layoutInflater.inflate(R.layout.profile_uui_swipe_layout, null);
-
-                        uuiSwipeAdapter.addView(item_view, userUniversityInfos.size() - 1);
-                        registerForContextMenu(item_view);
-                        Button btnAddUui = (Button) item_view.findViewById(R.id.btnAddUui);
-                        btnAddUui.setOnClickListener(this);
-                        uuiSwipeAdapter.changeTotalIcon();
-                        uuiSwipeAdapter.notifyDataSetChanged();
-                        viewPager.setCurrentItem(userUniversityInfos.size() - 1);
-                    }
-                });
-
-                uuiSwipeAdapter.notifyDataSetChanged();
+            });
+            String graduationDate = me.getUuis().get(i).getGraduationDate();
+            if (graduationDate != null && !graduationDate.isEmpty()) {
+                etGraduationDate.setText(graduationDate);
             }
-            finishTime = System.currentTimeMillis();
-        } else {
-//            startTime = System.currentTimeMillis();
-//            userUniversityInfos = new ArrayList<>();
-//            UserUniversityInfo uui = new UserUniversityInfo();
-//            uui.setUser(new User(userId));
-//            userUniversityInfos.add(uuiService.createUui(uui));
-//
-//            uuiSwipeAdapter = new CustomUuiSwipeAdapter(getContext());
-//            viewPager.setAdapter(uuiSwipeAdapter);
-//            finishTime = System.currentTimeMillis();
+
+            registerForContextMenu(item_view);
+            Button btnAddUui = (Button) item_view.findViewById(R.id.btnAddUui);
+            btnAddUui.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    UserUniversityInfo uui = new UserUniversityInfo();
+                    uui.setUser(new User(me.getId()));
+                    uui = uuiService.createUui(uui);
+                    List<UserUniversityInfo> uuis = me.getUuis();
+                    uuis.add(uui);
+                    me.setUuis(uuis);
+
+                    LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    RelativeLayout item_view = (RelativeLayout) layoutInflater.inflate(R.layout.profile_uui_swipe_layout, null);
+
+                    uuiSwipeAdapter.addView(item_view, me.getUuis().size() - 1);
+                    registerForContextMenu(item_view);
+                    Button btnAddUui = (Button) item_view.findViewById(R.id.btnAddUui);
+                    btnAddUui.setOnClickListener(this);
+                    uuiSwipeAdapter.changeTotalIcon();
+                    uuiSwipeAdapter.notifyDataSetChanged();
+                    viewPager.setCurrentItem(me.getUuis().size() - 1);
+
+                    EditText etEntranceDate = (EditText) item_view.findViewById(R.id.etEntranceDate);
+                    etEntranceDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                        @Override
+                        public void onFocusChange(View view, boolean b) {
+                            if (b) {
+                                DialogFragment fragment = new DatePickerFragment();
+                                ((DatePickerFragment) fragment).setEntranceType();
+                                fragment.show(getActivity().getFragmentManager(), "Date Picker");
+                            }
+                        }
+                    });
+                    EditText etGraduationDate = (EditText) item_view.findViewById(R.id.etGraduationDate);
+                    etGraduationDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                        @Override
+                        public void onFocusChange(View view, boolean b) {
+                            if (b) {
+                                DialogFragment fragment = new DatePickerFragment();
+                                ((DatePickerFragment) fragment).setGraduationType();
+                                fragment.show(getActivity().getFragmentManager(), "Date Picker");
+                            }
+                        }
+                    });
+                }
+            });
+
+            uuiSwipeAdapter.notifyDataSetChanged();
         }
 
         //listeners
@@ -296,41 +292,27 @@ public class ProfileFragment extends Fragment {
         btnApply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startTime = System.currentTimeMillis();
-                UserService userService = new UserService(getContext());
+                userService.lightUpdate(me);
 
-                User user = new User();
-                user.setId(userId);
-                user.setEmail(preferences.getUser().getEmail());
-                user.setFirstName(preferences.getUser().getFirstName());
-                user.setLastName(preferences.getUser().getLastName());
-                user.setMiddleName(preferences.getUser().getMiddleName());
-                user.setNickname(preferences.getUser().getNickname());
-
-                user.setBirthdate(etBirthdate.getText().toString());
-
-                userService.lightUpdate(user);
-
-                for (int i = 0; i < userUniversityInfos.size(); i++) {
-                    userUniversityInfos.get(i).setUser(user);
-                    userUniversityInfos.set(i, uuiService.updateUui(userUniversityInfos.get(i)));
+                for (int i = 0; i < me.getUuis().size(); i++) {
+                    me.getUuis().get(i).setUser(new User(me.getId()));
+                    me.getUuis().set(i, uuiService.updateUui(me.getUuis().get(i)));
                 }
 
-                finishTime = System.currentTimeMillis();
+                preferences.setUser(me);
+
                 String s = "Saved prefs:\nName:" + preferences.getUser().getLastName() + " " + preferences.getUser().getFirstName() + " " + preferences.getUser().getMiddleName() + "\nNickname:" + preferences.getUser().getNickname() +
                         "\nEmail:" + preferences.getUser().getEmail();
                 showToast(view, s);
             }
         });
 
+        finishTime = System.currentTimeMillis();
+        System.out.println("Profile fragment loading time:" + (finishTime - startTime));
+
         // Inflate the layout for this fragment
         return view;
     }
-
-
-
-
-
 
     private void openGallery(){
         Intent gallery=new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
@@ -344,9 +326,6 @@ public class ProfileFragment extends Fragment {
             etAvatar.setImageURI(imageUri);
         }
     }
-
-
-
 
     public void addView(View newPage) {
         int pageIndex = uuiSwipeAdapter.addView(newPage);
@@ -379,12 +358,11 @@ public class ProfileFragment extends Fragment {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getTitle() == "Remove University Info") {
-            uuiService.removeUui(userUniversityInfos.get(pagePosition).getId());
+            uuiService.removeUui(me.getUuis().get(pagePosition).getId());
             //remove ui components too
             uuiSwipeAdapter.removeView(viewPager, pagePosition);
-            userUniversityInfos.remove(pagePosition);
+            me.getUuis().remove(pagePosition);
             uuiSwipeAdapter.changeTotalIcon();
-//            Toast.makeText(getContext(), "Remove University Info invoked. Current page = " + pagePosition, Toast.LENGTH_SHORT).show();
             uuiSwipeAdapter.notifyDataSetChanged();
         } else {
             return false;
@@ -394,28 +372,22 @@ public class ProfileFragment extends Fragment {
 
     public void showToast(View view, String text) {
         //создаем и отображаем текстовое уведомление
-        Toast toast = Toast.makeText(getContext(),
-                text,
-                Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(getContext(), text, Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
     }
 
     public class NicknameTextChangedListener implements TextWatcher {
         @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        }
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
         @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        }
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
         @Override
         public void afterTextChanged(Editable editable) {
             EditText etNickname = (EditText) getView().findViewById(R.id.nickname);
-            User u = preferences.getUser();
-            u.setNickname(etNickname.getText().toString());
-            preferences.setUser(u);
+            me.setNickname(etNickname.getText().toString());
         }
     }
 
@@ -434,21 +406,15 @@ public class ProfileFragment extends Fragment {
             String[] nameParts = etName.getText().toString().split(" ");
             switch (nameParts.length) {
                 case 1: {
-                    User u = preferences.getUser();
-                    u.setLastName(nameParts[0]);
-                    preferences.setUser(u);
+                    me.setLastName(nameParts[0]);
                     break;
                 }
                 case 2: {
-                    User u = preferences.getUser();
-                    u.setFirstName(nameParts[1]);
-                    preferences.setUser(u);
+                    me.setFirstName(nameParts[1]);
                     break;
                 }
                 case 3: {
-                    User u = preferences.getUser();
-                    u.setMiddleName(nameParts[2]);
-                    preferences.setUser(u);
+                    me.setMiddleName(nameParts[2]);
                     break;
                 }
                 default:
@@ -459,19 +425,15 @@ public class ProfileFragment extends Fragment {
 
     public class EmailTextChangedListener implements TextWatcher {
         @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        }
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
         @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        }
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
         @Override
         public void afterTextChanged(Editable editable) {
             EditText etEmail = (EditText) getView().findViewById(R.id.email);
-            User u = preferences.getUser();
-            u.setEmail(etEmail.getText().toString());
-            preferences.setUser(u);
+            me.setEmail(etEmail.getText().toString());
         }
     }
 

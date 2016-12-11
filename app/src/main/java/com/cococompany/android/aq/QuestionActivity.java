@@ -31,13 +31,17 @@ public class QuestionActivity extends AppCompatActivity {
 
     private boolean isMeLikeOwner = false;
 
+    private boolean send = true;
+
+    private QuestionService questionService = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question);
         UIutils.setToolbarWithBackButton(R.id.toolbar, this);
         question_id = getIntent().getLongExtra("question_id", -1);
-        final QuestionService questionService = new QuestionService(this);
+        questionService = new QuestionService(this);
         loginPreferences = new LoginPreferences(this);
         current_question = questionService.getQuestionLikingById(question_id);
         name_of_asker = (TextView) findViewById(R.id.name_of_asker_view);
@@ -60,14 +64,16 @@ public class QuestionActivity extends AppCompatActivity {
                 if (!isMeLikeOwner){
                     like.setImageResource(R.drawable.own_like);
                     count_of_likes.setText(Integer.toString(Integer.valueOf(count_of_likes.getText().toString())+1));
-                    questionService.putLikeOnQuestion(loginPreferences.getUser().getId(), current_question.getId());
                     isMeLikeOwner = true;
 //                    current_question = questionService.getQuestionLikingById(question_id);
                 }
                 else{
                     like.setImageResource(R.drawable.like);
                     count_of_likes.setText(Integer.toString(Integer.valueOf(count_of_likes.getText().toString())-1));
-                    questionService.putLikeOnQuestion(loginPreferences.getUser().getId(), current_question.getId());
+                    if (send) {
+                        questionService.putLikeOnQuestion(loginPreferences.getUser().getId(), current_question.getId());
+                        send = false;
+                    }
                     isMeLikeOwner = false;
 //                    current_question = questionService.getQuestionLikingById(question_id);
                 }
@@ -107,8 +113,16 @@ public class QuestionActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (send) {
+            questionService.putLikeOnQuestion(loginPreferences.getUser().getId(), current_question.getId());
+            send = false;
+        }
+        super.onBackPressed();
+    }
+
     public boolean isMyLike(){
-//        boolean result = false;
         int count = 0;
 
         for (int i = 0; i < current_question.getLikes().size(); i++) {
@@ -116,18 +130,8 @@ public class QuestionActivity extends AppCompatActivity {
                 return true;
             }
         }
-
-//        while((count<current_question.getLikes().size() || !result) && current_question.getLikes().size() > 0){
-//            if (current_question.getLikes().get(count).getUser().getId() == loginPreferences.getUserId())
-//                result=true;
-//            count++;
-//        }
-
         return false;
     }
-
-
-
-    }
+}
 
 

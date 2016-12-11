@@ -87,6 +87,7 @@ public class BirthdatePickerFragment extends DialogFragment
 //        EditText etBdate = (EditText) parent.findViewById(R.id.birthdate);
         EditText etBdate = (EditText) activity.findViewById(R.id.birthdate);
         etBdate.setText(dateFormatter.format(c.getTime()));
+        ProfileFragment.me.setBirthdate(etBdate.getText().toString());
         try {
             Date date = dateFormatter.parse(etBdate.getText().toString());
             showToast(view, "Date:" + date.toString());

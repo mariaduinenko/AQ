@@ -196,7 +196,7 @@ public class QuestionService {
         return  result;
     }
 
-    public void putLikeOnQuestion(long userId, long questionId){
+    public void putLikeOnQuestion(final long userId, final long questionId){
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         RequestBody body = RequestBody.create(JSON, "");
         OkHttpClient client = new OkHttpClient();

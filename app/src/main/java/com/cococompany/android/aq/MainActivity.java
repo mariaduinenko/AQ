@@ -13,12 +13,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.cococompany.android.aq.models.User;
+import com.cococompany.android.aq.models.UserUniversityInfo;
 import com.cococompany.android.aq.services.AQService;
 import com.cococompany.android.aq.utils.LoginPreferences;
 import com.cococompany.android.aq.services.RegistrationService;
 import com.cococompany.android.aq.utils.UIutils;
 import com.cococompany.android.aq.services.UserUniversityInfoService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import retrofit2.Retrofit;
@@ -82,6 +84,15 @@ public class MainActivity extends AppCompatActivity {
 
                         LoginPreferences preferences = new LoginPreferences(MainActivity.this);
                         user.setPassword(password_edit.getText().toString());
+                        if (user.getUuis() == null || user.getUuis().size() == 0) {
+                            UserUniversityInfo uui = new UserUniversityInfo();
+                            uui.setUser(new User(user.getId()));
+                            uui = uuiService.createUui(uui);
+                            ArrayList<UserUniversityInfo> list = new ArrayList<UserUniversityInfo>();
+                            list.add(uui);
+                            user.setUuis(list);
+                        }
+
                         preferences.setUser(user);
 
                         System.out.println("Preferences successfully saved: id="+preferences.getUser().getId()+"; pass="+preferences.getUser().getPassword() + "; email="+preferences.getUser().getEmail() + "; bdate="+preferences.getUser().getBirthdate() + "; fname="+preferences.getUser().getFirstName() + "; lname="+preferences.getUser().getLastName() + "; mname="+preferences.getUser().getMiddleName() + "; nick="+preferences.getUser().getNickname() + "; avatar="+preferences.getUser().getAvatar() + "; categories="+preferences.getUser().getCategories());

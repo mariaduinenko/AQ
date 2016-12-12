@@ -76,7 +76,7 @@ public class FeedFragment extends Fragment {
         }
         downloadNewQuestionTask = new DownloadNewQuestionTask();
         timer = new Timer();
-        timer.schedule(downloadNewQuestionTask, 2000, 2000);
+        //timer.schedule(downloadNewQuestionTask, 2000, 2000);
     }
 
     @Override
@@ -154,15 +154,21 @@ public class FeedFragment extends Fragment {
 
         @Override
         public void run() {
+            if (feedAdapter.getQuestions().size()>0){
+            //Long lastId = feedAdapter.getQuestions().get(0).getId();
             if (feedAdapter.getQuestions().get(0)!=null)
             feedAdapter.getQuestions().add(0,null);
-            feedAdapter.setTestCount(feedAdapter.getTestCount()+5);
+
+            if (feedAdapter.getQuestions().size()>0)
+            //feedAdapter.setTestCount(feedAdapter.getTestCount()+5);
+
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     feedAdapter.notifyDataSetChanged();
                 }
             });
+            }
 
         }
     }

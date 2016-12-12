@@ -27,6 +27,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final int VIEW_TYPE_LOADING = 1;
     private final int VIEW_TYPE_NEW_QUESTIONS = 2;
     private ArrayList<Question> questions;
+    private ArrayList<Question> newQuestions;
     private Activity activity;
     private OnLoadMoreListener mOnLoadMoreListener;
     private boolean isLoading;
@@ -58,6 +59,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public FeedAdapter(ArrayList<Question> questions, Activity activity,RecyclerView mRecyclerView) {
         this.questions = questions;
         this.activity = activity;
+            newQuestions = new ArrayList<Question>();
             testCount = 0;
             this.mRecyclerView = mRecyclerView;
             this.mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -78,6 +80,16 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             });
     }
+
+
+    public ArrayList<Question> getNewQuestions() {
+        return newQuestions;
+    }
+
+    public void setNewQuestions(ArrayList<Question> newQuestions) {
+        this.newQuestions = newQuestions;
+    }
+
 
 
     public int getTestCount() {

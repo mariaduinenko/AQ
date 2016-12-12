@@ -1,6 +1,7 @@
 package com.cococompany.android.aq.services;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -104,6 +105,25 @@ public class QuestionService {
         ArrayList<Question> result = null;
         QuestionsInternalTask questionsTask = new QuestionsInternalTask();
         questionsTask.execute();
+
+        try {
+            result =  questionsTask.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        if (result == null)
+            result = new ArrayList<>();
+
+        return result;
+    }
+
+    public ArrayList<Question> getNewQuestionOnFeed(long id){
+        ArrayList<Question> result = null;
+        NewQuestionOnFeedTask questionsTask = new NewQuestionOnFeedTask();
+        questionsTask.execute(id);
 
         try {
             result =  questionsTask.get();
@@ -512,5 +532,31 @@ public class QuestionService {
         }
     }
 
-}
+    class NewQuestionOnFeedTask extends AsyncTask<Long,Void,ArrayList<Question>>{
+
+
+        @Override
+        protected ArrayList<Question> doInBackground(Long... longs) {
+            ArrayList<Question> result = null;
+            Call<ArrayList<Question>> call = getAqService().getNewQuestionInFeed((long)longs[0]);
+
+            Response<ArrayList<Question>> response = null;
+
+            try {
+                response = call.execute();
+                result = response.body();
+                if (response.isSuccessful())
+                    System.out.println("NEW QUESTION: "+response.body().toString());
+                else
+                    System.out.println("ERROR: "+response.errorBody().string());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return result;
+        }
+        }
+    }
+
+
 

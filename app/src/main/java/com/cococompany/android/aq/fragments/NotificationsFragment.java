@@ -14,6 +14,8 @@ import com.cococompany.android.aq.models.Notification;
 import com.cococompany.android.aq.models.QuestionNotification;
 import com.cococompany.android.aq.models.User;
 import com.cococompany.android.aq.utils.LoginPreferences;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import cz.msebera.android.httpclient.Header;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -81,9 +84,63 @@ public class NotificationsFragment extends Fragment {
 
         LoginPreferences preferences = new LoginPreferences(getContext());
 //        lpURL = "http://10.0.2.2:8080/lp/qnotifications/" + preferences.getUser().getId();
-        lpURL = projectBaseUrl + "/lp/qnotifications/" + preferences.getUser().getId();
+
+//        lpURL = projectBaseUrl + "/lp/qnotifications/" + preferences.getUser().getId();
+
 //        new NotificationsTask().execute(lpURL);
 
+//        lp(lpURL);
+    }
+
+    private void lp(final String query) {
+        AsyncHttpClient httpClient = new AsyncHttpClient();
+        httpClient.setTimeout(60000);
+        httpClient.get(query, new JsonHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                super.onSuccess(statusCode, headers, response);
+                Toast.makeText(getActivity(), "Notification via lp retrieved!", Toast.LENGTH_LONG).show();
+                Log.i("LP", query);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                Toast.makeText(getActivity(), "Error: " + statusCode + " " + throwable.getMessage(), Toast.LENGTH_LONG).show();
+                Log.e("omg android", statusCode + " " + throwable.getMessage());
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Toast.makeText(getActivity(), "Error: " + statusCode + " " + throwable.getMessage(), Toast.LENGTH_LONG).show();
+                Log.e("omg android", statusCode + " " + throwable.getMessage());
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                super.onSuccess(statusCode, headers, responseString);
+                Toast.makeText(getActivity(), "Notification via lp retrieved!", Toast.LENGTH_LONG).show();
+                Log.i("LP", query);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+
+                Toast.makeText(getActivity(), "Notification via lp retrieved!", Toast.LENGTH_LONG).show();
+                Log.i("LP", query);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+
+                Toast.makeText(getActivity(), "Error: " + statusCode + " " + throwable.getMessage(), Toast.LENGTH_LONG).show();
+                Log.e("omg android", statusCode + " " + throwable.getMessage());
+            }
+        });
     }
 
     @Override

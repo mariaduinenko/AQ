@@ -62,70 +62,12 @@
     <TextView
         android:layout_width="90dp"
         android:layout_height="25dp"
-        android:text="@string/entranceDate"
-        android:layout_weight="3"
-        android:textSize="@dimen/txt_small"
-        android:textStyle="bold"
-        android:id="@+id/lblEntranceDateUui"
-        android:layout_below="@id/titlePrefixProfileUui"
-        android:layout_marginTop="25dp"
-        android:layout_marginLeft="10dp"
-        android:gravity="center_vertical"/>
-
-    <EditText
-        android:layout_width="80dp"
-        android:layout_height="25dp"
-        android:layout_below="@id/titlePrefixProfileUui"
-        android:layout_marginTop="25dp"
-        android:layout_toRightOf="@id/lblEntranceDateUui"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="0dp"
-        android:padding="6dp"
-        android:gravity="center_horizontal"
-        android:id="@+id/etEntranceDate"
-        android:textSize="@dimen/txt_small"
-        android:hint="@string/click_here"
-        android:inputType="date">
-    </EditText>
-
-    <TextView
-        android:layout_width="90dp"
-        android:layout_height="25dp"
-        android:text="@string/graduationDate"
-        android:layout_weight="3"
-        android:textSize="@dimen/txt_small"
-        android:textStyle="bold"
-        android:id="@+id/lblGraduationDateUui"
-        android:layout_below="@id/titlePrefixProfileUui"
-        android:layout_toRightOf="@id/etEntranceDate"
-        android:layout_marginTop="25dp"
-        android:layout_marginLeft="5dp"
-        android:gravity="center_vertical"/>
-
-    <EditText
-        android:layout_width="80dp"
-        android:layout_height="25dp"
-        android:layout_below="@id/titlePrefixProfileUui"
-        android:layout_marginTop="25dp"
-        android:layout_toRightOf="@id/lblGraduationDateUui"
-        android:layout_marginLeft="0dp"
-        android:padding="6dp"
-        android:gravity="center_horizontal"
-        android:textSize="@dimen/txt_small"
-        android:id="@+id/etGraduationDate"
-        android:hint="@string/click_here"
-        android:inputType="date">
-    </EditText>
-
-    <TextView
-        android:layout_width="90dp"
-        android:layout_height="25dp"
         android:text="@string/university"
         android:layout_weight="3"
         android:textSize="@dimen/txt_small"
         android:textStyle="bold"
         android:id="@+id/lblUniversityUui"
-        android:layout_below="@id/lblGraduationDateUui"
+        android:layout_below="@id/titlePrefixProfileUui"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
         android:gravity="center_vertical" />
@@ -136,7 +78,7 @@
         android:layout_marginLeft="25dp"
         android:layout_marginRight="10dp"
         android:id="@+id/university_sp"
-        android:layout_below="@id/lblGraduationDateUui"
+        android:layout_below="@id/titlePrefixProfileUui"
         android:layout_marginTop="10dp"
         android:layout_toRightOf="@id/lblUniversityUui"
         />
@@ -186,5 +128,63 @@
         android:layout_toRightOf="@id/lblSpecialityUui"
         android:layout_below="@id/faculty_sp"
         android:layout_marginTop="10dp"/>
+
+    <TextView
+        android:layout_width="90dp"
+        android:layout_height="25dp"
+        android:text="@string/entranceDate"
+        android:layout_weight="3"
+        android:textSize="@dimen/txt_small"
+        android:textStyle="bold"
+        android:id="@+id/lblEntranceDateUui"
+        android:layout_below="@id/lblSpecialityUui"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="10dp"
+        android:gravity="center_vertical"/>
+
+    <EditText
+        android:layout_width="80dp"
+        android:layout_height="25dp"
+        android:layout_below="@id/lblSpecialityUui"
+        android:layout_marginTop="15dp"
+        android:layout_toRightOf="@id/lblEntranceDateUui"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="0dp"
+        android:padding="6dp"
+        android:gravity="center_horizontal"
+        android:id="@+id/etEntranceDate"
+        android:textSize="@dimen/txt_small"
+        android:hint="@string/click_here"
+        android:inputType="date">
+    </EditText>
+
+    <TextView
+        android:layout_width="90dp"
+        android:layout_height="25dp"
+        android:text="@string/graduationDate"
+        android:layout_weight="3"
+        android:textSize="@dimen/txt_small"
+        android:textStyle="bold"
+        android:id="@+id/lblGraduationDateUui"
+        android:layout_below="@id/lblSpecialityUui"
+        android:layout_toRightOf="@id/etEntranceDate"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="5dp"
+        android:gravity="center_vertical"/>
+
+    <EditText
+        android:layout_width="80dp"
+        android:layout_height="25dp"
+        android:layout_below="@id/lblSpecialityUui"
+        android:layout_marginTop="15dp"
+        android:layout_toRightOf="@id/lblGraduationDateUui"
+        android:layout_marginLeft="0dp"
+        android:padding="6dp"
+        android:gravity="center_horizontal"
+        android:textSize="@dimen/txt_small"
+        android:id="@+id/etGraduationDate"
+        android:hint="@string/click_here"
+        android:inputType="date">
+    </EditText>
 
 </RelativeLayout>

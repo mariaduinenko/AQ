@@ -41,8 +41,8 @@ public interface AQService {
     Call<ArrayList<Question>> getQuestions(@Path("length") int length);
     @GET("/rest/feed/internal/{length}")
     Call<ArrayList<Question>> getQuestionsInternal(@Path("length") int length);
-    @GET("/rest/feed/{id}/{length}")
-    Call<ArrayList<Question>> getNextQuestionsInFeed(@Path("id") long id,@Path("length") int length);
+    @GET("/rest/feed/before/{id}")
+    Call<ArrayList<Question>> getNewQuestionInFeed(@Path("id") Long id);
     @GET("/rest/feed/internal/{id}/{length}")
     Call<ArrayList<Question>> getNextQuestionsInFeedInternal(@Path("id") long id,@Path("length") int length);
     @POST("/rest/questions")

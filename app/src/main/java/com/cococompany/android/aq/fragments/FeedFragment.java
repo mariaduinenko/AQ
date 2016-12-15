@@ -76,7 +76,7 @@ public class FeedFragment extends Fragment {
         }
         downloadNewQuestionTask = new DownloadNewQuestionTask();
         timer = new Timer();
-        timer.schedule(downloadNewQuestionTask, 2000, 2000);
+        timer.schedule(downloadNewQuestionTask, 4000, 10000);
     }
 
     @Override
@@ -154,16 +154,23 @@ public class FeedFragment extends Fragment {
 
         @Override
         public void run() {
-            if (feedAdapter.getQuestions().get(0)!=null)
-            feedAdapter.getQuestions().add(0,null);
-            feedAdapter.setTestCount(feedAdapter.getTestCount()+5);
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    feedAdapter.notifyDataSetChanged();
-                }
-            });
+            Long lastId;
+            if(feedAdapter.getNewQuestions().size()==0)
+            lastId = feedAdapter.getQuestions().get(0).getId();
+            else
+            lastId = feedAdapter.getNewQuestions().get(0).getId();
+            ArrayList<Question> newQuestions= questionService.getNewQuestionOnFeed(lastId);
+            if (feedAdapter.getQuestions().get(0)!=null&& newQuestions.size()>0) {
+                feedAdapter.getQuestions().add(0, null);
+                feedAdapter.getNewQuestions().addAll(0,newQuestions);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        feedAdapter.notifyDataSetChanged();
+                    }
+                });
 
+            }
         }
     }
 }

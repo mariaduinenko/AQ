@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -99,7 +100,12 @@ public class ProfileFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.e("haint", "onCreate");
         super.onCreate(savedInstanceState);
+        startTime = System.currentTimeMillis();
+        initServices();
+        preferences = new LoginPreferences(getContext());
+        me = preferences.getUser();
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -108,12 +114,11 @@ public class ProfileFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        startTime = System.currentTimeMillis();
+        Log.e("haint", "onCreateView");
 
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        initServices();
-        preferences = new LoginPreferences(getContext());
+
 
         ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
             @Override
@@ -132,7 +137,7 @@ public class ProfileFragment extends Fragment {
         viewPager.addOnPageChangeListener(onPageChangeListener);
 
         //receiving preferences
-        me = preferences.getUser();
+
 
         etAvatar = (ImageView) view.findViewById(R.id.selectableRoundedImageView);
         EditText etName = (EditText) view.findViewById(R.id.name);

@@ -27,6 +27,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final int VIEW_TYPE_LOADING = 1;
     private final int VIEW_TYPE_NEW_QUESTIONS = 2;
     private ArrayList<Question> questions;
+    private ArrayList<Question> newQuestions;
     private Activity activity;
     private OnLoadMoreListener mOnLoadMoreListener;
     private boolean isLoading;
@@ -58,6 +59,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public FeedAdapter(ArrayList<Question> questions, Activity activity,RecyclerView mRecyclerView) {
         this.questions = questions;
         this.activity = activity;
+            newQuestions = new ArrayList<Question>();
             testCount = 0;
             this.mRecyclerView = mRecyclerView;
             this.mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -78,6 +80,16 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             });
     }
+
+
+    public ArrayList<Question> getNewQuestions() {
+        return newQuestions;
+    }
+
+    public void setNewQuestions(ArrayList<Question> newQuestions) {
+        this.newQuestions = newQuestions;
+    }
+
 
 
     public int getTestCount() {
@@ -127,13 +139,14 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             loadingViewHolder.progressBar.setIndeterminate(true);
         } else if (holder instanceof NewQuestionsViewHolder){
             NewQuestionsViewHolder newQuestionsViewHolder = (NewQuestionsViewHolder) holder;
-            newQuestionsViewHolder.countOfNewQuestions.setText("You have "+Integer.toString(testCount)+" new questions");
+            newQuestionsViewHolder.countOfNewQuestions.setText("You have "+Integer.toString(newQuestions.size())+" new questions");
             newQuestionsViewHolder.countOfNewQuestions.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     questions.remove(0);
+                    questions.addAll(0,newQuestions);
+                    newQuestions = new ArrayList<Question>();
                     notifyDataSetChanged();
-                    testCount = 0;
                 }
             });
         }

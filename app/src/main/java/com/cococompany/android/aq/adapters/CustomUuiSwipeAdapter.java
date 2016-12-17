@@ -3,6 +3,7 @@ package com.cococompany.android.aq.adapters;
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -153,11 +154,14 @@ public class CustomUuiSwipeAdapter extends PagerAdapter {
     //Main code part
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-
+        long startTime = System.currentTimeMillis();
         fillData(position);
 
         View v = views.get(position);
         container.addView(v);
+
+        long finishTime = System.currentTimeMillis();
+        Log.i("CustomUUISwipeAdapter", "Whole loading time: " + (finishTime - startTime));
         return v;
     }
 

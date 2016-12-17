@@ -121,8 +121,7 @@
                 android:id="@+id/uui_view_pager"
                 android:layout_width="wrap_content"
                 android:layout_height="200dp"
-                android:layout_marginTop="25dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
                 android:layout_below="@id/btn_change_password">
             </android.support.v4.view.ViewPager>
 
@@ -136,12 +135,10 @@
                 android:id="@+id/btn_apply"
                 android:layout_below="@id/uui_view_pager"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginBottom="25dp"/>
 
         </RelativeLayout>
     </ScrollView>
-
-
 
 </LinearLayout>

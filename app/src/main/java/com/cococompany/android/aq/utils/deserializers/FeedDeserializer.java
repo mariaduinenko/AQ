@@ -43,7 +43,7 @@ public class FeedDeserializer implements JsonDeserializer<ArrayList<Question>> {
             if (jsonObject.has("creationTime"))
                 question.setCreationTime(jsonObject.get("creationTime").getAsString());
             String modificationTime = null;
-            if (jsonObject.has("creationTime"))
+            if (jsonObject.has("modificationTime"))
                 modificationTime = jsonObject.get("modificationTime").getAsString();
             question.setId(jsonObject.get("id").getAsLong());
             if (jsonObject.has("title"))
@@ -75,6 +75,7 @@ public class FeedDeserializer implements JsonDeserializer<ArrayList<Question>> {
                         user.setPassword(jsonUser.get("password").getAsString());
                     //roles retrieving
                     Set<Role> roles = null;
+                    if (jsonUser.has("roles"))
                     if (jsonUser.get("roles").isJsonArray()) {
                         roles = new HashSet<>();
                         JsonArray jsonRoles = jsonUser.get("roles").getAsJsonArray();

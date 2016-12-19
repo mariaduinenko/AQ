@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_height="match_parent"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:background="@color/bg_color"
     android:layout_marginTop="15dp"
+    android:orientation="vertical">
+<ScrollView
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+<LinearLayout
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:background="@color/bg_color"
     android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    >
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -97,11 +107,15 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/answers_container"
         android:orientation="vertical" >
 
 
     </LinearLayout>
 
+
+
+</LinearLayout>
+</ScrollView>
 </LinearLayout>

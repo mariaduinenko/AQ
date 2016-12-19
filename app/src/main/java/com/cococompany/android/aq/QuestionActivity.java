@@ -1,6 +1,7 @@
 package com.cococompany.android.aq;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
@@ -28,7 +29,6 @@ public class QuestionActivity extends AppCompatActivity {
     private TextView count_of_likes;
     private LinearLayout answer_container;
     private LoginPreferences loginPreferences;
-
     private boolean isMeLikeOwner = false;
 
     private boolean send = true;
@@ -111,6 +111,7 @@ public class QuestionActivity extends AppCompatActivity {
             }
 
         }
+
     }
 
     @Override

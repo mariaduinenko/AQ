@@ -73,4 +73,5 @@
     <string-array name="category_images">
         <item>@drawable/image_1</item>
     </string-array>
+    <string name="title_activity_main2">Main2Activity</string>
 </resources>

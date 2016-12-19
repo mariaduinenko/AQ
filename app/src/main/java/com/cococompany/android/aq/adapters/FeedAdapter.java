@@ -119,6 +119,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof QuestionHolder) {
+            Log.e("haint","Q = "+questions.get(position).getId());
+            if (questions.get(position).getUser()!=null)
                 ((TextView) holder.itemView.findViewById(R.id.question_owner)).setText(questions.get(position).getUser().getFirstName() + " " + questions.get(position).getUser().getLastName());
                 ((TextView) holder.itemView.findViewById(R.id.question_date)).setText(questions.get(position).getCreationTime());
                 ((TextView) holder.itemView.findViewById(R.id.question_title)).setText(questions.get(position).getTitle());

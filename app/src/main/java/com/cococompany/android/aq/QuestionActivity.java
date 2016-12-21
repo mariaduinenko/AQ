@@ -1,11 +1,15 @@
 package com.cococompany.android.aq;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.cococompany.android.aq.models.Question;
@@ -30,8 +34,11 @@ public class QuestionActivity extends AppCompatActivity {
     private LinearLayout answer_container;
     private LoginPreferences loginPreferences;
     private boolean isMeLikeOwner = false;
-
+    private EditText answerEdit;
+    private ProgressBar answerProgress;
+    private ImageView answerSend;
     private boolean send = true;
+    private Handler h;
 
     private QuestionService questionService = null;
 
@@ -50,9 +57,19 @@ public class QuestionActivity extends AppCompatActivity {
         comment_of_question = (TextView) findViewById(R.id.question_commnet);
         count_of_likes = (TextView) findViewById(R.id.question_count_of_likes);
         like = (ImageView) findViewById(R.id.like);
-
+        answerEdit = (EditText) findViewById(R.id.sendAnswer_et);
+        answerSend = (ImageView) findViewById(R.id.sendAnswer_button);
         isMeLikeOwner = isMyLike();
-
+        h = new Handler() {
+            public void handleMessage(android.os.Message msg) {
+                if (msg.what ==1){
+                    Log.e("haint","Handle msg");
+                    refreshCurrentQuestion();
+                    answerProgress.setVisibility(View.INVISIBLE);
+                }
+            };
+        };
+        answerProgress = (ProgressBar) findViewById(R.id.progressOfAnswer);
         if (isMeLikeOwner)
             like.setImageResource(R.drawable.own_like);
         else
@@ -80,12 +97,43 @@ public class QuestionActivity extends AppCompatActivity {
             }
         });
 
+        answerSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //відправка відповіді
+                questionService.postAnswerOnQuestion(answerEdit.getText().toString(),loginPreferences.getUser().getId(),current_question.getId(),answerProgress,h);
+                answerEdit.setText("");
+                answerProgress.setVisibility(View.VISIBLE);
+
+
+
+            }
+        });
+
         answer_container = (LinearLayout) findViewById(R.id.answers_container);
         name_of_asker.setText(current_question.getUser().getFirstName() + " " + current_question.getUser().getLastName());
         question_date.setText(current_question.getCreationTime());
         title_of_question.setText(current_question.getTitle());
         comment_of_question.setText(current_question.getComment());
         count_of_likes.setText(Integer.toString(current_question.getLikes().size()));
+        showAnswers();
+
+    }
+
+
+    public void refreshCurrentQuestion(){
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                current_question = questionService.getQuestionInternalById(question_id);
+                System.out.println("Current q answers size "+current_question.getAnswers().size());
+                answer_container.removeAllViews();
+                showAnswers();
+            }
+        });
+        thread.run();
+    }
+    public void showAnswers(){
         if (current_question.getAnswers().size() != 0) {
             for (int i = 0; i < current_question.getAnswers().size(); i++) {
                 View answer = getLayoutInflater().inflate(R.layout.answer_item, null, false);
@@ -111,7 +159,6 @@ public class QuestionActivity extends AppCompatActivity {
             }
 
         }
-
     }
 
     @Override

@@ -3,7 +3,10 @@ package com.cococompany.android.aq.services;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.cococompany.android.aq.ContentActivity;
 import com.cococompany.android.aq.QuestionActivity;
@@ -23,6 +26,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import okhttp3.Callback;
@@ -218,6 +223,7 @@ public class QuestionService {
 
     public void putLikeOnQuestion(final long userId, final long questionId){
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+
         RequestBody body = RequestBody.create(JSON, "");
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
@@ -234,6 +240,31 @@ public class QuestionService {
             @Override
             public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
                 Log.d("Response", response.toString());
+            }
+        });
+    }
+
+    public void postAnswerOnQuestion(String contentAnswer, long userId, long questionId, final ProgressBar pb, final Handler handler){
+        Answer answer = new Answer();
+        answer.setContent(contentAnswer);
+        User user = new User();
+        Question question = new Question();
+        user.setId(userId);
+        question.setId(questionId);
+        answer.setUser(user);
+        answer.setQuestion(question);
+        Call<Answer> call = aqService.postAnswer(answer);
+        call.enqueue(new retrofit2.Callback<Answer>() {
+            @Override
+            public void onResponse(Call<Answer> call, Response<Answer> response) {
+                System.out.println("Answer is: "+response.body().getContent());
+                handler.sendEmptyMessage(1);
+                //pb.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onFailure(Call<Answer> call, Throwable t) {
+                pb.setVisibility(View.INVISIBLE);
             }
         });
     }

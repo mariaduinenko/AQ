@@ -1,5 +1,6 @@
 package com.cococompany.android.aq.services;
 
+import com.cococompany.android.aq.models.Answer;
 import com.cococompany.android.aq.models.Faculty;
 import com.cococompany.android.aq.models.Like;
 import com.cococompany.android.aq.models.Question;
@@ -36,6 +37,8 @@ public interface AQService {
     @POST("/rest/login/profile")
     Call<User> loginUserProfile(@Body User user);
 
+    @POST("/rest/answers")
+    Call<Answer> postAnswer(@Body Answer answer);
     //questions and likes
     @GET("/rest/feed/{length}")
     Call<ArrayList<Question>> getQuestions(@Path("length") int length);
